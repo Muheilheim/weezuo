@@ -1,0 +1,9 @@
+.env
+.env.*
+*.log
+*.next
+node_modules/
+qa/
+server.mjs
+.DS_Store
+Thumbs.db
