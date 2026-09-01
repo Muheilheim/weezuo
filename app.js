@@ -41,7 +41,7 @@
     document.documentElement.dataset.theme = theme;
     $("#theme-button").setAttribute("aria-pressed", String(theme === "dark"));
     $("#theme-button").setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    $('meta[name="theme-color"]').content = theme === "dark" ? "#18241f" : "#f7f7f2";
+    $('meta[name="theme-color"]').content = theme === "dark" ? "#011923" : "#fffdf7";
   }
   function closeMenu() {
     $("#navigation").classList.remove("open");
