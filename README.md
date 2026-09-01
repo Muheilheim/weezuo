@@ -6,7 +6,7 @@ Website: https://muheilheim.github.io/weezuo/
 
 ## Site contents
 
-Biography, research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
+Biography, three illustrated research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
 
 The website uses static HTML, CSS, and JavaScript with no frontend framework or external tracking script. All website assets are stored in this repository. GitHub Pages can publish from the main branch and repository root. The .nojekyll file disables Jekyll processing.
 
@@ -20,4 +20,4 @@ The current bibliography and statistics were checked on 31 August 2026. Duplicat
 
 Edit profile.js and the corresponding static text in index.html to update the biography. Citation statistics are loaded from scholar-metrics.json; no scheduled metric refresh is configured in this initial publication. API credentials must never be committed to this repository. Publication records and the downloadable bibliography require separate review when updated.
 
-The portrait is from the institutional team profile. This repository does not grant rights to third-party images or article content.
+The portrait is from the institutional team profile. The three research-card images are conceptual illustrations generated with OpenAI's built-in image-generation tool and do not represent measured data. This repository does not grant rights to third-party images or article content.
