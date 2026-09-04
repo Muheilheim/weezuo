@@ -41,7 +41,7 @@
     document.documentElement.dataset.theme = theme;
     $("#theme-button").setAttribute("aria-pressed", String(theme === "dark"));
     $("#theme-button").setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    $('meta[name="theme-color"]').content = theme === "dark" ? "#011923" : "#fffdf7";
+    $('meta[name="theme-color"]').content = theme === "dark" ? "#011923" : "#011f34";
   }
   function closeMenu() {
     $("#navigation").classList.remove("open");
@@ -148,7 +148,7 @@
   const search = $("#publication-search");
   const yearFilter = $("#year-filter");
   const list = $("#publication-list");
-  const pageSize = 6;
+  const pageSize = 3;
   let scope = "selected";
   let visibleCount = pageSize;
   const normalize = (value) => String(value).normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase();
@@ -212,7 +212,7 @@
     const main = node("div", "pub-main");
     const title = node("h3");
     addLink(title, paper.title, paper.url);
-    main.append(node("p", "pub-journal", paper.journal.toUpperCase()), title, authorText(paper), node("p", "pub-citation", venue(paper)));
+    main.append(title, node("p", "pub-journal", paper.journal), authorText(paper), node("p", "pub-citation", venue(paper)));
     const links = node("div", "pub-links");
     addPublicationLinks(links, paper);
     const cite = node("button", "", "Cite");
