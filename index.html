@@ -22,6 +22,13 @@
   <script defer src="./profile.js"></script>
   <script defer src="./publications.js"></script>
   <script defer src="./app.js"></script>
+  <link rel="stylesheet" href="./resistance-lab.css">
+  <script defer src="./resistance-model.js"></script>
+  <script defer src="./resistance-lab.js"></script>
+  <link rel="stylesheet" href="./spectral-tools.css">
+  <script defer src="./solar-spectrum.js"></script>
+  <script defer src="./spectral-model.js"></script>
+  <script defer src="./spectral-tools.js"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Weiwei Zuo","honorificPrefix":"Dr.-Ing.","jobTitle":"Postdoctoral Researcher","affiliation":{"@type":"Organization","name":"Institute for Photovoltaics, University of Stuttgart","url":"https://www.ipv.uni-stuttgart.de/"},"sameAs":["https://www.ipv.uni-stuttgart.de/en/institute/team/Zuo/","https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en","https://orcid.org/0000-0002-9135-1628"],"email":"weiwei.zuo@ipv.uni-stuttgart.de"}</script>
 </head>
 <body>
@@ -35,7 +42,7 @@
   <header class="header">
     <div class="header-inner wrap">
       <a href="#home" class="brand" aria-label="Weiwei Zuo home"><span class="brand-mark" aria-hidden="true">wz.</span><span>WEIWEI ZUO<span class="brand-subtitle">RESEARCH &amp; PUBLICATIONS</span></span></a>
-      <nav id="navigation" class="nav" aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#publications">Publications</a><a href="#updates">Updates</a><a href="#contact">Contact</a></nav>
+      <nav id="navigation" class="nav" aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#solar-cell-tools">Tools</a><a href="#publications">Publications</a><a href="#updates">Updates</a><a href="#contact">Contact</a></nav>
       <div class="header-actions">
         <button class="icon-button" id="theme-button" type="button" aria-label="Switch to dark mode" aria-pressed="false"><svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.8 13.2A8.5 8.5 0 0 1 10.8 3.1a8.6 8.6 0 1 0 10 10.1Z"/></svg><svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
         <button class="icon-button menu-button" id="menu-button" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -69,10 +76,30 @@
       <div class="section-heading"><div><p class="section-kicker">RESEARCH THEMES</p><h2 id="research-title">Understanding materials, interfaces,<br>and stability for <em>resilient perovskite solar cells.</em></h2></div></div>
       <div class="research-grid">
         <article class="research-card"><figure class="research-visual"><img src="./assets/crystallization-concept.jpg" width="1536" height="1024" loading="eager" decoding="async" alt="Conceptual 3D illustration of precursor species assembling into a perovskite crystal lattice"><figcaption>CRYSTALLIZATION</figcaption></figure><div class="research-card-content"><div class="research-card-top"><span>01</span></div><h3>Crystallization &amp; phase control</h3><p>Understanding how precursor coordination, solvent removal, and molecular additives govern perovskite film formation and phase stability.</p><div class="tags"><span>Coordination chemistry</span><span>FAPbI₃</span></div><a href="https://doi.org/10.1039/d3ee02404k" target="_blank" rel="noopener noreferrer">Related publication<span aria-hidden="true">↗</span></a></div></article>
-        <article class="research-card"><figure class="research-visual"><img src="./assets/interfaces-concept.jpg" width="1536" height="1024" loading="eager" decoding="async" alt="Conceptual 3D illustration of molecular passivation and charge transport at perovskite device interfaces"><figcaption>INTERFACES</figcaption></figure><div class="research-card-content"><div class="research-card-top"><span>02</span></div><h3>Functional interfaces &amp; lead-free materials</h3><p>Using organic molecules, polymers, and low-dimensional materials to manage defects, ion migration, and charge transport in lead- and tin-based devices.</p><div class="tags"><span>Interface passivation</span><span>Tin perovskites</span></div><a href="https://doi.org/10.1039/d2sc01914k" target="_blank" rel="noopener noreferrer">Related publication<span aria-hidden="true">↗</span></a></div></article>
+        <article class="research-card"><figure class="research-visual"><img src="./assets/interfaces-concept.jpg" width="1536" height="1024" loading="eager" decoding="async" alt="Conceptual 3D illustration of molecular passivation and charge transport at perovskite device interfaces"><figcaption>INTERFACES</figcaption></figure><div class="research-card-content"><div class="research-card-top"><span>02</span></div><h3>Functional interfaces &amp; lead-free materials</h3><p>Using organic molecules, polymers, and low-dimensional materials to manage defects, ion migration, and charge transport in lead- and tin-based devices.</p><div class="tags"><span>Interface passivation</span><span>Tin perovskites</span></div><a href="https://pubs.acs.org/aelccp/article-abstract/5/6/1923/1567621/Tin-Halide-Perovskite-Films-Made-of-Highly?redirectedFrom=fulltext" target="_blank" rel="noopener noreferrer">Related publication<span aria-hidden="true">↗</span></a></div></article>
         <article class="research-card"><figure class="research-visual"><img src="./assets/stability-concept.jpg" width="1536" height="1024" loading="eager" decoding="async" alt="Conceptual 3D illustration of a perovskite photovoltaic device under light, moisture, and temperature cycling"><figcaption>STABILITY</figcaption></figure><div class="research-card-content"><div class="research-card-top"><span>03</span></div><h3>Stability under realistic stress</h3><p>Investigating how temperature changes, light cycling, and moisture affect perovskite devices, and how materials design can improve their resilience.</p><div class="tags"><span>Light &amp; thermal cycling</span><span>Reliability</span></div><a href="https://doi.org/10.1038/s41578-025-00781-7" target="_blank" rel="noopener noreferrer">Related publication<span aria-hidden="true">↗</span></a></div></article>
       </div>
       </div>
+    </section>
+
+    <section id="solar-cell-tools" class="resistance-section wrap" aria-labelledby="resistance-title">
+      <div class="section-heading"><div><p class="section-kicker">INTERACTIVE PHOTOVOLTAICS</p><h2 id="resistance-title">Solar cell <em>calculators.</em></h2></div></div>
+      <p class="resistance-intro">Explore resistance losses, bandgap limits and EQE-integrated current.</p>
+      <div class="pv-tabs" role="tablist" aria-label="Solar cell calculators">
+        <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPECTRAL LIMIT</span>Bandgap → Jsc</button>
+        <button id="pv-tab-eqe" type="button" role="tab" data-pv-tool="eqe-integration" aria-selected="false" aria-controls="eqe-integration" tabindex="-1"><span>02 / SPECTRAL RESPONSE</span>EQE integration</button>
+        <button id="pv-tab-resistance" type="button" role="tab" data-pv-tool="solar-cell-tools" aria-selected="true" aria-controls="resistance-panel"><span>03 / COMBINED</span>Effect of Both Resistances Calculator</button>
+      </div>
+      <div id="resistance-panel" role="tabpanel" aria-labelledby="pv-tab-resistance" tabindex="0" data-pv-panel>
+        <div id="resistance-calculator"></div>
+      </div>
+      <div id="bandgap-jsc" role="tabpanel" aria-labelledby="pv-tab-bandgap" tabindex="0" data-pv-panel hidden>
+        <div id="bandgap-calculator"></div>
+      </div>
+      <div id="eqe-integration" role="tabpanel" aria-labelledby="pv-tab-eqe" tabindex="0" data-pv-panel hidden>
+        <div id="eqe-calculator"></div>
+      </div>
+      <noscript><p>Enable JavaScript to use these calculators. <a class="inline-link" href="https://www.nlr.gov/grid/solar-resource/spectra-am1.5">Reference AM1.5 spectra.</a></p></noscript>
     </section>
 
     <section id="publications" class="section publications-section wrap" aria-labelledby="publications-title">

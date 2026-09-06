@@ -224,7 +224,10 @@ body{background:var(--bg)}
 .header .nav a::after{background:#16b9d7}
 .header .icon-button:hover{background:#0b3748}
 .header button:focus-visible,.header a:focus-visible,.hero-stage button:focus-visible,.hero-stage a:focus-visible{outline-color:#f2b31a}
-.hero-stage{background:#011f34;color:#fff9ed}
+:root{--hero-background:#011f34}
+.hero-stage{position:relative;background:var(--hero-background);color:#fff9ed}
+/* Cover the shared edge so fractional-pixel clipping cannot reveal the page background. */
+.hero-stage::after{content:"";position:absolute;inset:auto 0 -2px;height:4px;background:var(--hero-background);z-index:1;pointer-events:none}
 .hero{grid-template-columns:minmax(0,1fr) 330px;gap:118px;align-items:start;padding-block:54px 24px}
 .hero .eyebrow{color:#f2b31a;margin-bottom:28px;font-weight:650}
 .hero .status-dot{background:#f2b31a}
@@ -247,7 +250,8 @@ body{background:var(--bg)}
 .profile-card-info span{color:#c8dde2}
 .profile-card-link{color:#eef7f7;border-color:#167c98}
 .research-strip{display:none}
-.research-section{position:relative;overflow:hidden;background-color:#efdec9;background-image:url("./assets/perovskite-transition-v4.png");background-position:center clamp(-160px,-12vw,-72px);background-repeat:no-repeat;background-size:100% auto;color:#012c42;border-bottom:1px solid #aab9b8}
+/* Match the hero edge even when responsive cropping or dark-mode blending changes the image. */
+.research-section{position:relative;overflow:hidden;background-color:#efdec9;background-image:linear-gradient(to bottom,var(--hero-background) 2px,transparent clamp(40px,5vw,72px)),url("./assets/perovskite-transition-v4.png");background-position:center top,center clamp(-160px,-12vw,-72px);background-repeat:no-repeat;background-size:100% 100%,100% auto;color:#012c42;border-bottom:1px solid #aab9b8}
 .research-inner{padding-block:clamp(52px,6vw,88px) 78px}
 .research-section .section-heading{margin-bottom:24px}
 .research-section .section-heading h2{max-width:860px;font-size:clamp(34px,3.8vw,50px);line-height:1.17;letter-spacing:-1.6px;color:#00141f;font-weight:500;text-shadow:0 1px 0 #fff9ed,0 0 18px #fff9edd9}
@@ -300,7 +304,7 @@ body{background:var(--bg)}
 .publications-section .source-note{align-self:center}
 .about-section{border-top:1px solid var(--line)}
 .contact-inner{border-radius:5px}
-:root[data-theme="dark"] .research-section{background-color:#092f3d;background-blend-mode:multiply;color:#f8fcfd}
+:root[data-theme="dark"] .research-section{background-color:#092f3d;background-blend-mode:normal,multiply;color:#f8fcfd}
 :root[data-theme="dark"] .research-section .section-heading h2,:root[data-theme="dark"] .research-card h3,:root[data-theme="dark"] .research-card-top>span:first-child{color:#f8fcfd}
 :root[data-theme="dark"] .research-section .section-heading h2 em,:root[data-theme="dark"] .research-section .section-kicker,:root[data-theme="dark"] .research-card-top{color:#79d5e6}
 :root[data-theme="dark"] .research-card p{color:#c9dce1}
@@ -344,7 +348,7 @@ body{background:var(--bg)}
   .profile-card-info{grid-column:2;grid-row:2;padding:2px 0 12px}
   .profile-card-info strong{font-size:23px}
   .profile-card-link{grid-column:2;grid-row:3;padding-block:10px 0}
-  .research-section{background-position:center -72px;background-size:auto 360px}
+  .research-section{background-position:center top,center -72px;background-size:100% 100%,auto 360px}
   .research-inner{padding-block:56px 58px}
   .research-section .section-heading{margin-bottom:29px}
   .research-section .section-heading h2{font-size:34px}

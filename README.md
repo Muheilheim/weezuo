@@ -6,7 +6,7 @@ Website: https://muheilheim.github.io/weezuo/
 
 ## Site contents
 
-Biography, three illustrated research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
+Biography, a compact tabbed calculator for combined resistance effects, bandgap–Jsc and EQE integration with plots and CSV export, three illustrated research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
 
 The website uses static HTML, CSS, and JavaScript with no frontend framework or external tracking script. All website assets are stored in this repository. GitHub Pages can publish from the main branch and repository root. The .nojekyll file disables Jekyll processing.
 

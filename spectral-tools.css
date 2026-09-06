@@ -1,0 +1,45 @@
+/* Spectral tools reuse the homepage's resistance-lab controls and palette. */
+.pv-tabs{display:grid;grid-template-columns:1fr 1fr 1.4fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--soft);margin-bottom:18px;width:100%;max-width:100%}
+.pv-tabs button{min-width:0;min-height:68px;padding:15px 18px;border:0;border-right:1px solid var(--line);background:var(--soft);color:var(--ink);text-align:left;font:500 13px/1.45 var(--sans);cursor:pointer}
+.pv-tabs button:last-child{border-right:0}
+.pv-tabs button span{display:block;font-size:10px;letter-spacing:1.25px;color:var(--muted);margin-bottom:5px}
+.pv-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.pv-tabs button[aria-selected="true"] span{color:inherit}
+.pv-tabs button:not([aria-selected="true"]):hover{background:color-mix(in srgb,var(--soft) 75%,var(--surface))}
+.pv-tabs button:focus-visible,[data-pv-panel]:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+[data-pv-panel]{scroll-margin-top:120px;min-width:0}
+[data-pv-panel][hidden]{display:none}
+.rl-comparison{margin-top:18px;font-size:12px;color:var(--muted)}
+.rl-comparison summary{cursor:pointer}
+.rl-comparison .rl-table-wrap{margin-top:14px}
+.sp-shell{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 10px 28px #022b4006}
+.sp-shell .rl-controls{display:block}
+.sp-shell .rl-output{min-width:0}
+.sp-shell .rl-metrics{margin-top:18px}
+.sp-shell .rl-chart{margin-top:12px}
+.sp-shell .rl-metrics dd{font-size:27px}
+.sp-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.sp-caption{font-size:11px;color:var(--muted);margin:15px 0 0}
+.sp-unit-help{margin:7px 0 0;font-size:10px;line-height:1.5}
+.sp-message{font-size:12px;line-height:1.8;margin:14px 0 0;color:var(--muted)}
+.sp-message[data-error="true"]{color:var(--orange)}
+.sp-shell textarea{width:100%;height:170px;resize:vertical;border:1px solid var(--control);border-radius:6px;background:var(--surface);padding:10px;font:12px/1.65 Consolas,monospace;color:var(--ink)}
+.sp-shell input[type="file"]{display:block;width:100%;font-size:11px;min-height:38px;margin-top:12px}
+.sp-shell input[type="file"]::file-selector-button{border:1px solid var(--control);border-radius:4px;background:var(--surface);color:var(--ink);padding:8px;margin-right:7px;cursor:pointer}
+.sp-calculate{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sp-calculate:hover{background:var(--teal);color:var(--bg)}
+.sp-summary{border-left:3px solid var(--teal);padding-left:12px;font-size:12px;color:var(--muted);margin:18px 0 0}
+.sp-chart-switch{gap:6px;flex-wrap:wrap;display:flex}
+.sp-chart-switch button{font-size:12px;min-height:36px;padding:7px 10px;background:var(--surface);border:1px solid var(--control);border-radius:5px}
+.sp-chart-switch button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:600;border-color:var(--ink)}
+.sp-result[aria-busy="true"]{opacity:.55}
+.sp-shell .rl-table{min-width:0}
+.sp-shell .rl-table td,.sp-shell .rl-table th{white-space:normal}
+.sp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
+.sp-legend span:before{content:"";display:inline-block;vertical-align:middle;width:24px;border-top:2px solid var(--teal);margin-right:7px}
+.sp-legend .sp-table-line:before{border-top:2px dashed var(--muted)}
+.sp-note-link{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:1000px){.sp-shell .rl-metrics dd{font-size:24px}.sp-legend{gap:8px;font-size:11px}}
+@media(max-width:680px){.sp-shell .rl-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.sp-shell .rl-controls>h3,.sp-shell .rl-controls>.rl-small,.sp-shell .rl-controls>.sp-wide,.sp-shell .rl-controls>.sp-message,.sp-shell .rl-controls>.sp-row{grid-column:1/-1}.sp-shell .rl-controls>.rl-field{min-width:0}}
+@media(max-width:560px){.pv-tabs{grid-template-columns:1fr 1fr 1.25fr}.pv-tabs button{min-height:64px;padding:10px 8px;font-size:11px}.pv-tabs button span{font-size:8px;letter-spacing:.7px}}
+@media(max-width:430px){.sp-shell .rl-controls{padding:18px 15px;gap:0 12px}.sp-shell .rl-metrics dd{font-size:23px}}
