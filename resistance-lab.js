@@ -6,11 +6,17 @@
   const highFF = {voc: 1.2, jph: 25, n: 1, temperature: 300, rs: 0.1, rsh: 100000, pin: 100};
   const silicon = {voc: 0.65, jph: 35, n: 1, temperature: 300, rs: 2, rsh: 2000, pin: 100};
   const mode = "both", shown = ["ideal", "series", "shunt", "both"];
-  let parameters = {...defaults}, plot = "jv", results, targetResult, valid = true;
+  let parameters = {...defaults}, area = 1, quantity = "density", plot = "jv", results, targetResult, valid = true;
   const names = {ideal: "Ideal reference", series: "Series only", shunt: "Shunt only", both: "Both resistances"};
   const $ = selector => root.querySelector(selector);
   const $$ = selector => [...root.querySelectorAll(selector)];
   const fmt = (v, digits = 2) => Number(v).toFixed(digits);
+  const deviceFmt = v => v === Infinity ? "∞" : v !== 0 && (Math.abs(v) < 0.01 || Math.abs(v) >= 1e5) ? v.toExponential(2) : fmt(v);
+  const areaText = () => String(Number(area.toPrecision(8)));
+  const displayScale = () => quantity === "total" ? area : 1;
+  const currentUnit = () => quantity === "total" ? "mA" : "mA/cm²";
+  const powerUnit = () => quantity === "total" ? "mW" : "mW/cm²";
+  const displayValue = v => quantity === "total" ? deviceFmt(v) : fmt(v);
   const numberField = (key, title, unit, step) => {
     const bounds = SolarResistance.limits[key];
     return '<div class="rl-field"><label for="rl-' + key + '">' + title + '</label><div class="rl-input-row"><input type="number" id="rl-' + key + '" data-param="' + key + '" min="' + bounds[0] + '" max="' + bounds[1] + '" step="' + step + '" value="' + defaults[key] + '" aria-describedby="rl-error"><span class="rl-unit">' + unit + '</span></div></div>';
@@ -26,6 +32,7 @@
       '<div class="rl-field rl-preset"><label for="rl-preset">Example parameters</label><select id="rl-preset"><option value="perovskite">Perovskite-like · n = 1.50</option><option value="highff">High-FF example · n = 1.00</option><option value="silicon">Silicon-like · illustrative</option><option value="custom" disabled>Custom parameters</option></select></div>' +
       referenceField("voc", "Reference open-circuit voltage Vₒ꜀,₀", "V", "0.001") +
       referenceField("jph", "Reference short-circuit density Jₛ꜀,₀", "mA/cm²", "0.1") +
+      '<div class="rl-field rl-area-field"><label for="rl-area">Active area A</label><div class="rl-input-row"><input type="number" id="rl-area" min="0.000001" max="10000" step="any" value="1" aria-describedby="rl-error rl-area-note"><span class="rl-unit">cm²</span></div><p class="rl-small rl-control-hint" id="rl-area-note">Use the illuminated active area, excluding inactive borders. 1 cm² = 100 mm².</p></div>' +
       numberField("n", "Model ideality factor n", "—", "0.01") +
       numberField("temperature", "Cell temperature T", "K", "0.01") +
       '<p class="rl-small rl-n-note">n is constant along each model curve. A measured light-intensity ideality factor may differ.</p>' +
@@ -45,26 +52,29 @@
       '<p id="rl-target-status" class="rl-target-status" role="status"></p><p id="rl-n-bound" class="rl-small"></p>' +
       '<details id="rl-target-details"><summary>Resistance requirements for this target</summary><dl class="rl-target-bounds"><div><dt id="rl-rs-bound-label"></dt><dd id="rl-rs-bound"></dd></div><div><dt id="rl-rsh-bound-label"></dt><dd id="rl-rsh-bound"></dd></div></dl><p class="rl-small">Each bound varies one resistance while holding the other at its current value, with the same reference Vₒ꜀, Jₛ꜀, n and T. They are separate conditions, not a fitted pair. FF alone cannot determine both resistances.</p></details>' +
       '<p class="rl-small rl-target-note">FF₀ is the resistance-free limit of this constant-n model, not a universal perovskite limit or a measured pseudo-FF. Losses and margins are in percentage points (pp).</p></section>' +
+      '<section class="rl-device" aria-labelledby="rl-device-title"><h3 id="rl-device-title">Device at 1 cm²</h3><dl class="rl-device-metrics"><div><dt>Short-circuit current Iₛ꜀</dt><dd id="rl-device-isc"></dd></div><div><dt>Maximum power Pₘₐₓ</dt><dd id="rl-device-pmax"></dd></div><div><dt>Device Rₛ</dt><dd id="rl-device-rs"></dd></div><div><dt>Device Rₛₕ</dt><dd id="rl-device-rsh"></dd></div></dl><p class="rl-small" id="rl-device-input"></p><p class="rl-small rl-area-assumption">At fixed current density and resistances in Ω·cm², area scales total current and power; FF and efficiency stay the same. This uniform single-cell model does not predict extra losses caused by scaling up a device.</p></section>' +
+      '<div class="rl-quantity-switch" role="group" aria-label="Result units"><button type="button" data-quantity="density" aria-pressed="true">Per cm²</button><button type="button" data-quantity="total" aria-pressed="false">Whole device</button></div>' +
       '<div class="rl-chart-heading"><div><h3 id="rl-chart-title">Current density–voltage</h3><p class="rl-small" id="rl-context"></p></div><div class="rl-plot-switch" role="group" aria-label="Chart type"><button type="button" data-plot="jv" aria-pressed="true">J–V</button><button type="button" data-plot="pv" aria-pressed="false">P–V</button></div></div>' +
       '<svg class="rl-chart" id="rl-chart" viewBox="0 0 640 360" role="img" aria-labelledby="rl-svg-title rl-svg-desc"><title id="rl-svg-title">Solar-cell current density versus voltage</title><desc id="rl-svg-desc">Calculated curves in the power-generating quadrant. Exact values are listed in the comparison table below.</desc><g id="rl-chart-content"></g></svg>' +
       '<div class="rl-legend" id="rl-legend" aria-label="Curve legend"></div>' +
       '<div class="rl-probe"><div class="rl-probe-top"><label for="rl-probe">Inspect voltage on the curve</label><output id="rl-probe-value" for="rl-probe"></output></div><input id="rl-probe" type="range" min="0" max="1.15" step="0.001" value="0.9"></div>' +
       '<dl class="rl-metrics" aria-live="polite" aria-atomic="true">' +
         '<div><dt>Fill factor</dt><dd id="rl-ff"></dd><span class="rl-metric-note" id="rl-ff-note"></span></div>' +
-        '<div><dt>Maximum power density</dt><dd id="rl-pmax"></dd><span class="rl-metric-note" id="rl-mpp-note"></span></div>' +
+        '<div><dt id="rl-pmax-label">Maximum power density</dt><dd id="rl-pmax"></dd><span class="rl-metric-note" id="rl-mpp-note"></span></div>' +
         '<div><dt>Power loss vs. ideal</dt><dd id="rl-loss"></dd><span class="rl-metric-note">Same reference cell</span></div>' +
         '<div><dt>Open-circuit voltage</dt><dd id="rl-voc-result"></dd><span class="rl-metric-note">Vₒ꜀</span></div>' +
-        '<div><dt>Short-circuit current density</dt><dd id="rl-jsc"></dd><span class="rl-metric-note">Jₛ꜀</span></div>' +
+        '<div><dt id="rl-current-label">Short-circuit current density</dt><dd id="rl-jsc"></dd><span class="rl-metric-note" id="rl-current-note">Jₛ꜀</span></div>' +
         '<div><dt>Model efficiency</dt><dd id="rl-efficiency"></dd><span class="rl-metric-note" id="rl-pin-note"></span></div>' +
       '</dl><p class="rl-insight" id="rl-insight"></p>' +
-      '<div class="rl-table-wrap"><table class="rl-table"><caption>Same cell, four resistance conditions</caption><thead><tr><th scope="col">Model</th><th scope="col">Vₒ꜀ (V)</th><th scope="col">Jₛ꜀ (mA/cm²)</th><th scope="col">FF (%)</th><th scope="col">Pₘₐₓ (mW/cm²)</th></tr></thead><tbody id="rl-table-body"></tbody></table></div>' +
+      '<div class="rl-table-wrap"><table class="rl-table"><caption>Same cell, four resistance conditions</caption><thead><tr><th scope="col">Model</th><th scope="col">Vₒ꜀ (V)</th><th scope="col" id="rl-table-current">Jₛ꜀ (mA/cm²)</th><th scope="col">FF (%)</th><th scope="col" id="rl-table-power">Pₘₐₓ (mW/cm²)</th></tr></thead><tbody id="rl-table-body"></tbody></table></div>' +
     '</div></div><div class="rl-footer"><p>Vₒ꜀,₀ and Jₛ꜀,₀ set the ideal reference; the results show the cell with the selected resistances (Ω·cm²). Curves show the power-generating region. The solid dot marks the selected model’s maximum power point.</p><button type="button" class="rl-action" id="rl-export">Export curve data ↓</button></div></div>' +
     '<details class="rl-method"><summary>Model, units &amp; sources</summary>' +
       '<p>The cell is represented by a photocurrent source, a diode, a parallel leakage resistance and a series resistance. The same Jₗ, J₀, n and T are used for all four curves.</p>' +
       '<svg class="rl-schematic" viewBox="0 0 430 160" role="img" aria-label="Equivalent circuit: photocurrent source, diode and shunt resistor in parallel, connected to a series resistor and output terminals"><g fill="none" stroke="currentColor" stroke-width="1.7"><path d="M35 50H290m50 0h65M35 130H405M35 50v24m0 32v24M140 50v27m0 25v28M230 50v20m0 40v20"/><circle cx="35" cy="90" r="16"/><path d="M35 102V78m-5 7 5-7 5 7M127 78h26l-13 23zm0 24h26"/><rect x="222" y="70" width="16" height="40"/><rect x="290" y="42" width="50" height="16"/><circle cx="408" cy="50" r="3"/><circle cx="408" cy="130" r="3"/></g><g fill="currentColor" font-family="Arial,sans-serif" font-size="13"><text x="19" y="153">Jₗ</text><text x="123" y="153">Diode</text><text x="217" y="153">Rₛₕ</text><text x="307" y="31">Rₛ</text><text x="390" y="95">V</text><text x="388" y="38">+</text><text x="390" y="151">−</text></g></svg>' +
       '<p class="rl-equation">J = Jₗ − J₀ [exp((V + J Rₛ) / (n kT/q)) − 1] − (V + J Rₛ) / Rₛₕ</p>' +
       '<p>The reference short-circuit density Jₛ꜀,₀ equals the photocurrent density Jₗ. It is independently adjustable together with reference Vₒ꜀,₀; the calculated Vₒ꜀ and Jₛ꜀ include resistance losses. Internally J is in A/cm² and Rₛ, Rₛₕ are in Ω·cm², so J × R is in volts. For cell area A in cm²: R (Ω) = R (Ω·cm²) / A and I (mA) = J (mA/cm²) × A. The ideal reference means Rₛ = 0 and Rₛₕ = ∞; diode recombination remains present.</p>' +
-      '<p>J₀ = Jₗ / [exp(Vₒ꜀,₀ / (n kT/q)) − 1]. FF = Pₘₐₓ / (Vₒ꜀ Jₛ꜀). Power loss = 100 × (1 − Pₘₐₓ/Pₘₐₓ,₀). Efficiency = 100 × Pₘₐₓ/Pᵢₙ. Power loss is evaluated from the solved curve, not an approximate fill-factor formula.</p>' +
+      '<p>Active area A is entered in cm² (0.000001–10000); 1 cm² = 100 mm². Total device power equals power density × A, and total incident power equals incident power density × A. Both resistance inputs remain area-normalized in Ω·cm²; their device values and target bounds in Ω are divided by A. Keep the same illuminated area for current density and incident power. The model describes one uniformly illuminated cell, not a series-connected module or a geometry-dependent loss model.</p>' +
+      '<p>J₀ = Jₗ / [exp(Vₒ꜀,₀ / (n kT/q)) − 1]. FF = Pₘₐₓ / (Vₒ꜀ Jₛ꜀) for densities, or Pₘₐₓ / (Vₒ꜀ Iₛ꜀) for device totals. Power loss = 100 × (1 − Pₘₐₓ/Pₘₐₓ,₀). Efficiency = 100 × output power / incident power, using densities or totals consistently. Power loss is evaluated from the solved curve, not an approximate fill-factor formula.</p>' +
       '<p>FF₀ is solved numerically with Rₛ = 0 and Rₛₕ = ∞ at the selected Vₒ꜀,₀, n and T. The target check uses this same model. Resistance bounds use FF = Pₘₐₓ/(Vₒ꜀ Jₛ꜀) with the recalculated terminal Vₒ꜀ and Jₛ꜀, and search Rₛ = 0–50 or Rₛₕ = 10–10⁶ Ω·cm² plus the no-leakage limit. They are approximate conditional thresholds, not extraction from measured data. The displayed n ceiling assumes zero resistance losses and searches n = 1–2.</p>' +
       '<p>For S = dVₒ꜀/dln(Φ), n = S/(kT/q); for S = dVₒ꜀/dlog₁₀(Φ), n = S/[ln(10) kT/q]. Slopes entered in mV are converted to V. At 300 K, the denominators are 25.852 mV per unit ln(Φ) and 59.526 mV per decade. A light-intensity fit is an effective ideality factor over its measured range; it need not equal the constant n that describes an operating J–V curve. Values near 1 do not by themselves establish radiative recombination. This tool does not infer recombination fractions.</p>' +
       '<p>A measured Suns–Vₒ꜀ curve can support a pseudo-J–V analysis when photocurrent scales with intensity and collection is sufficiently voltage independent. Its difference from measured FF can help assess transport-related losses, subject to those assumptions and consistent stabilization. The resistance-free curve here is a simulation, not a Suns–Vₒ꜀ measurement.</p>' +
@@ -97,6 +107,10 @@
   }
   function readInputs() {
     const next = {...parameters}, errors = [];
+    const nextArea = $("#rl-area").valueAsNumber;
+    const badArea = !Number.isFinite(nextArea) || nextArea < SolarResistance.areaLimits[0] || nextArea > SolarResistance.areaLimits[1];
+    $("#rl-area").setAttribute("aria-invalid", String(badArea));
+    if (badArea) errors.push("Active area: enter 0.000001–10000 cm².");
     $$("[data-param]").forEach(input => {
       const key = input.dataset.param;
       const ignored = key === "rsh" && $("#rl-infinite").checked;
@@ -113,7 +127,7 @@
     $("#rl-error").hidden = valid;
     $("#rl-error").textContent = errors.join(" ") + (valid ? "" : " Results show the last valid inputs.");
     $("#rl-export").disabled = !valid;
-    if (valid) {parameters = next; syncSliders();}
+    if (valid) {parameters = next; area = nextArea; syncSliders();}
     return valid;
   }
   function updateEstimate() {
@@ -183,6 +197,8 @@
     $("#rl-rsh-bound").textContent = rsh.status === "blocked_by_series" ? "Not reachable even at Rₛₕ = ∞; decrease Rₛ."
       : rsh.status === "infinite" ? "∞ · no leakage"
       : (rsh.status === "above_range" ? "> " : rsh.status === "at_most" ? "≤ " : "≈ ") + resistance(rsh.value) + " Ω·cm²" + (rsh.status === "above_range" ? " (outside search range)" : rsh.status === "at_most" ? " (search limit)" : "");
+    if (Number.isFinite(rs.value)) $("#rl-rs-bound").textContent += " · " + (rs.status === "at_least" ? "≥ " : "≈ ") + deviceFmt(rs.value / area) + " Ω for this area";
+    if (Number.isFinite(rsh.value)) $("#rl-rsh-bound").textContent += " · " + (rsh.status === "above_range" ? "> " : rsh.status === "at_most" ? "≤ " : "≈ ") + deviceFmt(rsh.value / area) + " Ω for this area";
   }
   function update() {
     $("#rl-rsh").disabled = $("#rl-infinite").checked;
@@ -191,21 +207,33 @@
     if (!readInputs()) {updateTarget(); return;}
     const p = {...parameters, rsh: $("#rl-infinite").checked ? Infinity : parameters.rsh};
     results = SolarResistance.compare(p);
-    const active = results[mode], ideal = results.ideal;
-    $("#rl-context").textContent = names[mode] + " · " + fmt(p.temperature, 2) + " K · n = " + fmt(p.n);
+    const active = results[mode], ideal = results.ideal, device = SolarResistance.deviceValues(active, area), scale = displayScale();
+    $("#rl-context").textContent = names[mode] + " · " + fmt(p.temperature, 2) + " K · n = " + fmt(p.n) + " · A = " + areaText() + " cm²";
+    $("#rl-device-title").textContent = "Device at " + areaText() + " cm²";
+    $("#rl-device-isc").textContent = deviceFmt(device.isc * 1000) + " mA";
+    $("#rl-device-pmax").textContent = deviceFmt(device.pmax * 1000) + " mW";
+    $("#rl-device-rs").textContent = deviceFmt(device.rs) + " Ω";
+    $("#rl-device-rsh").textContent = deviceFmt(device.rsh) + " Ω";
+    $("#rl-device-input").textContent = "Incident power: " + deviceFmt(device.incidentPower * 1000) + " mW · Current at maximum power: " + deviceFmt(device.imp * 1000) + " mA";
+    $("#rl-pmax-label").textContent = quantity === "total" ? "Maximum device power" : "Maximum power density";
+    $("#rl-current-label").textContent = quantity === "total" ? "Short-circuit current" : "Short-circuit current density";
+    $("#rl-current-note").textContent = quantity === "total" ? "Iₛ꜀" : "Jₛ꜀";
+    $("#rl-table-current").textContent = quantity === "total" ? "Iₛ꜀ (mA)" : "Jₛ꜀ (mA/cm²)";
+    $("#rl-table-power").textContent = "Pₘₐₓ (" + powerUnit() + ")";
+    $$("[data-quantity]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.quantity === quantity)));
     $("#rl-ff").innerHTML = fmt(active.ff * 100) + '<small> %</small>';
     $("#rl-ff-note").textContent = "Ideal: " + fmt(ideal.ff * 100) + "%";
-    $("#rl-pmax").innerHTML = fmt(active.pmax * 1000) + '<small> mW/cm²</small>';
-    $("#rl-mpp-note").textContent = "at " + fmt(active.vmp, 3) + " V · " + fmt(active.jmp * 1000) + " mA/cm²";
+    $("#rl-pmax").innerHTML = displayValue(active.pmax * 1000 * scale) + '<small> ' + powerUnit() + '</small>';
+    $("#rl-mpp-note").textContent = "at " + fmt(active.vmp, 3) + " V · " + displayValue(active.jmp * 1000 * scale) + " " + currentUnit();
     $("#rl-loss").innerHTML = fmt(Math.max(0, 100 * (1 - active.pmax / ideal.pmax))) + '<small> %</small>';
     $("#rl-voc-result").innerHTML = fmt(active.voc, 3) + '<small> V</small>';
-    $("#rl-jsc").innerHTML = fmt(active.jsc * 1000) + '<small> mA/cm²</small>';
+    $("#rl-jsc").innerHTML = displayValue(active.jsc * 1000 * scale) + '<small> ' + currentUnit() + '</small>';
     $("#rl-efficiency").innerHTML = fmt(active.efficiency) + '<small> %</small>';
-    $("#rl-pin-note").textContent = "Pᵢₙ = " + fmt(p.pin, 1) + " mW/cm²";
+    $("#rl-pin-note").textContent = "Pᵢₙ = " + displayValue(p.pin * scale) + " " + powerUnit();
     $("#rl-insight").textContent = insight + (active.efficiency > 100 ? " The entered photocurrent and incident power produce efficiency above 100%; choose a physically consistent reference cell and illumination." : "");
     $("#rl-table-body").innerHTML = shown.map(key => {
       const r = results[key];
-      return '<tr data-active="' + (key === mode) + '"><th scope="row">' + names[key] + '</th><td>' + fmt(r.voc, 3) + '</td><td>' + fmt(r.jsc * 1000) + '</td><td>' + fmt(r.ff * 100) + '</td><td>' + fmt(r.pmax * 1000) + '</td></tr>';
+      return '<tr data-active="' + (key === mode) + '"><th scope="row">' + names[key] + '</th><td>' + fmt(r.voc, 3) + '</td><td>' + displayValue(r.jsc * 1000 * scale) + '</td><td>' + fmt(r.ff * 100) + '</td><td>' + displayValue(r.pmax * 1000 * scale) + '</td></tr>';
     }).join("");
     $("#rl-probe").max = active.voc;
     $("#rl-probe").value = active.vmp;
@@ -214,44 +242,47 @@
   }
   function drawChart() {
     if (!results) return;
-    const isPower = plot === "pv", ymax = (isPower ? results.ideal.pmax * 1000 : parameters.jph) * 1.12;
+    const isPower = plot === "pv", scale = displayScale(), ymax = (isPower ? results.ideal.pmax * 1000 : parameters.jph) * 1.12 * scale;
     const x = v => 65 + v / parameters.voc * 555;
     const y = value => 300 - value / ymax * 260;
     let svg = "";
     for (let i = 0; i <= 5; i++) {
       const v = parameters.voc * i / 5, val = ymax * i / 5;
       svg += '<line class="rl-gridline" x1="' + x(v) + '" y1="40" x2="' + x(v) + '" y2="300"/><text x="' + x(v) + '" y="322" text-anchor="middle">' + fmt(v, 2) + '</text>';
-      svg += '<line class="rl-gridline" x1="65" y1="' + y(val) + '" x2="620" y2="' + y(val) + '"/><text x="55" y="' + (y(val) + 4) + '" text-anchor="end">' + fmt(val, 1) + '</text>';
+      svg += '<line class="rl-gridline" x1="65" y1="' + y(val) + '" x2="620" y2="' + y(val) + '"/><text x="55" y="' + (y(val) + 4) + '" text-anchor="end">' + (quantity === "total" ? deviceFmt(val) : fmt(val, 1)) + '</text>';
     }
-    svg += '<path class="rl-axis" fill="none" d="M65 40V300H620"/><text x="343" y="350" text-anchor="middle">Voltage (V)</text><text x="65" y="20">' + (isPower ? "Power density (mW/cm²)" : "Current density (mA/cm²)") + '</text>';
+    svg += '<path class="rl-axis" fill="none" d="M65 40V300H620"/><text x="343" y="350" text-anchor="middle">Voltage (V)</text><text x="65" y="20">' + (isPower ? "Power" + (quantity === "density" ? " density" : "") + " (" + powerUnit() + ")" : "Current" + (quantity === "density" ? " density" : "") + " (" + currentUnit() + ")") + '</text>';
     for (const key of shown) {
       const r = results[key];
-      const path = r.points.map((point, i) => (i ? "L" : "M") + fmt(x(point.v), 3) + " " + fmt(y((isPower ? point.power : point.j) * 1000), 3)).join(" ");
+      const path = r.points.map((point, i) => (i ? "L" : "M") + fmt(x(point.v), 3) + " " + fmt(y((isPower ? point.power : point.j) * 1000 * scale), 3)).join(" ");
       svg += '<path class="rl-curve rl-' + key + '" d="' + path + '"/>';
     }
-    const r = results[mode], mppY = y((isPower ? r.pmax : r.jmp) * 1000);
-    svg += '<circle cx="' + x(r.vmp) + '" cy="' + mppY + '" r="5.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"><title>Maximum power: ' + fmt(r.pmax * 1000) + ' mW/cm² at ' + fmt(r.vmp, 3) + ' V</title></circle>';
+    const r = results[mode], mppY = y((isPower ? r.pmax : r.jmp) * 1000 * scale);
+    svg += '<circle cx="' + x(r.vmp) + '" cy="' + mppY + '" r="5.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"><title>Maximum power: ' + displayValue(r.pmax * 1000 * scale) + ' ' + powerUnit() + ' at ' + fmt(r.vmp, 3) + ' V</title></circle>';
     svg += '<line id="rl-probe-line" class="rl-axis" stroke-dasharray="2 4" y1="40" y2="300"/><circle id="rl-probe-dot" r="4" fill="var(--surface)" stroke="var(--teal)" stroke-width="2"/>';
     $("#rl-chart-content").innerHTML = svg;
     $("#rl-legend").innerHTML = shown.map(key => '<span><svg aria-hidden="true"><line class="rl-curve rl-' + key + '" x1="0" y1="5" x2="23" y2="5"/></svg>' + names[key] + '</span>').join("");
-    $("#rl-chart-title").textContent = isPower ? "Power density–voltage" : "Current density–voltage";
+    $("#rl-chart-title").textContent = (isPower ? "Power" : "Current") + (quantity === "density" ? " density" : "") + "–voltage";
     $("#rl-svg-title").textContent = $("#rl-chart-title").textContent;
+    $('[data-plot="jv"]').textContent = quantity === "total" ? "I–V" : "J–V";
     $$("[data-plot]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.plot === plot)));
     updateProbe(x, y);
   }
   function updateProbe(x, y) {
     if (!results) return;
     const r = results[mode], v = Math.min(r.voc, Number($("#rl-probe").value));
-    const j = Math.max(0, r.currentAt(v)), p = v * j;
-    $("#rl-probe-value").textContent = fmt(v, 3) + " V · " + fmt(j * 1000) + " mA/cm² · " + fmt(p * 1000) + " mW/cm²";
+    const j = Math.max(0, r.currentAt(v)), p = v * j, scale = displayScale();
+    $("#rl-probe-value").textContent = fmt(v, 3) + " V · " + displayValue(j * 1000 * scale) + " " + currentUnit() + " · " + displayValue(p * 1000 * scale) + " " + powerUnit();
     $("#rl-probe").setAttribute("aria-valuetext", $("#rl-probe-value").textContent);
-    const ymax = (plot === "pv" ? results.ideal.pmax * 1000 : parameters.jph) * 1.12;
+    const ymax = (plot === "pv" ? results.ideal.pmax * 1000 : parameters.jph) * 1.12 * scale;
     const px = x ? x(v) : 65 + v / parameters.voc * 555;
-    const py = y ? y((plot === "pv" ? p : j) * 1000) : 300 - (plot === "pv" ? p : j) * 1000 / ymax * 260;
+    const py = y ? y((plot === "pv" ? p : j) * 1000 * scale) : 300 - (plot === "pv" ? p : j) * 1000 * scale / ymax * 260;
     $("#rl-probe-line").setAttribute("x1", px); $("#rl-probe-line").setAttribute("x2", px);
     $("#rl-probe-dot").setAttribute("cx", px); $("#rl-probe-dot").setAttribute("cy", py);
   }
   $$("[data-plot]").forEach(button => button.addEventListener("click", () => {plot = button.dataset.plot; drawChart();}));
+  $$("[data-quantity]").forEach(button => button.addEventListener("click", () => {if (valid) {quantity = button.dataset.quantity; update();}}));
+  $("#rl-area").addEventListener("input", update);
   $(".rl-controls").addEventListener("submit", event => event.preventDefault());
   $$("[data-param]").forEach(input => input.addEventListener("input", () => {$("#rl-preset").value = "custom"; update();}));
   $$("[data-reference-slider]").forEach(slider => slider.addEventListener("input", () => {
@@ -273,6 +304,7 @@
   $("#rl-reset").addEventListener("click", () => {
     $("#rl-preset").value = "perovskite"; $("#rl-target-ff").value = 89;
     $("#rl-log-base").value = "log10"; $("#rl-slope").value = 89.3;
+    $("#rl-area").value = 1; quantity = "density";
     setControls(defaults);
   });
   $("#rl-export").addEventListener("click", () => {
@@ -283,21 +315,24 @@
       ["selected_model", mode], ["reference_Voc_V", p.voc], ["photocurrent_mA_cm2", p.jph],
       ["n", p.n], ["temperature_K", p.temperature], ["series_ohm_cm2", p.rs], ["shunt_ohm_cm2", p.rsh === Infinity ? "Infinity" : p.rsh],
       ["incident_power_mW_cm2", p.pin], ["J0_A_cm2", results.ideal.j0],
+      ["active_area_cm2", area], ["display_quantity", quantity],
+      ["series_device_ohm", p.rs / area], ["shunt_device_ohm", p.rsh === Infinity ? "Infinity" : p.rsh / area],
+      ["incident_power_device_mW", p.pin * area],
       ["ideal_FF0_percent", results.ideal.ff * 100],
       ["resistance_FF_loss_pp", (results.ideal.ff - results.both.ff) * 100],
       ["target_FF_percent", targetResult ? targetResult.targetPercent : "not evaluated: invalid target"],
       ["target_status", targetResult ? targetResult.status : "not evaluated"],
-      ["note", "Constant-n simulation, not measured pseudo-FF or a unique resistance fit. Signed currents and powers; sweep extends to ideal reference Voc."], [],
-      ["model", "Voc_V", "Jsc_mA_cm2", "Vmp_V", "Jmp_mA_cm2", "Pmax_mW_cm2", "FF_percent", "efficiency_percent"]
+      ["note", "Constant-n uniform single-cell simulation, not measured pseudo-FF or a unique resistance fit. Area scales current and power at fixed densities and area-normalized resistances; it does not predict geometry-dependent scale-up losses. Signed currents and powers; sweep extends to ideal reference Voc."], [],
+      ["model", "Voc_V", "Jsc_mA_cm2", "Vmp_V", "Jmp_mA_cm2", "Pmax_mW_cm2", "FF_percent", "efficiency_percent", "Isc_mA", "Imp_mA", "Pmax_mW"]
     ];
     for (const key of Object.keys(names)) {
-      const r = results[key]; rows.push([key, r.voc, r.jsc * 1000, r.vmp, r.jmp * 1000, r.pmax * 1000, r.ff * 100, r.efficiency]);
+      const r = results[key], device = SolarResistance.deviceValues(r, area); rows.push([key, r.voc, r.jsc * 1000, r.vmp, r.jmp * 1000, r.pmax * 1000, r.ff * 100, r.efficiency, device.isc * 1000, device.imp * 1000, device.pmax * 1000]);
     }
-    rows.push([], ["Voltage_V", "ideal_J_mA_cm2", "series_J_mA_cm2", "shunt_J_mA_cm2", "both_J_mA_cm2", "ideal_P_mW_cm2", "series_P_mW_cm2", "shunt_P_mW_cm2", "both_P_mW_cm2"]);
+    rows.push([], ["Voltage_V", "ideal_J_mA_cm2", "series_J_mA_cm2", "shunt_J_mA_cm2", "both_J_mA_cm2", "ideal_P_mW_cm2", "series_P_mW_cm2", "shunt_P_mW_cm2", "both_P_mW_cm2", "ideal_I_mA", "series_I_mA", "shunt_I_mA", "both_I_mA", "ideal_P_mW", "series_P_mW", "shunt_P_mW", "both_P_mW"]);
     const voltages = [...new Set([...Array.from({length: 401}, (_, i) => p.voc * i / 400), ...Object.values(results).flatMap(r => [r.voc, r.vmp])])].sort((a, b) => a - b);
     for (const v of voltages) {
       const currents = Object.keys(names).map(key => results[key].currentAt(v) * 1000);
-      rows.push([v, ...currents, ...currents.map(j => v * j)]);
+      rows.push([v, ...currents, ...currents.map(j => v * j), ...currents.map(j => j * area), ...currents.map(j => v * j * area)]);
     }
     window.CSVExport.save("solar-cell-resistance-" + mode + ".csv", rows);
   });

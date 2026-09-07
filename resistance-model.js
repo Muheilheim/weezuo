@@ -100,7 +100,15 @@
     else minRsh = {status: "bound", value: 10 ** bisect(1, 6, logR => ffAt({rsh: 10 ** logR}) < target)};
     return {targetPercent, idealFF, status: "within_ideal", maxN, maxRs, minRsh};
   }
-  const api = {model, compare, validate, limits, idealityFromSlope, targetFF};
+  const areaLimits = [1e-6, 1e4];
+  function deviceValues(result, area) {
+    if (!Number.isFinite(area) || area < areaLimits[0] || area > areaLimits[1]) throw new RangeError("Active area must be 0.000001–10000 cm²");
+    // Uniform single-cell conversion: I = J A, P = p A and R_device = R_area / A.
+    const p = result.parameters;
+    return {area, isc: result.jsc * area, imp: result.jmp * area, pmax: result.pmax * area,
+      incidentPower: p.pin * area / 1000, rs: p.rs / area, rsh: p.rsh / area};
+  }
+  const api = {model, compare, validate, limits, idealityFromSlope, targetFF, areaLimits, deviceValues};
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.SolarResistance = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);
