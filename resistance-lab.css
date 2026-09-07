@@ -32,6 +32,23 @@
 #csv-export-dialog summary{cursor:pointer}
 #csv-export-text{width:100%;margin-top:12px;padding:10px;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font:11px/1.6 Consolas,monospace;resize:vertical}
 .rl-output{padding:24px;min-width:0}
+.rl-control-hint{margin:8px 0 0;font-size:11px}
+.rl-target{padding:16px;margin-bottom:24px;border:1px solid var(--line);border-radius:8px;background:color-mix(in srgb,var(--soft) 50%,var(--surface))}
+.rl-target-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+.rl-target h3{font-size:15px;line-height:1.4;margin:0;font-weight:600}
+.rl-target-heading .rl-field{width:112px;flex-shrink:0;margin:0}
+.rl-target-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+.rl-target-metrics dt,.rl-target-bounds dt{font-size:11px;line-height:1.5;color:var(--muted)}
+.rl-target-metrics dd{font:24px/1.5 var(--serif);font-variant-numeric:tabular-nums;margin:4px 0 0}
+.rl-target-status{font-size:12px;line-height:1.65;border-left:3px solid var(--teal);padding-left:10px;margin:14px 0 8px}
+.rl-target[data-state="unreachable"] .rl-target-status,.rl-target[data-state="invalid"] .rl-target-status{border-color:var(--orange)}
+.rl-target .rl-small{margin-bottom:10px}
+.rl-target summary{font-size:12px;font-weight:600;cursor:pointer}
+.rl-target-bounds{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.rl-target-bounds dd{font-size:13px;line-height:1.6;margin:4px 0 0}
+.rl-target .rl-target-note{font-size:11px;border-top:1px solid var(--line);padding-top:10px;margin:12px 0 0}
+@media(max-width:1000px){.rl-target-metrics{grid-template-columns:1fr}.rl-target-metrics>div{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.rl-target-metrics dd{margin:0;white-space:nowrap;font-size:22px}.rl-target-bounds{grid-template-columns:1fr}}
+@media(max-width:430px){.rl-target{padding:12px}.rl-target-heading{align-items:start}.rl-target h3{font-size:14px}.rl-target-heading .rl-field{width:100px}}
 .rl-chart-heading{display:flex;justify-content:space-between;gap:12px;align-items:start}
 .rl-chart-heading .rl-small{margin-bottom:8px}
 .rl-plot-switch{display:flex;gap:4px;flex-shrink:0}

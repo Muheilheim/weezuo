@@ -14,7 +14,7 @@
     }
     return p;
   }
-  function model(parameters) {
+  function model(parameters, {sampleCurve = true} = {}) {
     const p = validate({...parameters});
     const a = p.n * KB * p.temperature / Q, jl = p.jph / 1000;
     const j0 = jl / Math.expm1(p.voc / a);
@@ -49,10 +49,10 @@
     const vmp = (lo + hi) / 2, jmp = currentAt(vmp), pmax = vmp * jmp;
     return {parameters: p, a, j0, currentAt, voc, jsc, vmp, jmp, pmax,
       ff: pmax / (voc * jsc), efficiency: pmax * 1000 / p.pin * 100,
-      points: Array.from({length: 301}, (_, i) => {
+      points: sampleCurve ? Array.from({length: 301}, (_, i) => {
         const v = voc * i / 300, j = i === 300 ? 0 : Math.max(0, currentAt(v));
         return {v, j, power: v * j};
-      })};
+      }) : []};
   }
   function compare(p) {
     validate(p);
@@ -62,7 +62,45 @@
     const both = model(p);
     return {ideal, series, shunt, both};
   }
-  const api = {model, compare, validate, limits};
+  function idealityFromSlope(slopeMv, temperature, base = "log10") {
+    if (!Number.isFinite(slopeMv) || slopeMv <= 0) throw new RangeError("Slope must be positive");
+    if (!Number.isFinite(temperature) || temperature < 200 || temperature > 400) throw new RangeError("Invalid temperature");
+    if (!["ln", "log10"].includes(base)) throw new RangeError("Invalid logarithm base");
+    return slopeMv / (1000 * KB * temperature / Q * (base === "log10" ? Math.LN10 : 1));
+  }
+  function targetFF(p, targetPercent) {
+    validate(p);
+    if (!Number.isFinite(targetPercent) || targetPercent < 50 || targetPercent > 99.99) throw new RangeError("Target FF must be 50–99.99%");
+    const target = targetPercent / 100;
+    const ffAt = changes => model({...p, ...changes}, {sampleCurve: false}).ff;
+    const idealFF = ffAt({rs: 0, rsh: Infinity});
+    const bisect = (lo, hi, keepLower) => {
+      for (let i = 0; i < 38; i++) {
+        const mid = (lo + hi) / 2;
+        if (keepLower(mid)) lo = mid; else hi = mid;
+      }
+      return (lo + hi) / 2;
+    };
+    // These are conditional model bounds, not a fit or a unique resistance pair.
+    const idealAtN = n => ffAt({n, rs: 0, rsh: Infinity});
+    let maxN;
+    if (idealAtN(1) < target) maxN = {status: "below_range", value: 1};
+    else if (idealAtN(2) >= target) maxN = {status: "at_least", value: 2};
+    else maxN = {status: "bound", value: bisect(1, 2, n => idealAtN(n) >= target)};
+    if (target > idealFF + 1e-12) return {targetPercent, idealFF, status: "above_ideal", maxN, maxRs: null, minRsh: null};
+    let maxRs, minRsh;
+    if (ffAt({rs: 0}) < target - 1e-12) maxRs = {status: "blocked_by_shunt"};
+    else if (ffAt({rs: limits.rs[1]}) >= target) maxRs = {status: "at_least", value: limits.rs[1]};
+    else maxRs = {status: "bound", value: bisect(0, limits.rs[1], rs => ffAt({rs}) >= target)};
+    const withoutLeakage = ffAt({rsh: Infinity});
+    if (withoutLeakage < target - 1e-12) minRsh = {status: "blocked_by_series"};
+    else if (Math.abs(withoutLeakage - target) < 1e-12) minRsh = {status: "infinite", value: Infinity};
+    else if (ffAt({rsh: limits.rsh[0]}) >= target) minRsh = {status: "at_most", value: limits.rsh[0]};
+    else if (ffAt({rsh: limits.rsh[1]}) < target) minRsh = {status: "above_range", value: limits.rsh[1]};
+    else minRsh = {status: "bound", value: 10 ** bisect(1, 6, logR => ffAt({rsh: 10 ** logR}) < target)};
+    return {targetPercent, idealFF, status: "within_ideal", maxN, maxRs, minRsh};
+  }
+  const api = {model, compare, validate, limits, idealityFromSlope, targetFF};
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.SolarResistance = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);
