@@ -26,6 +26,11 @@
 .rl-action{font-size:12px;min-height:40px;padding:8px 13px;border:1px solid var(--control);border-radius:6px;background:var(--surface);transition:background .15s,border-color .15s}
 .rl-action:hover{background:var(--soft)}
 .rl-action:disabled{opacity:.5;cursor:not-allowed}
+#csv-export-dialog .rl-actions a{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none}
+#csv-export-name{overflow-wrap:anywhere;font-size:13px}
+#csv-export-dialog details{margin-top:16px;font-size:12px}
+#csv-export-dialog summary{cursor:pointer}
+#csv-export-text{width:100%;margin-top:12px;padding:10px;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font:11px/1.6 Consolas,monospace;resize:vertical}
 .rl-output{padding:24px;min-width:0}
 .rl-chart-heading{display:flex;justify-content:space-between;gap:12px;align-items:start}
 .rl-chart-heading .rl-small{margin-bottom:8px}

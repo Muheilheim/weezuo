@@ -196,10 +196,7 @@
       const currents = Object.keys(names).map(key => results[key].currentAt(v) * 1000);
       rows.push([v, ...currents, ...currents.map(j => v * j)]);
     }
-    const csv = "\uFEFF" + rows.map(row => row.map(value => '"' + String(value).replace(/"/g, '""') + '"').join(",")).join("\r\n");
-    const url = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8"}));
-    const link = document.createElement("a"); link.href = url; link.download = "solar-cell-resistance-" + mode + ".csv";
-    document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+    window.CSVExport.save("solar-cell-resistance-" + mode + ".csv", rows);
   });
   setControls(defaults);
 })();

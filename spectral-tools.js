@@ -35,9 +35,7 @@ M.checkSpectrum(data.spectrum);
 const fmt=(v,n=2)=>Number(v).toFixed(n);
 const $=id=>document.getElementById(id);
 function saveCSV(name,rows){
-  const csv="\uFEFF"+rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
-  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");
-  a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+ window.CSVExport.save(name,rows);
 }
 function chart(id,series,axes,marker){
   const target=$(id),w=640,h=360,left=65,right=620,top=40,bottom=300;
@@ -127,7 +125,7 @@ let result=null,eqePoints=null,source="example",plot="eqe",fileVersion=0;
 eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-controls">'+
   '<h3>Your EQE spectrum</h3><p class="rl-small">Paste two columns from Excel or import a CSV, TSV or TXT file. Wavelength must be in nm.</p>'+
   '<div class="rl-field sp-wide"><label for="eq-unit">EQE values are in</label><select id="eq-unit"><option value="percent">Percent (%) · 0–100</option><option value="fraction">Fraction · 0–1</option></select><p class="rl-small sp-unit-help">Choose Fraction for decimal values such as 0.82; choose Percent for values such as 82. The selected unit is applied when calculating.</p></div>'+
-  '<div class="rl-field sp-wide"><label for="eq-data">Wavelength (nm) &amp; EQE</label><textarea id="eq-data" spellcheck="false" aria-describedby="eq-format eq-message" placeholder="Wavelength_nm,EQE_percent&#10;400,80&#10;500,90&#10;600,85"></textarea><p class="rl-small" id="eq-format">Two columns separated by tabs, commas, semicolons or spaces. An optional wavelength / EQE header is accepted. Use a decimal point.</p><label for="eq-file" class="sr-only">Import EQE text data</label><input id="eq-file" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain"></div>'+
+  '<div class="rl-field sp-wide"><label for="eq-data">Wavelength (nm) &amp; EQE</label><textarea id="eq-data" spellcheck="false" aria-describedby="eq-format eq-message" placeholder="Wavelength_nm,EQE_percent&#10;400,80&#10;500,90&#10;600,85"></textarea><p class="rl-small" id="eq-format">Two columns separated by tabs, commas, semicolons or spaces. An optional wavelength / EQE header is accepted. Use a decimal point.</p><input id="eq-file" type="file" hidden aria-label="Import EQE text data" accept=".csv,.tsv,.txt,text/csv,text/plain"><div class="sp-file-picker"><button id="eq-file-choose" type="button" class="rl-action" aria-describedby="eq-file-name">Choose file</button><span id="eq-file-name" class="rl-small" role="status">No file selected</span></div></div>'+
   '<div class="sp-row"><button type="button" class="rl-action sp-calculate" id="eq-calculate">Integrate EQE</button><button type="button" class="rl-action" id="eq-example">Load workbook example</button><button type="button" class="rl-action" id="eq-clear">Clear</button></div>'+
   '<p class="sp-message" id="eq-message" role="status"></p>'+
 '</div><div class="rl-output sp-result" id="eq-output"><div class="rl-chart-heading"><div><h3 id="eq-chart-title">External quantum efficiency</h3><p class="rl-small" id="eq-source"></p></div></div>'+
@@ -183,16 +181,18 @@ function calculate(){
   }catch(e){empty(e.message,true);}
 }
 function example(){
-  fileVersion++;source="example";$("eq-unit").value="percent";$("eq-file").value="";
+  fileVersion++;source="example";$("eq-unit").value="percent";$("eq-file").value="";$("eq-file-name").textContent="No file selected";
   $("eq-data").value="Wavelength_nm,EQE_percent\n"+data.exampleEQE.map(p=>p[0]+","+Number(p[1].toPrecision(12))).join("\n");calculate();
 }
 $("eq-data").addEventListener("input",()=>{fileVersion++;source="custom";empty("Data changed. Select Integrate EQE to update the result.");});
 $("eq-unit").addEventListener("change",()=>{source="custom";calculate();});
 $("eq-calculate").addEventListener("click",calculate);
 $("eq-example").addEventListener("click",example);
-$("eq-clear").addEventListener("click",()=>{fileVersion++;source="custom";$("eq-data").value="";$("eq-file").value="";empty("Paste two columns or import a CSV, TSV or TXT file.");});
+$("eq-clear").addEventListener("click",()=>{fileVersion++;source="custom";$("eq-data").value="";$("eq-file").value="";$("eq-file-name").textContent="No file selected";empty("Paste two columns or import a CSV, TSV or TXT file.");});
+$("eq-file-choose").addEventListener("click",()=>$("eq-file").click());
 $("eq-file").addEventListener("change",async()=>{
   const file=$("eq-file").files[0],version=++fileVersion;if(!file)return;
+  $("eq-file-name").textContent=file.name;
   if(file.size>2000000){empty("Use a file smaller than 2 MB.",true);return;}
   if(!/\.(csv|tsv|txt)$/i.test(file.name)){empty("Save the EQE columns as CSV, TSV or TXT, or paste them directly from Excel.",true);return;}
   try{const text=await file.text();if(version!==fileVersion)return;source="custom";$("eq-data").value=text;calculate();}catch(e){empty("Unable to read this text file.",true);}

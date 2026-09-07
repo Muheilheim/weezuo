@@ -25,7 +25,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
 .header-inner{height:85px;display:flex;align-items:center;justify-content:space-between;gap:25px}
 .brand{display:flex;align-items:center;gap:16px;white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:1.3px;line-height:1.6}
-.brand-mark{font-family:var(--serif);font-size:37px;letter-spacing:-4px;font-style:italic;line-height:1;transform:translateY(-3px)}
+.brand-mark{display:block;flex:none;width:96px;height:auto;aspect-ratio:1846/852;object-fit:contain}
+@media(max-width:800px){.brand-mark{width:72px}}
+@media(max-width:620px){.brand-mark{width:80px}}
+@media(max-width:370px){.brand-mark{width:64px}}
 .brand-subtitle{display:block;font-size:7px;letter-spacing:1.3px;font-weight:400;color:var(--muted)}
 .nav{display:flex;gap:27px;margin-left:auto}
 .nav a{font-size:12px;padding-block:10px;position:relative}
