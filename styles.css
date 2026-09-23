@@ -34,6 +34,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .nav a{font-size:12px;padding-block:10px;position:relative}
 .nav a::after{content:"";position:absolute;height:1px;bottom:4px;left:0;right:100%;background:var(--teal);transition:right .2s}
 .nav a:hover::after{right:0}
+.language-switch{display:inline-flex;align-items:center;gap:3px;margin-left:7px;padding-left:12px;border-left:1px solid var(--line);white-space:nowrap}
+.language-switch a{font-size:10px;padding:7px 5px;color:var(--muted)}
+.language-switch a[aria-current="page"]{color:var(--ink);font-weight:700}
+.language-switch a[aria-current="page"]::after{right:0}
+@media(max-width:1060px){.nav{gap:12px}.language-switch{margin-left:2px;padding-left:7px}}
+@media(max-width:620px){.language-switch{width:100%;justify-content:center;border-left:0;border-top:1px solid var(--line);margin:7px 0 0;padding:8px 0 0}.language-switch a{flex:0 0 auto!important;padding-inline:13px!important}}
 .header-actions{display:flex;gap:6px}
 .icon-button{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border:0;background:transparent;border-radius:50%;font-size:24px}
 .icon-button svg{width:19px;height:19px}
@@ -368,3 +374,45 @@ body{background:var(--bg)}
   .publication .pub-main{grid-column:2}
   .publication .pub-year{grid-column:2;grid-row:2;text-align:left;font-size:11px;color:var(--muted);padding:0}
 }
+
+/* Locale palettes keep the same structure and imagery while giving each edition a distinct tone. */
+html[lang="de"]{--bg:#f6f4e9;--surface:#fffdf6;--ink:#173b35;--muted:#48665e;--line:#a8b9a9;--control:#6e9181;--soft:#e5ece2;--paper:#e2e9de;--accent:#d6ab55;--teal:#286f5c;--orange:#d6ab55;--banner:#183b34;--banner-end:#183b34;--banner-line:#54766b;--hero-background:#183b34}
+html[lang="de"] .top-banner,html[lang="de"] .header{background:#183b34;border-color:#54766b}
+html[lang="de"] .header .nav a::after{background:#e5bc65}
+html[lang="de"] .hero .eyebrow,html[lang="de"] .hero-headline em{color:#e5bc65}
+html[lang="de"] .hero-headline,html[lang="de"] .hero .text-link{border-color:#77a592}
+html[lang="de"] .hero .button.primary{background:#3a866d;border-color:#3a866d}
+html[lang="de"] .hero .button.primary:hover{background:#4c9b81}
+html[lang="de"] .profile-card{background:#254940;border-color:#688b7b}
+html[lang="de"] .research-section{background-color:#e8e4d2}
+html[lang="de"] .research-section .section-heading h2{color:#183b34}
+html[lang="de"] .research-section .section-heading h2 em{color:#316c56}
+html[lang="de"] .research-card-content>a,html[lang="de"] .publication-tools summary,html[lang="de"] .publications-section #load-more{color:#286f5c}
+html[lang="zh-CN"]{--bg:#faf5eb;--surface:#fffcf5;--ink:#18384a;--muted:#496878;--line:#adc0bc;--control:#7f9ba1;--soft:#e5eeeb;--paper:#e0e9e7;--accent:#df8062;--teal:#2d7985;--orange:#df8062;--banner:#173343;--banner-end:#173343;--banner-line:#536e76;--hero-background:#173343}
+html[lang="zh-CN"] .top-banner,html[lang="zh-CN"] .header{background:#173343;border-color:#536e76}
+html[lang="zh-CN"] .header .nav a::after{background:#e18d70}
+html[lang="zh-CN"] .hero .eyebrow,html[lang="zh-CN"] .hero-headline em{color:#ed9b7f}
+html[lang="zh-CN"] .hero-headline,html[lang="zh-CN"] .hero .text-link{border-color:#7ba5aa}
+html[lang="zh-CN"] .hero .button.primary{background:#b65342;border-color:#b65342}
+html[lang="zh-CN"] .hero .button.primary:hover{background:#c8614f}
+html[lang="zh-CN"] .profile-card{background:#254658;border-color:#617e83}
+html[lang="zh-CN"] .research-section{background-color:#eee1d5}
+html[lang="zh-CN"] .research-section .section-heading h2{color:#18384a}
+html[lang="zh-CN"] .research-section .section-heading h2 em{color:#a8473c}
+html[lang="zh-CN"] .research-card-content>a,html[lang="zh-CN"] .publication-tools summary,html[lang="zh-CN"] .publications-section #load-more{color:#a8473c}
+@media(max-width:800px){html[lang="de"] .nav{background:#254940;border-color:#688b7b}html[lang="zh-CN"] .nav{background:#254658;border-color:#617e83}}
+@media(max-width:620px){html[lang="zh-CN"] .hero-headline{font-size:clamp(23px,7vw,27px);letter-spacing:-.4px}}
+/* Chinese typography follows the readable sans-serif approach used by major Chinese university sites. */
+html[lang="zh-CN"]{--sans:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC",Arial,sans-serif}
+html[lang="zh-CN"] body{line-height:1.78}
+html[lang="zh-CN"] .hero h1{font-family:var(--sans);font-size:clamp(54px,6.8vw,82px);font-weight:600;letter-spacing:.03em;line-height:1.15}
+html[lang="zh-CN"] .profile-card-info strong{font-family:var(--sans);font-weight:600;letter-spacing:.02em}
+html[lang="zh-CN"] .hero-headline,html[lang="zh-CN"] h2,html[lang="zh-CN"] .research-card h3,html[lang="zh-CN"] .update-row h3{font-family:var(--sans);letter-spacing:0}
+html[lang="zh-CN"] .hero-headline{font-weight:500;line-height:1.48}
+html[lang="zh-CN"] .hero-headline em{font-family:var(--sans);font-style:normal;font-weight:600}
+html[lang="zh-CN"] .section-heading h2,html[lang="zh-CN"] .research-section .section-heading h2{font-weight:600;line-height:1.38}
+html[lang="zh-CN"] .research-card h3,html[lang="zh-CN"] .update-row h3{font-weight:600;line-height:1.45}
+html[lang="zh-CN"] .top-banner-inner{font-size:10px;letter-spacing:.07em}
+html[lang="zh-CN"] .section-kicker{font-size:10px;letter-spacing:.08em}
+html[lang="zh-CN"] .nav a{letter-spacing:.02em}
+html[lang="zh-CN"] .rl-small{line-height:1.8}
