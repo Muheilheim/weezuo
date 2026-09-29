@@ -416,14 +416,13 @@ html[lang="zh-CN"] .top-banner-inner{font-size:10px;letter-spacing:.07em}
 html[lang="zh-CN"] .section-kicker{font-size:10px;letter-spacing:.08em}
 html[lang="zh-CN"] .nav a{letter-spacing:.02em}
 
-/* Blend the locale hero into the lattice and the research surface into the page. */
+/* Match the English research transition while retaining each locale's palette. */
 html[lang="de"]{--research-ground:#e8e4d2}
 html[lang="zh-CN"]{--research-ground:#eee1d5}
 html[data-theme="dark"][lang="de"],html[data-theme="dark"][lang="zh-CN"]{--research-ground:#092f3d}
 html[lang="de"] .research-section,html[lang="zh-CN"] .research-section{
   isolation:isolate;
-  background:linear-gradient(to bottom,var(--hero-background) 0,var(--research-ground) 190px,var(--research-ground) calc(100% - 160px),var(--bg) 100%);
-  border-bottom:0;
+  background:linear-gradient(to bottom,var(--hero-background),var(--research-ground) 110px,var(--research-ground));
 }
 html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::before{
   content:"";
@@ -432,12 +431,11 @@ html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::
   z-index:0;
   pointer-events:none;
   background:url("./assets/perovskite-transition-v4.png") center clamp(-160px,-12vw,-72px)/100% auto no-repeat;
-  mix-blend-mode:luminosity;
-  opacity:.72;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent clamp(44px,7vw,90px),#000 clamp(145px,18vw,230px),transparent clamp(280px,38vw,520px));
-  mask-image:linear-gradient(to bottom,transparent 0,transparent clamp(44px,7vw,90px),#000 clamp(145px,18vw,230px),transparent clamp(280px,38vw,520px));
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 64px,#000 260px,transparent 450px);
+  mask-image:linear-gradient(to bottom,transparent,#000 64px,#000 260px,transparent 450px);
 }
+html[lang="de"] .research-section::before{mix-blend-mode:luminosity}
 html[lang="de"] .research-inner,html[lang="zh-CN"] .research-inner{position:relative;z-index:1}
-html[data-theme="dark"][lang="de"] .research-section::before,html[data-theme="dark"][lang="zh-CN"] .research-section::before{opacity:.22}
-@media(max-width:620px){html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::before{background-position:center -72px;background-size:auto 360px}}
+html[data-theme="dark"][lang="de"] .research-section::before,html[data-theme="dark"][lang="zh-CN"] .research-section::before{mix-blend-mode:luminosity;opacity:.4}
+@media(max-width:620px){html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::before{background-position:center -72px;background-size:auto 360px;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 48px,#000 140px,transparent 270px);mask-image:linear-gradient(to bottom,transparent,#000 48px,#000 140px,transparent 270px)}}
 html[lang="zh-CN"] .rl-small{line-height:1.8}
