@@ -78,6 +78,7 @@
     ["View more publications", "Weitere Publikationen anzeigen", "查看更多论文"],
     ["Bibliography checked", "Bibliografie geprüft am", "书目核查于"],
     ["31 August 2026", "31. August 2026", "2026年8月31日"],
+    ["29 September 2026", "29. September 2026", "2026年9月29日"],
     [". Duplicate Scholar records are consolidated; corrections are linked to the original articles.", ". Doppelte Scholar-Einträge wurden zusammengeführt; Korrekturen sind mit den Originalartikeln verknüpft.", "。已合并 Google Scholar 的重复记录；更正与原论文相互链接。"],
     ["View Google Scholar ↗", "Google Scholar ansehen ↗", "查看 Google Scholar ↗"],
     ["Enable JavaScript for the searchable 44-publication list, or download the complete BibTeX bibliography above.", "Aktivieren Sie JavaScript für die durchsuchbare Liste mit 44 Publikationen oder laden Sie oben die vollständige BibTeX-Bibliografie herunter.", "启用 JavaScript 可搜索全部 44 篇论文；也可以下载上方完整的 BibTeX 书目。"],
