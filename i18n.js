@@ -538,6 +538,7 @@
     return undefined;
   };
   const translate = value => {
+    if (language === "en") return value;
     const trimmed = String(value).trim();
     if (!trimmed) return value;
     const replacement = dictionary[trimmed] ?? dynamic(trimmed);
@@ -545,11 +546,33 @@
     const start = value.indexOf(trimmed);
     return value.slice(0, start) + replacement + value.slice(start + trimmed.length);
   };
+  // Translate whole sentences before decorating notation; imported names remain literal.
+  function formatPLNotation(node) {
+    const parent = node.parentElement;
+    if (!parent?.closest("#pl-voltage-calculator") || parent.closest("sub,sup,svg,select,#pl-file-name,#pl-batch-rows")) return;
+    const symbols = {Vint:["V","int"], Vref:["V","ref"], Voc:["V","oc"], Vterminal:["V","terminal"], Iref:["I","ref"], kBT:["k","B","T"], JG:["J","G"], "J0,rad":["J","0,rad"], "ηPL,ext":["η","PL,ext"], "cm²":["cm","2"]};
+    const text = node.nodeValue;
+    const matches = [...text.matchAll(/\b(?:Vint|Vref|Voc|Vterminal|Iref|kBT|JG|J0,rad)\b|ηPL,ext|\bcm²/g)];
+    if (!matches.length) return;
+    const fragment = document.createDocumentFragment();
+    let offset = 0;
+    for (const match of matches) {
+      const [base, index, suffix = ""] = symbols[match[0]];
+      fragment.append(document.createTextNode(text.slice(offset, match.index) + base));
+      const script = document.createElement(match[0] === "cm²" ? "sup" : "sub");
+      script.textContent = index;
+      fragment.append(script, document.createTextNode(suffix));
+      offset = match.index + match[0].length;
+    }
+    fragment.append(document.createTextNode(text.slice(offset)));
+    node.replaceWith(fragment);
+  }
   function translateNode(node) {
     if (node.nodeType === 3) {
       if (node.parentElement?.closest("script,style,textarea,pre,code")) return;
       const result = translate(node.nodeValue);
       if (result !== node.nodeValue) node.nodeValue = result;
+      formatPLNotation(node);
       return;
     }
     if (node.nodeType !== 1) return;
@@ -561,8 +584,9 @@
     for (const child of node.childNodes) translateNode(child);
   }
   document.addEventListener("DOMContentLoaded", () => {
-    if (language !== "en") {
-      translateNode(document.body);
+    const translationRoot = language === "en" ? document.getElementById("pl-voltage-calculator") : document.body;
+    if (translationRoot) {
+      translateNode(translationRoot);
       const observer = new MutationObserver(mutations => {
         for (const mutation of mutations) {
           if (mutation.type === "characterData") translateNode(mutation.target);
@@ -570,7 +594,7 @@
           else for (const node of mutation.addedNodes) translateNode(node);
         }
       });
-      observer.observe(document.body, {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:["aria-label", "aria-valuetext", "placeholder", "title", "alt"]});
+      observer.observe(translationRoot, {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:["aria-label", "aria-valuetext", "placeholder", "title", "alt"]});
     }
     const pages = {en:"index.html", de:"de.html", zh:"zh.html"};
     document.querySelectorAll("[data-language]").forEach(link => {

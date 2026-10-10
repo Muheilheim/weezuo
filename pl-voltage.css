@@ -35,3 +35,7 @@
 #pl-batch{margin-top:24px}
 #pl-batch .rl-table-wrap{margin-top:12px}
 #pl-batch th:first-child{text-align:left;overflow-wrap:anywhere}
+
+#pl-voltage-calculator sub,#pl-voltage-calculator sup{font-size:.75em;line-height:0;position:relative;vertical-align:baseline}
+#pl-voltage-calculator sub{bottom:-.25em}
+#pl-voltage-calculator sup{top:-.5em}
