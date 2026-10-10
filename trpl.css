@@ -1,0 +1,22 @@
+.pv-tabs{grid-template-columns:1fr 1fr 1.4fr 1.2fr 1.2fr}
+.trpl-shell .rl-controls{display:block}
+.trpl-shell .trpl-voltage-heading,.trpl-batch-heading{margin-top:24px}
+.trpl-shell .rl-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+.trpl-shell .rl-metrics dd{font-size:23px}
+.trpl-shell .rl-chart-heading h3{margin:0}
+.trpl-shell svg circle[hidden]{display:none}
+.trpl-data-curve{fill:none;stroke:var(--orange);stroke-width:1.5;opacity:.8}
+.trpl-legend{display:flex;gap:18px;font-size:11px;color:var(--muted);margin-bottom:12px}
+.trpl-legend span:before{content:"";display:inline-block;width:14px;height:2px;margin-right:6px;vertical-align:middle}
+.trpl-measured:before{background:var(--orange)}
+.trpl-fitted:before{background:var(--teal)}
+#trpl-rows th{text-align:left;overflow-wrap:anywhere}
+#trpl-calculator sub,#trpl-calculator sup{font-size:.75em;line-height:0;position:relative;vertical-align:baseline}
+#trpl-calculator sub{bottom:-.25em}
+#trpl-calculator sup{top:-.5em}
+@media(max-width:900px){.pv-tabs button{padding:12px 10px}}
+@media(max-width:680px){.pv-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.pv-tabs button:nth-child(3){border-right:0}.pv-tabs button:nth-child(-n+3){border-bottom:1px solid var(--line)}.trpl-shell .rl-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.pv-tabs{grid-template-columns:1fr 1fr}.pv-tabs button:nth-child(3){border-right:1px solid var(--line)}.pv-tabs button:nth-child(2n){border-right:0}.pv-tabs button:nth-child(-n+4){border-bottom:1px solid var(--line)}.pv-tabs button:last-child{grid-column:1/-1}}
+@media(max-width:380px){.trpl-shell .rl-metrics{grid-template-columns:1fr}}
+
+@media(max-width:680px){.trpl-shell .rl-chart .pl-axis-label[transform]{font-size:18px}}

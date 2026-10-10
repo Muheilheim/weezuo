@@ -39,6 +39,9 @@
   <link rel="stylesheet" href="./pl-voltage.css">
   <script defer src="./pl-voltage-model.js"></script>
   <script defer src="./pl-voltage.js"></script>
+  <link rel="stylesheet" href="./trpl.css">
+  <script defer src="./trpl-model.js"></script>
+  <script defer src="./trpl.js"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Weiwei Zuo","honorificPrefix":"Dr.-Ing.","jobTitle":"Postdoctoral Researcher","affiliation":{"@type":"Organization","name":"Institute for Photovoltaics, University of Stuttgart","url":"https://www.ipv.uni-stuttgart.de/"},"sameAs":["https://www.ipv.uni-stuttgart.de/en/institute/team/Zuo/","https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en","https://orcid.org/0000-0002-9135-1628"],"email":"weiwei.zuo@ipv.uni-stuttgart.de"}</script>
 </head>
 <body>
@@ -94,12 +97,13 @@
 
     <section id="solar-cell-tools" class="resistance-section wrap" aria-labelledby="resistance-title">
       <div class="section-heading"><div><p class="section-kicker">INTERAKTIVE PHOTOVOLTAIK</p><h2 id="resistance-title">Solarzellen- <em>Rechner.</em></h2></div></div>
-      <p class="resistance-intro">Untersuchen Sie Widerstandsverluste, Bandlückengrenzen, EQE-Strom und die aus PL abgeleitete interne Spannung.</p>
+      <p class="resistance-intro">Untersuchen Sie Widerstandsverluste, Bandlückengrenzen, EQE-Strom, interne PL-Spannung und TRPL-Abklingen.</p>
       <div class="pv-tabs" role="tablist" aria-label="Solarzellen-Rechner">
         <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPEKTRALGRENZE</span>Bandlücke → Jsc</button>
         <button id="pv-tab-eqe" type="button" role="tab" data-pv-tool="eqe-integration" aria-selected="false" aria-controls="eqe-integration" tabindex="-1"><span>02 / SPEKTRALE ANTWORT</span>EQE-Integration</button>
         <button id="pv-tab-resistance" type="button" role="tab" data-pv-tool="solar-cell-tools" aria-selected="true" aria-controls="resistance-panel"><span>03 / KOMBINIERT</span>Rechner für Serien- und Parallelwiderstand</button>
         <button id="pv-tab-pl" type="button" role="tab" data-pv-tool="pl-voltage" aria-selected="false" aria-controls="pl-voltage" tabindex="-1"><span>04 / LUMINESZENZ</span>PL → Interne Spannung</button>
+        <button id="pv-tab-trpl" type="button" role="tab" data-pv-tool="trpl" aria-selected="false" aria-controls="trpl" tabindex="-1"><span>05 / ZEITAUFGELÖST</span>TRPL → Abklingen &amp; Spannung</button>
       </div>
       <div id="resistance-panel" role="tabpanel" aria-labelledby="pv-tab-resistance" tabindex="0" data-pv-panel>
         <div id="resistance-calculator"></div>
@@ -112,6 +116,9 @@
       </div>
       <div id="pl-voltage" role="tabpanel" aria-labelledby="pv-tab-pl" tabindex="0" data-pv-panel hidden>
         <div id="pl-voltage-calculator"></div>
+      </div>
+      <div id="trpl" role="tabpanel" aria-labelledby="pv-tab-trpl" tabindex="0" data-pv-panel hidden>
+        <div id="trpl-calculator"></div>
       </div>
       <noscript><p>Aktivieren Sie JavaScript, um die Rechner zu nutzen. <a class="inline-link" href="https://www.nlr.gov/grid/solar-resource/spectra-am1.5">AM1.5-Referenzspektren.</a></p></noscript>
     </section>

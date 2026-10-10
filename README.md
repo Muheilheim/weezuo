@@ -6,9 +6,9 @@ Website: https://muheilheim.github.io/weezuo/ (English), https://muheilheim.gith
 
 ## Site contents
 
-Biography, a compact tabbed calculator for combined resistance effects, bandgap–Jsc, EQE integration and PL-derived internal voltage with interactive plots and CSV export, three illustrated research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
+Biography, a compact tabbed calculator for combined resistance effects, bandgap–Jsc, EQE integration, PL-derived internal voltage and TRPL decay fitting with interactive plots and CSV export, three illustrated research themes, 44 journal publications, eight selected papers, citation details and BibTeX, Google Scholar statistics, university news, and public professional contact information.
 
-The PL calculator accepts multi-column steady-state CSV/TSV/TXT spectra or pasted data, integrates them over a common wavelength interval, and compares them against a selected reference. Arbitrary-unit PL gives relative voltage changes; absolute internal voltage requires independent calibration. Data stays in the browser.
+The PL calculator accepts multi-column steady-state CSV/TSV/TXT spectra or pasted data, integrates them over a common wavelength interval, and compares them against a selected reference. Arbitrary-unit PL gives relative voltage changes; absolute internal voltage requires independent calibration. TRPL accepts time–intensity columns, fits empirical single/double exponentials and estimates relative transient internal voltage; absolute voltage requires an independently calibrated value at the transient reference time. Data stays in the browser.
 
 The website uses static HTML, CSS, and JavaScript with no frontend framework or external tracking script. German and Chinese static pages are generated from index.html with node qa/generate-language-pages.mjs; dynamic interface translations are in i18n.js. Publication titles and citation data retain their original wording. All website assets are stored in this repository. GitHub Pages can publish from the main branch and repository root. The .nojekyll file disables Jekyll processing.
 

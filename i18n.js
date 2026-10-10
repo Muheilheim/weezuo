@@ -494,6 +494,101 @@
   );
   rows.push(["Use unnormalized spectra acquired with the same detector settings and optical collection conditions.", "Verwenden Sie unnormierte Spektren mit gleichen Detektoreinstellungen und optischen Sammelbedingungen.", "请使用未归一化的光谱，并保持探测器设置和收光条件一致。"]);
   rows.push(["Pasted PL data", "Eingefügte PL-Daten", "粘贴的 PL 数据"],["Raw arbitrary-unit spectra do not determine external PLQY. Supply independently measured PLQY, JG and J0,rad.", "Unkalibrierte Spektren bestimmen die externe PLQY nicht. Geben Sie unabhängig gemessene PLQY, JG und J0,rad ein.", "任意单位的原始光谱不能确定外部 PLQY。请提供独立测得的 PLQY、JG 和 J0,rad。"]);
+  rows.push(
+    ["Explore resistance losses, bandgap limits, EQE-integrated current, PL-derived internal voltage and TRPL decay.", "Untersuchen Sie Widerstandsverluste, Bandlückengrenzen, EQE-Strom, interne PL-Spannung und TRPL-Abklingen.", "探索电阻损失、带隙限制、EQE 积分电流、PL 内部等效电压及 TRPL 衰减。"],
+    ["05 / TIME RESOLVED", "05 / ZEITAUFGELÖST", "05 / 时间分辨"],
+    ["TRPL → Decay & voltage", "TRPL → Abklingen & Spannung", "TRPL → 衰减与电压"],
+    ["TRPL data and fitting", "TRPL-Daten und Anpassung", "TRPL 数据与拟合"],
+    ["Upload time–intensity data. Each intensity column represents one sample or condition.", "Zeit–Intensitäts-Daten importieren. Jede Intensitätsspalte steht für eine Probe oder Bedingung.", "上传时间—强度数据，每列强度代表一个样品或条件。"],
+    ["Import TRPL curves", "TRPL-Kurven importieren", "导入 TRPL 曲线"],
+    ["CSV, TSV or TXT; first column time, followed by 1–20 intensity columns. Optional header; select ps, ns or µs. Decimal point required.", "CSV, TSV oder TXT: Zeit in der ersten Spalte, danach 1–20 Intensitätsspalten. Kopfzeile optional; ps, ns oder µs wählen. Dezimalpunkt verwenden.", "支持 CSV、TSV 或 TXT；第一列为时间，其后为 1–20 列强度。表头可选，时间单位选 ps、ns 或 µs，小数使用点号。"],
+    ["Choose TRPL file", "TRPL-Datei wählen", "选择 TRPL 文件"],
+    ["TRPL time–intensity data", "TRPL-Zeit–Intensitäts-Daten", "TRPL 时间—强度数据"],
+    ["Editing the data clears previous results. Select Fit TRPL data to update them.", "Bei Datenänderungen werden alte Ergebnisse gelöscht. Zum Aktualisieren TRPL-Daten anpassen wählen.", "编辑数据会清空旧结果，请点击“拟合 TRPL 数据”重新计算。"],
+    ["Input time unit", "Zeiteinheit der Eingabe", "输入时间单位"],
+    ["Displayed TRPL sample", "Angezeigte TRPL-Probe", "显示的 TRPL 样品"],
+    ["Decay model", "Abklingmodell", "衰减模型"],
+    ["One exponential", "Ein Exponentialterm", "单指数"],
+    ["Two exponentials", "Zwei Exponentialterme", "双指数"],
+    ["Constant TRPL background (same intensity unit)", "Konstanter TRPL-Untergrund (gleiche Intensitätseinheit)", "恒定 TRPL 背景（与强度同单位）"],
+    ["Fit start (input time unit)", "Anpassungsbeginn (Eingabe-Zeiteinheit)", "拟合起点（输入时间单位）"],
+    ["Fit end (input time unit)", "Anpassungsende (Eingabe-Zeiteinheit)", "拟合终点（输入时间单位）"],
+    ["Choose a window after the pulse and instrument response. The reference is the first measured point inside this window.", "Zeitfenster nach Puls und Instrumentenantwort wählen. Referenz ist der erste Messpunkt im Fenster.", "请选择脉冲和仪器响应之后的拟合区间；区间内第一个实测点为参考时刻。"],
+    ["Fit TRPL data", "TRPL-Daten anpassen", "拟合 TRPL 数据"],
+    ["Load TRPL example", "TRPL-Beispiel laden", "载入 TRPL 示例"],
+    ["Transient internal voltage", "Transiente interne Spannung", "瞬态内部等效电压"],
+    ["Calibrated Vref at the reference time (V, optional)", "Kalibriertes Vref zur Referenzzeit (V, optional)", "参考时刻的标定电压 Vref（V，可选）"],
+    ["Leave Vref blank for relative voltage. Absolute voltage needs an independent calibration for this sample at this transient reference time; a steady-state voltage cannot be reused automatically.", "Für relative Spannung Vref leer lassen. Absolute Spannung erfordert eine unabhängige Kalibrierung dieser Probe zur transienten Referenzzeit; stationäre Spannungen gelten nicht automatisch.", "留空 Vref 时只计算相对电压。绝对电压需对该样品在此瞬态参考时刻独立标定，不能自动套用稳态电压。"],
+    ["TRPL decay analysis", "TRPL-Abklinganalyse", "TRPL 衰减分析"],
+    ["PL decay time τ1", "PL-Abklingzeit τ1", "PL 衰减时间 τ1"],
+    ["PL decay time τ2", "PL-Abklingzeit τ2", "PL 衰减时间 τ2"],
+    ["Amplitude-weighted PL time τA", "Amplitudengewichtete PL-Zeit τA", "振幅加权 PL 衰减时间 τA"],
+    ["Intensity-weighted PL time τI", "Intensitätsgewichtete PL-Zeit τI", "强度加权 PL 衰减时间 τI"],
+    ["R² · intensity-space fit", "R² · Intensitätsanpassung", "R² · 强度空间拟合"],
+    ["RMSE · intensity units", "RMSE · Intensitätseinheiten", "RMSE · 强度单位"],
+    ["Measured and fitted TRPL", "Gemessene und angepasste TRPL", "实测与拟合 TRPL"],
+    ["TRPL plot view", "TRPL-Diagrammansicht", "TRPL 曲线显示"],
+    ["Log intensity", "Logarithmische Intensität", "对数强度"],
+    ["Linear intensity", "Lineare Intensität", "线性强度"],
+    ["Fit residuals", "Anpassungsresiduen", "拟合残差"],
+    ["TRPL measurements and fit", "TRPL-Messdaten und Anpassung", "TRPL 实测数据与拟合曲线"],
+    ["Measured", "Gemessen", "实测"],
+    ["Fitted", "Angepasst", "已拟合"],
+    ["Background-subtracted intensity. Log plots omit nonpositive values; fitting retains them. Residual = measured − fitted.", "Untergrundbereinigte Intensität. Nichtpositive Werte fehlen im logarithmischen Diagramm, bleiben jedoch in der Anpassung. Residuum = Messung − Anpassung.", "显示背景扣除后的强度。对数图不显示非正值，拟合仍保留这些点。残差＝实测值−拟合值。"],
+    ["Relative internal voltage change", "Relative interne Spannungsänderung", "相对内部电压变化"],
+    ["Reference-calibrated internal voltage", "Referenzkalibrierte interne Spannung", "参考标定的内部等效电压"],
+    ["TRPL-derived voltage versus time", "Aus TRPL abgeleitete Spannung über der Zeit", "TRPL 推断电压随时间变化"],
+    ["Inspect TRPL time and voltage", "TRPL-Zeit und Spannung prüfen", "查看 TRPL 时间与电压"],
+    ["τA = (A1 τ1 + A2 τ2)/(A1 + A2); τI = (A1 τ1² + A2 τ2²)/(A1 τ1 + A2 τ2). Amplitudes refer to the fit reference time; all reported times are in ns.", "τA = (A1 τ1 + A2 τ2)/(A1 + A2); τI = (A1 τ1² + A2 τ2²)/(A1 τ1 + A2 τ2). Amplituden gelten zur Anpassungsreferenzzeit; alle Ergebniszeiten sind in ns.", "τA = (A1 τ1 + A2 τ2)/(A1 + A2)；τI = (A1 τ1² + A2 τ2²)/(A1 τ1 + A2 τ2)。振幅对应拟合参考时刻，输出时间统一为 ns。"],
+    ["This voltage estimate assumes PL proportional to np, a uniform quasi-Fermi-level splitting, fixed temperature and unchanged optical response. Nonpositive corrected PL has no inferred voltage. TRPL decay time alone does not determine absolute voltage or Voc.", "Die Spannungsschätzung setzt PL proportional zu np, eine homogene Quasi-Fermi-Niveau-Aufspaltung sowie konstante Temperatur und optische Antwort voraus. Nichtpositive bereinigte PL ergibt keine Spannung. TRPL-Abklingzeiten allein bestimmen weder absolute Spannung noch Voc.", "电压估算假设 PL 与 np 成正比、准费米能级分裂空间均匀、温度及光学响应不变。扣背景后非正的 PL 点不计算电压，仅凭 TRPL 衰减时间不能确定绝对电压或 Voc。"],
+    ["TRPL sample comparison", "TRPL-Probenvergleich", "TRPL 样品比较"],
+    ["Fit status", "Anpassungsstatus", "拟合状态"],
+    ["Export TRPL results ↓", "TRPL-Ergebnisse exportieren ↓", "导出 TRPL 结果 ↓"],
+    ["TRPL data and results stay in your browser.", "TRPL-Daten und Ergebnisse bleiben im Browser.", "TRPL 数据和结果保留在本地浏览器中。"],
+    ["TRPL methods, assumptions and sources", "TRPL-Methoden, Annahmen und Quellen", "TRPL 方法、假设与来源"],
+    ["Unweighted nonlinear least squares on intensity, with a fixed user-supplied background and positive exponential amplitudes. Fits use every point in the chosen interval; display curves may be reduced for readability. No instrument-response deconvolution or uncertainty estimation is performed.", "Ungewichtete nichtlineare kleinste Quadrate auf der Intensität mit festem vorgegebenem Untergrund und positiven Amplituden. Alle Punkte im Zeitfenster werden angepasst; die Anzeige kann reduziert sein. Keine Entfaltung der Instrumentenantwort und keine Unsicherheitsschätzung.", "对强度进行无权重非线性最小二乘拟合，背景固定为用户输入值，指数振幅为正。拟合使用区间内所有数据点，仅显示曲线可能抽稀；不进行仪器响应反卷积或不确定度估计。"],
+    ["Single and double exponentials are empirical decay descriptions. Fast and slow components do not identify recombination or extraction mechanisms; PL decay times are not automatically carrier lifetimes. A long lifetime relative to the observation window or two similar components can be poorly constrained.", "Ein- und zweiexponentielle Funktionen sind empirische Abklingbeschreibungen. Schnelle und langsame Komponenten identifizieren keine Rekombinations- oder Extraktionsmechanismen; PL-Abklingzeiten sind nicht automatisch Ladungsträgerlebensdauern. Lange Zeiten oder ähnliche Komponenten können schlecht bestimmt sein.", "单、双指数是经验衰减描述，不能仅凭快慢分量指定复合或抽取机制；PL 衰减时间不自动等同载流子寿命。衰减时间长于观察区间、或两个分量相近时，参数可能难以确定。"],
+    ["Use a TRPL text file smaller than 2 MB.", "TRPL-Textdatei unter 2 MB verwenden.", "TRPL 文本文件须小于 2 MB。"],
+    ["TRPL data contains an unclosed quote.", "TRPL-Daten enthalten ein nicht geschlossenes Anführungszeichen.", "TRPL 数据含未闭合的引号。"],
+    ["Use one time column and 1–20 TRPL intensity columns.", "Eine Zeitspalte und 1–20 TRPL-Intensitätsspalten verwenden.", "请提供一列时间和 1–20 列 TRPL 强度。"],
+    ["The first TRPL column must be time, not wavelength or energy.", "Die erste TRPL-Spalte muss Zeit und nicht Wellenlänge oder Energie enthalten.", "TRPL 第一列须为时间，不能是波长或能量。"],
+    ["Use ps, ns or µs for TRPL time.", "Für TRPL-Zeit ps, ns oder µs verwenden.", "TRPL 时间请使用 ps、ns 或 µs。"],
+    ["TRPL column names must be nonempty, unique and at most 120 characters.", "TRPL-Spaltennamen müssen ausgefüllt, eindeutig und höchstens 120 Zeichen lang sein.", "TRPL 列名须非空、不重复且不超过 120 个字符。"],
+    ["Every TRPL row must contain the same number of finite numeric columns. Use a decimal point.", "Jede TRPL-Zeile muss gleich viele endliche Zahlen enthalten. Dezimalpunkt verwenden.", "每行 TRPL 数据须包含相同数量的有限数值，小数使用点号。"],
+    ["TRPL time values exceed the supported range.", "TRPL-Zeitwerte liegen außerhalb des unterstützten Bereichs.", "TRPL 时间值超出支持范围。"],
+    ["Use at most 20,000 TRPL time rows.", "Höchstens 20.000 TRPL-Zeilen verwenden.", "TRPL 时间数据不能超过 20,000 行。"],
+    ["Enter at least eight time rows for TRPL fitting.", "Mindestens acht Zeitpunkte für TRPL-Anpassung eingeben.", "TRPL 拟合至少需要八行时间数据。"],
+    ["Duplicate TRPL times: resolve duplicates before fitting.", "Doppelte TRPL-Zeiten vor der Anpassung auflösen.", "TRPL 时间有重复值，请先处理再拟合。"],
+    ["The selected time unit must match the TRPL header.", "Gewählte Zeiteinheit muss zur TRPL-Kopfzeile passen.", "所选时间单位须与 TRPL 表头一致。"],
+    ["Choose a TRPL sample.", "TRPL-Probe wählen.", "请选择 TRPL 样品。"],
+    ["Enter a finite, nonnegative TRPL background.", "Endlichen, nichtnegativen TRPL-Untergrund eingeben.", "TRPL 背景须为有限非负数。"],
+    ["Choose an increasing fit interval within the TRPL time range.", "Aufsteigendes Anpassungsintervall innerhalb der TRPL-Zeiten wählen.", "拟合区间须递增并位于 TRPL 时间范围内。"],
+    ["Choose a TRPL decay model.", "TRPL-Abklingmodell wählen.", "请选择 TRPL 衰减模型。"],
+    ["The fit window needs eight points for one exponential or twelve for two.", "Das Zeitfenster benötigt acht Punkte für einen oder zwölf für zwei Exponentialterme.", "单指数拟合区间至少需八个点，双指数至少需十二个点。"],
+    ["The reference TRPL intensity must be above background.", "TRPL-Referenzintensität muss über dem Untergrund liegen.", "TRPL 参考点强度须高于背景。"],
+    ["No resolved decay in this fit window. Check the peak, background and interval.", "Kein aufgelöstes Abklingen im Zeitfenster. Maximum, Untergrund und Intervall prüfen.", "该拟合区间内没有可分辨的衰减，请检查峰值、背景及区间。"],
+    ["The requested decay model could not be fitted. Try one exponential or another interval.", "Gewähltes Abklingmodell nicht anpassbar. Einen Exponentialterm oder anderes Intervall versuchen.", "所选衰减模型未能拟合，请尝试单指数或调整区间。"],
+    ["The TRPL inputs exceed the numerical range.", "TRPL-Eingaben überschreiten den numerischen Bereich.", "TRPL 输入超出数值计算范围。"],
+    ["TRPL curves loaded; time values sorted in ascending order.", "TRPL-Kurven geladen; Zeitpunkte aufsteigend sortiert.", "TRPL 曲线已载入，时间已按升序排列。"],
+    ["TRPL curves loaded. Check the time unit, background and fit window.", "TRPL-Kurven geladen. Zeiteinheit, Untergrund und Zeitfenster prüfen.", "TRPL 曲线已载入，请检查时间单位、背景及拟合区间。"],
+    ["Fitting TRPL samples…", "TRPL-Proben werden angepasst…", "正在拟合 TRPL 样品…"],
+    ["Pasted TRPL data", "Eingefügte TRPL-Daten", "粘贴的 TRPL 数据"],
+    ["TRPL fitting finished. Inspect the residuals and any fit warnings.", "TRPL-Anpassung abgeschlossen. Residuen und Hinweise prüfen.", "TRPL 拟合完成，请检查残差与拟合提示。"],
+    ["Check fit constraints", "Anpassungsgrenzen prüfen", "检查拟合约束"],
+    ["No TRPL fit available.", "Keine TRPL-Anpassung verfügbar.", "暂无 TRPL 拟合结果。"],
+    ["Reference time / intensity:", "Referenzzeit / Intensität:", "参考时间／强度："],
+    ["A component is weak or poorly resolved by this time window. Adjust the interval and compare with one exponential.", "Eine Komponente ist schwach oder im Zeitfenster schlecht aufgelöst. Intervall ändern und mit einem Exponentialterm vergleichen.", "某分量较弱或在当前区间内难以分辨，请调整区间并与单指数拟合比较。"],
+    ["Time (ns)", "Zeit (ns)", "时间（ns）"],
+    ["Residual intensity", "Intensitätsresiduum", "强度残差"],
+    ["Corrected PL intensity", "Bereinigte PL-Intensität", "背景扣除后的 PL 强度"],
+    ["Relative to the measured reference point. Supply a calibrated Vref for absolute voltage.", "Relativ zum gemessenen Referenzpunkt. Für absolute Spannung kalibriertes Vref angeben.", "相对实测参考点计算；绝对电压需提供标定的 Vref。"],
+    ["Vref applies only to this sample and the displayed transient reference time.", "Vref gilt nur für diese Probe und die angezeigte transiente Referenzzeit.", "Vref 仅适用于该样品和当前显示的瞬态参考时刻。"],
+    ["TRPL settings changed. Select Fit TRPL data to update results.", "TRPL-Einstellungen geändert. Für neue Ergebnisse TRPL-Daten anpassen wählen.", "TRPL 设置已更改，请点击“拟合 TRPL 数据”更新结果。"],
+    ["Reading TRPL file…", "TRPL-Datei wird gelesen…", "正在读取 TRPL 文件…"],
+    ["Save TRPL data as CSV, TSV or TXT, or paste columns from Excel.", "TRPL-Daten als CSV, TSV oder TXT speichern oder Excel-Spalten einfügen.", "请将 TRPL 数据保存为 CSV、TSV 或 TXT，或直接粘贴 Excel 各列。"],
+    ["Demonstration TRPL data", "TRPL-Demonstrationsdaten", "TRPL 演示数据"]
+  );
+  rows.push(["Use UTF-8 for TRPL text files.", "TRPL-Textdateien in UTF-8 speichern.", "请将 TRPL 文本文件保存为 UTF-8 编码。"]);
   const locales = {de: Object.fromEntries(rows.map(([en, de]) => [en, de])), zh: Object.fromEntries(rows.map(([en, , zh]) => [en, zh]))};
   if (typeof module === "object" && module.exports) module.exports = locales;
   if (typeof document === "undefined") return;
@@ -549,17 +644,17 @@
   // Translate whole sentences before decorating notation; imported names remain literal.
   function formatPLNotation(node) {
     const parent = node.parentElement;
-    if (!parent?.closest("#pl-voltage-calculator") || parent.closest("sub,sup,svg,select,#pl-file-name,#pl-batch-rows")) return;
-    const symbols = {Vint:["V","int"], Vref:["V","ref"], Voc:["V","oc"], Vterminal:["V","terminal"], Iref:["I","ref"], kBT:["k","B","T"], JG:["J","G"], "J0,rad":["J","0,rad"], "ηPL,ext":["η","PL,ext"], "cm²":["cm","2"]};
+    if (!parent?.closest("#pl-voltage-calculator,#trpl-calculator") || parent.closest("sub,sup,svg,select,#pl-file-name,#pl-batch-rows,[data-literal]")) return;
+    const symbols = {"²":["","2"],A1:["A","1"],A2:["A","2"],τ1:["τ","1"],τ2:["τ","2"],τA:["τ","A"],τI:["τ","I"],tref:["t","ref"],Vint:["V","int"], Vref:["V","ref"], Voc:["V","oc"], Vterminal:["V","terminal"], Iref:["I","ref"], kBT:["k","B","T"], JG:["J","G"], "J0,rad":["J","0,rad"], "ηPL,ext":["η","PL,ext"], "cm²":["cm","2"]};
     const text = node.nodeValue;
-    const matches = [...text.matchAll(/\b(?:Vint|Vref|Voc|Vterminal|Iref|kBT|JG|J0,rad)\b|ηPL,ext|\bcm²/g)];
+    const matches = [...text.matchAll(/\b(?:Vint|Vref|Voc|Vterminal|Iref|kBT|JG|J0,rad|A1|A2|tref)\b|τ(?:1|2|A|I)|ηPL,ext|\bcm²|²/g)];
     if (!matches.length) return;
     const fragment = document.createDocumentFragment();
     let offset = 0;
     for (const match of matches) {
       const [base, index, suffix = ""] = symbols[match[0]];
       fragment.append(document.createTextNode(text.slice(offset, match.index) + base));
-      const script = document.createElement(match[0] === "cm²" ? "sup" : "sub");
+      const script = document.createElement(["cm²","²"].includes(match[0]) ? "sup" : "sub");
       script.textContent = index;
       fragment.append(script, document.createTextNode(suffix));
       offset = match.index + match[0].length;
@@ -569,14 +664,14 @@
   }
   function translateNode(node) {
     if (node.nodeType === 3) {
-      if (node.parentElement?.closest("script,style,textarea,pre,code")) return;
+      if (node.parentElement?.closest("script,style,textarea,pre,code,[data-literal]")) return;
       const result = translate(node.nodeValue);
       if (result !== node.nodeValue) node.nodeValue = result;
       formatPLNotation(node);
       return;
     }
     if (node.nodeType !== 1) return;
-    if (node.matches("script,style,textarea,pre,code")) return;
+    if (node.matches("script,style,textarea,pre,code,[data-literal]")) return;
     for (const attr of ["aria-label", "aria-valuetext", "placeholder", "title", "alt"]) {
       const value = node.getAttribute(attr);
       if (value !== null) { const result = translate(value); if (result !== value) node.setAttribute(attr, result); }
@@ -584,8 +679,8 @@
     for (const child of node.childNodes) translateNode(child);
   }
   document.addEventListener("DOMContentLoaded", () => {
-    const translationRoot = language === "en" ? document.getElementById("pl-voltage-calculator") : document.body;
-    if (translationRoot) {
+    const translationRoots = language === "en" ? document.querySelectorAll("#pl-voltage-calculator,#trpl-calculator") : [document.body];
+    for (const translationRoot of translationRoots) {
       translateNode(translationRoot);
       const observer = new MutationObserver(mutations => {
         for (const mutation of mutations) {
