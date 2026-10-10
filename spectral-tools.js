@@ -134,7 +134,7 @@ eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-cont
   '<dl class="rl-metrics" aria-live="polite" aria-atomic="true"><div><dt>Integrated Jsc</dt><dd id="eq-jsc"></dd><span class="rl-metric-note">AM1.5G</span></div><div><dt>Integration interval</dt><dd id="eq-span"></dd><span class="rl-metric-note">nm · supplied data overlap</span></div><div><dt>Photon-weighted EQE</dt><dd id="eq-weighted"></dd><span class="rl-metric-note">Within this interval</span></div></dl>'+
   '<p class="sp-summary" id="eq-coverage"></p><p class="sp-caption" id="eq-legacy"></p>'+
   '<div class="sp-row"><button type="button" class="rl-action" id="eq-export">Export integral data ↓</button><button type="button" class="rl-action" id="eq-to-lab">Use Jsc in resistance lab ↑</button></div>'+
-  '<p class="sp-caption">Your imported or pasted EQE stays in this browser. No data is uploaded to a server.</p>'+
+  '<p class="sp-caption">Your imported or pasted EQE stays in this browser.</p>'+
 '</div></div></div><details class="rl-method"><summary>EQE integration, coverage &amp; units</summary>'+
   '<p class="rl-equation">Jsc = q ∫ Φ(λ) EQE(λ) dλ = (q/hc) ∫ Eλ(λ) λ EQE(λ) dλ</p>'+
   '<p>The selected reference is ASTM G173-03 AM1.5G global tilt from the supplied workbook’s SMARTS2 sheet: 2,002 points from 280 to 4,000 nm. Irradiance is in W·m⁻²·nm⁻¹, wavelength in nm, EQE a fraction, and output in mA/cm². The conversion factor multiplying ∫Eλ λ EQE dλ is q/(hc) × 10⁻¹⁰. The spectrum integrates to '+fmt(data.meta.power_W_m2,4)+' W/m² and is used without renormalization.</p>'+

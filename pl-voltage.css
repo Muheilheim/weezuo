@@ -1,0 +1,37 @@
+.pl-shell fieldset{border:0;margin:0;padding:0;min-width:0}
+.pl-shell fieldset[hidden]{display:none}
+.pl-shell .rl-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pl-shell .rl-metrics dd{font-size:26px;overflow-wrap:anywhere;white-space:normal}
+.pl-shell .rl-metrics>div:first-child{background:var(--soft);border-color:var(--teal)}
+.pl-shell .rl-controls input{color:var(--ink)}
+.pl-equation{margin:24px 0 12px;overflow-wrap:anywhere;white-space:normal}
+.pl-sensitivity{font-size:12px;line-height:1.8;color:var(--muted);margin:20px 0}
+.pl-sensitivity strong{color:var(--ink);white-space:nowrap}
+.pl-shell .sp-caption{line-height:1.8}
+@media(max-width:680px){.pl-shell .rl-controls{display:block}.pl-shell .rl-metrics dd{font-size:24px}}
+@media(max-width:380px){.pl-shell .rl-metrics{grid-template-columns:1fr}}
+
+.pl-chart-heading{margin-top:24px;flex-wrap:wrap;gap:12px}
+.pl-chart{cursor:crosshair}
+.pl-grid{fill:none;stroke:var(--line);stroke-width:1}
+.pl-tick,.pl-axis-label{fill:var(--muted);font-family:var(--sans);font-size:11px}
+.pl-curve{fill:none;stroke:var(--teal);stroke-width:2.4}
+.pl-input-dot{fill:var(--orange);stroke:var(--surface);stroke-width:2}
+.pl-probe-dot{fill:var(--teal);stroke:var(--surface);stroke-width:1.5}
+.pl-probe-guide{fill:none;stroke:var(--teal);stroke-width:1;stroke-dasharray:4 4;opacity:.55}
+.pl-legend{display:flex;gap:18px;font-size:11px;color:var(--muted)}
+.pl-legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.pl-input-marker:before{background:var(--orange)}
+.pl-probe-marker:before{background:var(--teal)}
+.pl-shell .rl-probe-top{flex-wrap:wrap;gap:6px}
+.pl-shell .rl-probe output{font-size:12px}
+@media(max-width:680px){.pl-chart-heading{align-items:start}.pl-shell .sp-chart-switch button{font-size:11px}}
+
+.pl-import{margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:6px}
+.pl-import summary{font-size:12px;color:var(--teal);cursor:pointer}
+.pl-import textarea{width:100%;box-sizing:border-box;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font:11px/1.6 monospace;padding:8px}
+.pl-import textarea[aria-invalid="true"]{border-color:var(--orange)}
+.pl-shell input[readonly]{background:var(--soft)}
+#pl-batch{margin-top:24px}
+#pl-batch .rl-table-wrap{margin-top:12px}
+#pl-batch th:first-child{text-align:left;overflow-wrap:anywhere}

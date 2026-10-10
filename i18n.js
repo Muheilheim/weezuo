@@ -50,7 +50,7 @@
     ["INTERACTIVE PHOTOVOLTAICS", "INTERAKTIVE PHOTOVOLTAIK", "交互式光伏工具"],
     ["Solar cell", "Solarzellen-", "太阳能电池"],
     ["calculators.", "Rechner.", "计算器。"],
-    ["Explore resistance losses, bandgap limits and EQE-integrated current.", "Untersuchen Sie Widerstandsverluste, Bandlückengrenzen und den aus der EQE integrierten Strom.", "探索电阻损失、带隙限制和 EQE 积分电流。"],
+    ["Explore resistance losses, bandgap limits, EQE-integrated current and PL-derived internal voltage.", "Untersuchen Sie Widerstandsverluste, Bandlückengrenzen, EQE-Strom und die aus PL abgeleitete interne Spannung.", "探索电阻损失、带隙限制、EQE 积分电流和 PL 推断的内部等效电压。"],
     ["01 / SPECTRAL LIMIT", "01 / SPEKTRALGRENZE", "01 / 光谱极限"],
     ["Bandgap → Jsc", "Bandlücke → Jsc", "带隙 → Jsc"],
     ["02 / SPECTRAL RESPONSE", "02 / SPEKTRALE ANTWORT", "02 / 光谱响应"],
@@ -371,7 +371,6 @@
     ["mV/decade", "mV/Dekade", "mV/十倍光强"],
     ["mV / unit ln(Φ)", "mV / Einheit ln(Φ)", "mV / 单位 ln(Φ)"],
     ["PVEducation · Quantum efficiency ↗", "PVEducation · Quanteneffizienz ↗", "PVEducation · 量子效率 ↗"],
-    ["No data is uploaded to a server.", "Es werden keine Daten auf einen Server hochgeladen.", "数据不会上传到服务器。"]
   );
   rows.push(
     ["A spectrum needs at least two points.", "Ein Spektrum benötigt mindestens zwei Datenpunkte.", "光谱至少需要两个数据点。"],
@@ -384,6 +383,117 @@
     ["Use at most 20,000 EQE points.", "Verwenden Sie höchstens 20.000 EQE-Datenpunkte.", "EQE 数据点不可超过 20,000 个。"],
     ["Enter at least two wavelength / EQE rows.", "Geben Sie mindestens zwei Wellenlängen-/EQE-Zeilen ein.", "请至少输入两行波长/EQE 数据。"]
   );
+  rows.push(
+    ["04 / LUMINESCENCE", "04 / LUMINESZENZ", "04 / 光致发光"],
+    ["PL → Internal voltage", "PL → Interne Spannung", "PL → 内部等效电压"],
+    ["PL calibration", "PL-Kalibrierung", "PL 标定"],
+    ["Use integrated, background-corrected PL measured under consistent optical conditions.", "Verwenden Sie integrierte, hintergrundkorrigierte PL bei gleichen optischen Bedingungen.", "使用在一致光学条件下测得、扣除背景后的积分 PL。"],
+    ["Calculation method", "Berechnungsmethode", "计算方法"],
+    ["Known internal-voltage reference", "Bekannte interne Referenzspannung", "已知内部电压参考点"],
+    ["Relative voltage change only", "Nur relative Spannungsänderung", "仅计算相对电压变化"],
+    ["Absolute external PLQY", "Absolute externe PLQY", "绝对外部 PLQY"],
+    ["Temperature T (K)", "Temperatur T (K)", "温度 T（K）"],
+    ["Relative PL intensities", "Relative PL-Intensitäten", "相对 PL 强度"],
+    ["Measured integrated PL I (a.u.)", "Gemessene integrierte PL I (a.u.)", "待测积分 PL 强度 I（a.u.）"],
+    ["Reference integrated PL Iref (a.u.)", "Integrierte Referenz-PL Iref (a.u.)", "参考积分 PL 强度 Iref（a.u.）"],
+    ["Common PL background B (a.u.)", "Gemeinsamer PL-Hintergrund B (a.u.)", "共同 PL 背景 B（a.u.）"],
+    ["Internal-voltage calibration", "Kalibrierung der internen Spannung", "内部电压标定"],
+    ["Known internal reference Vref (V)", "Bekannte interne Referenz Vref (V)", "已知内部参考电压 Vref（V）"],
+    ["Absolute PL calibration", "Absolute PL-Kalibrierung", "绝对 PL 标定"],
+    ["External PLQY (%)", "Externe PLQY (%)", "外部 PLQY（%）"],
+    ["Photogenerated current JG (mA/cm²)", "Photogenerierter Strom JG (mA/cm²)", "光生电流密度 JG（mA/cm²）"],
+    ["Radiative dark current J0,rad (A/cm²)", "Radiativer Dunkelstrom J0,rad (A/cm²)", "辐射暗饱和电流密度 J0,rad（A/cm²）"],
+    ["Terminal comparison", "Vergleich mit Klemmenspannung", "端电压比较"],
+    ["Measured terminal voltage (V, optional)", "Gemessene Klemmenspannung (V, optional)", "实测端电压（V，可选）"],
+    ["Reset PL example", "PL-Beispiel zurücksetzen", "重置 PL 示例"],
+    ["PL-derived internal equivalent voltage", "Interne Äquivalentspannung aus PL", "PL 推断的内部等效电压"],
+    ["Single-point inference · QFLS/q", "Einzelpunktbestimmung · QFLS/q", "单点推断 · QFLS/q"],
+    ["Internal equivalent voltage", "Interne Äquivalentspannung", "内部等效电压"],
+    ["Quasi-Fermi-level splitting", "Quasi-Fermi-Niveau-Aufspaltung", "准费米能级分裂"],
+    ["Change from reference", "Änderung gegenüber Referenz", "相对参考点的电压变化"],
+    ["Internal − terminal voltage", "Interne Spannung − Klemmenspannung", "内部等效电压 − 端电压"],
+    ["Relative internal voltage change", "Relative interne Spannungsänderung", "内部等效电压的相对变化"],
+    ["Nonradiative voltage deficit", "Nichtstrahlender Spannungsverlust", "非辐射电压亏损"],
+    ["Absolute PLQY requires a consistent radiative dark current and photogeneration calibration.", "Absolute PLQY erfordert eine konsistente Kalibrierung von radiativem Dunkelstrom und Photogeneration.", "绝对 PLQY 需要光学定义一致的辐射暗饱和电流和光生电流标定。"],
+    ["Vref is an independently calibrated internal voltage. It is not automatically the measured Voc.", "Vref ist eine unabhängig kalibrierte interne Spannung. Sie entspricht nicht automatisch dem gemessenen Voc.", "Vref 是经独立标定的内部等效电压，不能自动用实测 Voc 替代。"],
+    ["Only the voltage change is known. Absolute QFLS and terminal comparison require an internal-voltage reference or absolute PL calibration.", "Nur die Spannungsänderung ist bekannt. Absolute QFLS und der Klemmenvergleich erfordern eine interne Referenz oder absolute PL-Kalibrierung.", "此时只能确定电压变化。绝对 QFLS 和端电压比较需要内部电压参考点或绝对 PL 标定。"],
+    ["Voltage change for a tenfold PL increase at this temperature:", "Spannungsänderung bei zehnfacher PL-Zunahme bei dieser Temperatur:", "当前温度下，PL 增加十倍对应的电压变化："],
+    ["Illustrative defaults; replace them with your measured values. Relative PL alone determines a voltage change, not an absolute voltage.", "Die Vorgaben sind Beispiele; ersetzen Sie sie durch Messwerte. Relative PL allein liefert eine Spannungsänderung, keine absolute Spannung.", "默认值仅作演示，请替换为实测数据。相对 PL 本身只能确定电压差，不能确定绝对电压。"],
+    ["Export PL result ↓", "PL-Ergebnis exportieren ↓", "导出 PL 计算结果 ↓"],
+    ["PL inputs and results stay in this browser.", "PL-Eingaben und Ergebnisse bleiben in diesem Browser.", "PL 输入和结果保留在本地浏览器中。"],
+    ["PL voltage: assumptions, units & sources", "PL-Spannung: Annahmen, Einheiten und Quellen", "PL 电压：适用条件、单位与来源"],
+    ["At fixed temperature and optical response, integrated PL is proportional to exp(QFLS/kBT). The intensity ratio therefore gives ΔVint = (kBT/q) ln[(I − B)/(Iref − B)]. No diode ideality factor multiplies this PL-to-voltage conversion.", "Bei gleicher Temperatur und optischer Antwort ist die integrierte PL proportional zu exp(QFLS/kBT). Das Intensitätsverhältnis ergibt ΔVint = (kBT/q) ln[(I − B)/(Iref − B)]. Für diese Umrechnung wird kein Diodenidealitätsfaktor verwendet.", "温度和光学响应保持一致时，积分 PL 与 exp(QFLS/kBT) 成正比，因此强度比给出 ΔVint = (kBT/q) ln[(I − B)/(Iref − B)]。PL 到电压的这一换算不乘二极管理想因子 n。"],
+    ["A reference point must have an independently known internal voltage QFLS/q. Using measured Voc as Vref additionally assumes negligible internal-to-terminal voltage mismatch at that reference point.", "Der Referenzpunkt benötigt eine unabhängig bekannte interne Spannung QFLS/q. Gemessenes Voc als Vref setzt zusätzlich eine vernachlässigbare Differenz zwischen interner Spannung und Klemmenspannung am Referenzpunkt voraus.", "参考点必须具有独立已知的内部等效电压 QFLS/q。若用实测 Voc 作为 Vref，还需假定参考点的内部等效电压与端电压失配可忽略。"],
+    ["Absolute calibration uses Vint = (kBT/q) ln[ηPL,ext JG/J0,rad]. External PLQY is entered as a percentage; JG in mA/cm² is converted to A/cm² before comparison with J0,rad. Both currents must use the same area and optical emission convention. J0,rad must be independently supplied from a consistent absorptance/EQE and thermal-emission calculation.", "Absolute Kalibrierung verwendet Vint = (kBT/q) ln[ηPL,ext JG/J0,rad]. Externe PLQY wird in Prozent eingegeben; JG in mA/cm² wird vor dem Vergleich mit J0,rad in A/cm² umgerechnet. Beide Ströme müssen dieselbe Fläche und optische Emissionsdefinition verwenden. J0,rad ist aus einer konsistenten Absorptions-/EQE- und thermischen Emissionsrechnung unabhängig vorzugeben.", "绝对标定使用 Vint = (kBT/q) ln[ηPL,ext JG/J0,rad]。外部 PLQY 按百分数输入；JG 的 mA/cm² 先转换为 A/cm²，再与 J0,rad 比较。两种电流须采用相同面积及光学发射定义。J0,rad 须由一致的吸收率/EQE 与热发射计算独立提供。"],
+    ["These formulas use the Boltzmann approximation and a steady carrier distribution. Keep temperature, collection geometry, detector settings and spectral response consistent; correct background and avoid detector saturation. Changes in spectrum, optical outcoupling, reabsorption or sample state can invalidate a simple PL ratio.", "Diese Formeln verwenden die Boltzmann-Näherung und eine stationäre Ladungsträgerverteilung. Halten Sie Temperatur, Sammelgeometrie, Detektoreinstellungen und spektrale Antwort konstant; korrigieren Sie den Hintergrund und vermeiden Sie Sättigung. Änderungen von Spektrum, Lichtauskopplung, Reabsorption oder Probenzustand können ein einfaches PL-Verhältnis ungültig machen.", "公式采用玻尔兹曼近似及稳态载流子分布。温度、收光几何、探测器设置和光谱响应应保持一致；需扣除背景并避免探测器饱和。光谱、光提取、再吸收或样品状态的变化可能使简单 PL 强度比失效。"],
+    ["Vint describes absorber QFLS/q, not built-in voltage or terminal voltage. A single PL point does not determine pseudo-FF. The signed internal-to-terminal difference alone does not identify a unique loss mechanism.", "Vint beschreibt QFLS/q im Absorber, nicht die eingebaute Spannung oder Klemmenspannung. Ein einzelner PL-Punkt bestimmt keinen Pseudo-FF. Die Differenz zur Klemmenspannung allein identifiziert keinen eindeutigen Verlustmechanismus.", "Vint 表示吸收层的 QFLS/q，不是内建电势或器件端电压。单个 PL 点不能确定伪填充因子。内部等效电压与端电压的有符号差值，也不能单独确定唯一损失机制。"],
+    ["QFLS and terminal voltage · Caprioglio et al. ↗", "QFLS und Klemmenspannung · Caprioglio et al. ↗", "QFLS 与端电压 · Caprioglio 等 ↗"],
+    ["PL characterization · Kirchartz et al. ↗", "PL-Charakterisierung · Kirchartz et al. ↗", "PL 表征 · Kirchartz 等 ↗"],
+    ["Enter a positive temperature in kelvin.", "Geben Sie eine positive Temperatur in Kelvin ein.", "请输入大于 0 K 的温度。"],
+    ["Choose a PL calibration method.", "Wählen Sie eine PL-Kalibrierungsmethode.", "请选择 PL 标定方法。"],
+    ["External PLQY must be greater than 0 and at most 100%.", "Externe PLQY muss größer als 0 und höchstens 100 % sein.", "外部 PLQY 须大于 0 且不超过 100%。"],
+    ["Enter a positive photogenerated current density in mA/cm².", "Geben Sie eine positive photogenerierte Stromdichte in mA/cm² ein.", "请输入正的光生电流密度，单位为 mA/cm²。"],
+    ["Enter a positive radiative dark current density in A/cm².", "Geben Sie eine positive radiative Dunkelstromdichte in A/cm² ein.", "请输入正的辐射暗饱和电流密度，单位为 A/cm²。"],
+    ["Enter a finite, nonnegative PL background.", "Geben Sie einen endlichen, nichtnegativen PL-Hintergrund ein.", "PL 背景须为有限非负数。"],
+    ["Both PL intensities must be finite and greater than the background.", "Beide PL-Intensitäten müssen endlich und größer als der Hintergrund sein.", "两个 PL 强度都须为有限数且高于背景。"],
+    ["Enter a finite, nonnegative internal reference voltage.", "Geben Sie eine endliche, nichtnegative interne Referenzspannung ein.", "内部参考电压须为有限非负数。"],
+    ["Enter a finite terminal voltage or leave it blank.", "Geben Sie eine endliche Klemmenspannung ein oder lassen Sie das Feld leer.", "请输入有限的端电压，或将该项留空。"],
+    ["The inputs exceed the numerical range.", "Die Eingaben überschreiten den numerischen Bereich.", "输入超出数值计算范围。"]
+  );
+  rows.push(
+    ["PL–voltage relationship", "PL–Spannungsbeziehung", "PL–等效电压关系"],
+    ["PL horizontal axis", "Horizontale PL-Achse", "PL 横坐标"],
+    ["Log PL axis", "Logarithmische PL-Achse", "对数 PL 横轴"],
+    ["Linear PL axis", "Lineare PL-Achse", "线性 PL 横轴"],
+    ["Model curve with the current input point and an adjustable probe. Use the slider below to inspect values.", "Modellkurve mit aktuellem Eingabepunkt und verstellbarer Sonde. Prüfen Sie Werte mit dem Schieberegler darunter.", "模型曲线显示当前输入点及可调探针。使用下方滑块查看对应数值。"],
+    ["Input point", "Eingabepunkt", "当前输入点"],
+    ["Curve probe", "Kurvensonde", "曲线探针"],
+    ["Inspect PL on the curve", "PL auf der Kurve prüfen", "查看曲线上指定 PL 的电压"],
+    ["Move the slider, or point to the plot. The curve holds temperature and optical response fixed; points beyond the measurement are model extrapolations.", "Bewegen Sie den Schieberegler oder zeigen Sie auf die Grafik. Die Kurve hält Temperatur und optische Antwort konstant; Punkte außerhalb der Messung sind Modellextrapolationen.", "拖动滑块，或将指针移到图中查看。曲线假定温度和光学响应保持不变；测量点以外的部分为模型外推。"],
+    ["Background-corrected PL (a.u.)", "Hintergrundkorrigierte PL (a.u.)", "扣除背景的 PL（a.u.）"],
+    ["Relative voltage (mV)", "Relative Spannung (mV)", "相对电压（mV）"],
+    ["Internal voltage (V)", "Interne Spannung (V)", "内部等效电压（V）"],
+    ["Fixed JG and J0,rad; PLQY varies.", "JG und J0,rad bleiben konstant; PLQY variiert.", "固定 JG 和 J0,rad，改变外部 PLQY。"],
+    ["Background-corrected integrated PL; fixed temperature and optical response.", "Hintergrundkorrigierte integrierte PL; konstante Temperatur und optische Antwort.", "使用扣除背景的积分 PL；温度和光学响应保持不变。"]
+  );
+  rows.push(
+    ["Import steady-state PL spectra", "Stationäre PL-Spektren importieren", "导入多列稳态 PL 光谱"],
+    ["CSV, TSV or TXT: first column wavelength in nm, then one PL intensity column per sample. An optional header names the samples.", "CSV, TSV oder TXT: erste Spalte Wellenlänge in nm, danach eine PL-Intensitätsspalte je Probe. Eine optionale Kopfzeile benennt die Proben.", "支持 CSV、TSV 或 TXT：第一列为波长（nm），后面每列为一个样品的 PL 强度；可用表头命名样品。"],
+    ["Wavelength and PL columns", "Wellenlängen- und PL-Spalten", "波长与各样品的 PL 强度"],
+    ["Integrate PL spectra", "PL-Spektren integrieren", "积分并计算 PL 光谱"],
+    ["Clear PL data", "PL-Daten löschen", "清空 PL 数据"],
+    ["Displayed sample", "Angezeigte Probe", "曲线当前显示的样品"],
+    ["Reference sample", "Referenzprobe", "参考样品列"],
+    ["Integration start (nm)", "Integrationsbeginn (nm)", "积分起始波长（nm）"],
+    ["Integration end (nm)", "Integrationsende (nm)", "积分终止波长（nm）"],
+    ["Constant spectral background (a.u.)", "Konstanter spektraler Hintergrund (a.u.)", "恒定光谱背景强度（a.u.）"],
+    ["The same interval and constant background apply to every column. Negative spectral values are retained. Detector response is not corrected automatically.", "Für alle Spalten gelten dasselbe Intervall und derselbe konstante Hintergrund. Negative Spektralwerte bleiben erhalten. Die Detektorantwort wird nicht automatisch korrigiert.", "各列采用同一积分区间及恒定背景。保留光谱中的负值；不会自动校正探测器响应。"],
+    ["Results for uploaded spectra", "Ergebnisse der importierten Spektren", "上传光谱的逐列计算结果"],
+    ["Sample", "Probe", "样品"],
+    ["Background-subtracted integral (a.u.)", "Hintergrundsubtrahiertes Integral (a.u.)", "背景扣除后的积分强度（a.u.）"],
+    ["Background-subtracted integrated PL intensity (a.u.)", "Hintergrundsubtrahierte integrierte PL-Intensität (a.u.)", "背景扣除后的 PL 积分强度（a.u.）"],
+    ["An uncalibrated spectrum gives a voltage change relative to the selected reference. For absolute voltage, choose a known internal-voltage reference and enter its measured Vref.", "Ein unkalibriertes Spektrum liefert die Spannungsänderung gegenüber der gewählten Referenz. Für absolute Spannung wählen Sie eine bekannte interne Spannungsreferenz und geben deren gemessenes Vref ein.", "未标定光谱给出相对于参考列的电压变化。需要绝对电压时，请选择已知内部电压参考模式，并输入该参考列的实测 Vref。"],
+    ["Use a PL text file smaller than 2 MB.", "Verwenden Sie eine PL-Textdatei kleiner als 2 MB.", "PL 文本文件须小于 2 MB。"],
+    ["PL data contains an unclosed quote.", "PL-Daten enthalten ein nicht geschlossenes Anführungszeichen.", "PL 数据中存在未闭合的引号。"],
+    ["Use one wavelength column and 1–100 PL intensity columns.", "Verwenden Sie eine Wellenlängenspalte und 1–100 PL-Intensitätsspalten.", "请提供一列波长和 1–100 列 PL 强度。"],
+    ["The first column must be wavelength in nm, not time or energy.", "Die erste Spalte muss die Wellenlänge in nm sein, nicht Zeit oder Energie.", "第一列必须是波长（nm），不能使用时间或能量数据。"],
+    ["PL column names must be nonempty, unique and at most 120 characters.", "PL-Spaltennamen müssen ausgefüllt, eindeutig und höchstens 120 Zeichen lang sein.", "PL 列名须非空、不重复且不超过 120 个字符。"],
+    ["Every PL row must contain the same number of finite numeric columns. Use a decimal point.", "Jede PL-Zeile muss gleich viele endliche Zahlen enthalten. Verwenden Sie einen Dezimalpunkt.", "每行 PL 数据须包含相同数量的有限数值；小数请使用点号。"],
+    ["PL wavelengths must be positive and in nm.", "PL-Wellenlängen müssen positiv und in nm sein.", "PL 波长须为正数，单位为 nm。"],
+    ["Use at most 20,000 PL wavelength rows.", "Verwenden Sie höchstens 20.000 PL-Wellenlängenzeilen.", "PL 波长数据不能超过 20,000 行。"],
+    ["Enter at least two wavelength rows for each PL spectrum.", "Geben Sie mindestens zwei Wellenlängenzeilen je PL-Spektrum ein.", "每条 PL 光谱至少需要两行波长数据。"],
+    ["Duplicate PL wavelengths: resolve duplicates before integrating.", "Doppelte PL-Wellenlängen: vor der Integration auflösen.", "PL 波长存在重复值，请先处理重复值再积分。"],
+    ["Choose an increasing integration interval within the uploaded wavelength range.", "Wählen Sie ein aufsteigendes Integrationsintervall innerhalb der importierten Wellenlängen.", "积分起止波长须递增，并位于上传数据的波长范围内。"],
+    ["Enter a finite, nonnegative spectral background.", "Geben Sie einen endlichen, nichtnegativen spektralen Hintergrund ein.", "光谱背景强度须为有限非负数。"],
+    ["Invalid PL integral", "Ungültiges PL-Integral", "PL 积分无效"],
+    ["PL spectra loaded. Wavelengths sorted in ascending order.", "PL-Spektren geladen. Wellenlängen aufsteigend sortiert.", "PL 光谱已载入，波长已按升序排列。"],
+    ["PL spectra loaded. Relative voltage mode selected; supply Vref for absolute voltage.", "PL-Spektren geladen. Relativer Spannungsmodus gewählt; für absolute Spannung Vref vorgeben.", "PL 光谱已载入，已切换到相对电压模式；计算绝对电压需提供 Vref。"],
+    ["PL data changed. Select Integrate PL spectra to update the result.", "PL-Daten geändert. Wählen Sie PL-Spektren integrieren, um das Ergebnis zu aktualisieren.", "PL 数据已更改，请点击“积分并计算 PL 光谱”更新结果。"],
+    ["Reading PL file…", "PL-Datei wird gelesen…", "正在读取 PL 文件…"],
+    ["Save PL data as CSV, TSV or TXT, or paste the columns from Excel.", "Speichern Sie PL-Daten als CSV, TSV oder TXT oder fügen Sie Spalten aus Excel ein.", "请将 PL 数据保存为 CSV、TSV 或 TXT，或直接粘贴 Excel 中的各列。"]
+  );
+  rows.push(["Use unnormalized spectra acquired with the same detector settings and optical collection conditions.", "Verwenden Sie unnormierte Spektren mit gleichen Detektoreinstellungen und optischen Sammelbedingungen.", "请使用未归一化的光谱，并保持探测器设置和收光条件一致。"]);
+  rows.push(["Pasted PL data", "Eingefügte PL-Daten", "粘贴的 PL 数据"],["Raw arbitrary-unit spectra do not determine external PLQY. Supply independently measured PLQY, JG and J0,rad.", "Unkalibrierte Spektren bestimmen die externe PLQY nicht. Geben Sie unabhängig gemessene PLQY, JG und J0,rad ein.", "任意单位的原始光谱不能确定外部 PLQY。请提供独立测得的 PLQY、JG 和 J0,rad。"]);
   const locales = {de: Object.fromEntries(rows.map(([en, de]) => [en, de])), zh: Object.fromEntries(rows.map(([en, , zh]) => [en, zh]))};
   if (typeof module === "object" && module.exports) module.exports = locales;
   if (typeof document === "undefined") return;
@@ -392,6 +502,7 @@
   const localized = (de, zh) => language === "de" ? de : zh;
   const dynamic = value => {
     let m;
+    if ((m = /^Spectrum (\d+)$/.exec(value))) return localized(`Spektrum ${m[1]}`, `光谱 ${m[1]}`);
     if ((m = /^Showing (\d+) of (\d+)( matching| selected)? publications?$/.exec(value))) return localized(`${m[1]} von ${m[2]} ${m[3] === " matching" ? "passenden " : m[3] === " selected" ? "ausgewählten " : ""}Publikationen angezeigt`, `显示 ${m[1]} / ${m[2]} 篇${m[3] === " matching" ? "匹配的" : m[3] === " selected" ? "精选" : ""}论文`);
     if ((m = /^([\d.]+) (electron volts|percent|volts|milliamps per square centimeter|ohm square centimeters)$/.exec(value))) return localized(`${m[1]} ${{"electron volts":"Elektronenvolt","percent":"Prozent","volts":"Volt","milliamps per square centimeter":"Milliampere pro Quadratzentimeter","ohm square centimeters":"Ohm-Quadratzentimeter"}[m[2]]}`, `${m[1]} ${{"electron volts":"电子伏特","percent":"百分比","volts":"伏特","milliamps per square centimeter":"毫安每平方厘米","ohm square centimeters":"欧姆平方厘米"}[m[2]]}`);
     if ((m = /^Since (\d{4})$/.exec(value))) return localized(`Seit ${m[1]}`, `自 ${m[1]} 年起`);
