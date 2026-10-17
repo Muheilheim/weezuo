@@ -416,28 +416,74 @@ html[lang="zh-CN"] .top-banner-inner{font-size:10px;letter-spacing:.07em}
 html[lang="zh-CN"] .section-kicker{font-size:10px;letter-spacing:.08em}
 html[lang="zh-CN"] .nav a{letter-spacing:.02em}
 
-/* Match the English research transition while retaining each locale's palette. */
-html[lang="de"]{--research-ground:#e8e4d2}
-html[lang="zh-CN"]{--research-ground:#eee1d5}
-html[data-theme="dark"][lang="de"],html[data-theme="dark"][lang="zh-CN"]{--research-ground:#092f3d}
-html[lang="de"] .research-section,html[lang="zh-CN"] .research-section{
-  isolation:isolate;
-  background:linear-gradient(to bottom,var(--hero-background),var(--research-ground) 450px,var(--research-ground));
+/* Each edition keeps its own palette, including its dark surfaces and crystal lighting. */
+:root{--hero-button-dark:#066d88;--hero-button-dark-hover:#08768e}
+html[lang="de"]{--research-ground:#e8e4d2;--research-emphasis:#e5bc65;--hero-button-dark:#316f5c;--hero-button-dark-hover:#367763}
+html[lang="zh-CN"]{--research-ground:#eee1d5;--research-emphasis:#ed9b7f;--hero-button-dark:#a4493a;--hero-button-dark-hover:#af4c3d}
+:root[data-theme="dark"]{color-scheme:dark}
+html[lang="de"][data-theme="dark"]{
+  --bg:#102c26;--surface:#1c4035;--ink:#f6f2e4;--muted:#c7d7c9;
+  --line:#587a67;--control:#759780;--soft:#244c3f;--paper:#254940;
+  --accent:#e5bc65;--teal:#c5dcb0;--orange:#e5bc65;--sky:#b6d3bd;
+  --banner:#183b34;--banner-end:#183b34;--banner-line:#54766b;
+  --research-ground:#102c26;--research-emphasis:#e5bc65;
 }
-html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::before{
+html[lang="zh-CN"][data-theme="dark"]{
+  --bg:#142c37;--surface:#213e49;--ink:#fbf3e8;--muted:#c8d7d7;
+  --line:#5c7e85;--control:#7c9da2;--soft:#294953;--paper:#254658;
+  --accent:#ed9b7f;--teal:#edb19a;--orange:#ed9b7f;--sky:#b5d8d8;
+  --banner:#173343;--banner-end:#173343;--banner-line:#536e76;
+  --research-ground:#142c37;--research-emphasis:#ed9b7f;
+}
+/* Soft-light transfers facet relief into the edition's color, without an ivory image band. */
+html:is([lang="de"],[lang="zh-CN"]) .research-section{
+  isolation:isolate;
+  background:linear-gradient(to bottom,var(--hero-background) 300px,var(--research-ground) 620px);
+  color:var(--ink);
+  border-bottom-color:var(--line);
+}
+html:is([lang="de"],[lang="zh-CN"]) .research-section::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:0;
   pointer-events:none;
   background:url("./assets/perovskite-transition-v4.png") center clamp(-160px,-12vw,-72px)/100% auto no-repeat;
-  filter:grayscale(1);
-  mix-blend-mode:screen;
-  opacity:.55;
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 180px,#000 min(260px,calc(22vw - 5px)),transparent min(450px,calc(38vw - 20px)));
-  mask-image:linear-gradient(to bottom,transparent,#000 180px,#000 min(260px,calc(22vw - 5px)),transparent min(450px,calc(38vw - 20px)));
+  filter:grayscale(1) contrast(.9) brightness(1.1);
+  mix-blend-mode:soft-light;
+  opacity:1;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 12px,#000 140px,#000 min(260px,calc(22vw - 5px)),transparent min(450px,calc(38vw - 20px)));
+  mask-image:linear-gradient(to bottom,transparent 12px,#000 140px,#000 min(260px,calc(22vw - 5px)),transparent min(450px,calc(38vw - 20px)));
 }
-html[lang="de"] .research-inner,html[lang="zh-CN"] .research-inner{position:relative;z-index:1}
-html[data-theme="dark"][lang="de"] .research-section::before,html[data-theme="dark"][lang="zh-CN"] .research-section::before{opacity:.3}
-@media(max-width:720px){html[lang="de"] .research-section::before,html[lang="zh-CN"] .research-section::before{background-position:center -72px;background-size:auto 360px;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 130px,#000 140px,transparent 270px);mask-image:linear-gradient(to bottom,transparent,#000 130px,#000 140px,transparent 270px)}}
+html:is([lang="de"],[lang="zh-CN"]) .research-inner{position:relative;z-index:1}
+html:is([lang="de"],[lang="zh-CN"]) .research-section .section-heading h2{color:#fff9ed;text-shadow:0 2px 5px var(--hero-background)}
+html:is([lang="de"],[lang="zh-CN"]) .research-section .section-heading h2 em{color:var(--research-emphasis)}
+html:is([lang="de"],[lang="zh-CN"]) .research-section .section-kicker{color:var(--research-emphasis)}
+html:is([lang="de"],[lang="zh-CN"]) .hero .status-dot{background:var(--research-emphasis)}
+html:is([lang="de"],[lang="zh-CN"]) .profile-card-link{border-color:var(--line)}
+html[lang="de"] .header .icon-button:hover{background:#254940}
+html[lang="zh-CN"] .header .icon-button:hover{background:#254658}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-section{
+  background:linear-gradient(to bottom,var(--hero-background),var(--bg) 450px);
+}
+html:is([lang="de"],[lang="zh-CN"]) .research-card p{color:var(--muted)}
+html:is([lang="de"],[lang="zh-CN"]) .research-card{border-color:var(--line)}
+:root[data-theme="dark"] .research-section .section-heading h2{color:var(--ink);text-shadow:0 2px 5px var(--bg)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-section .section-heading h2 em{color:var(--research-emphasis)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-section .section-kicker{color:var(--research-emphasis)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-card h3{color:var(--ink)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-card p{color:var(--muted)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-card .tags span{background:var(--surface);border-color:var(--line)}
+html:is([lang="de"],[lang="zh-CN"])[data-theme="dark"] .research-card-content>a{color:var(--teal);border-color:var(--line)}
+:root[data-theme="dark"] .publication .pub-year,:root[data-theme="dark"] .pub-journal{color:var(--muted)}
+:root[data-theme="dark"] .publications-section .section-kicker,:root[data-theme="dark"] .publication::before,:root[data-theme="dark"] .publication-tools summary,:root[data-theme="dark"] .publications-section #load-more{color:var(--teal)}
+:root[data-theme="dark"] .hero .button.primary{background:var(--hero-button-dark);border-color:var(--hero-button-dark)}
+:root[data-theme="dark"] .hero .button.primary:hover{background:var(--hero-button-dark-hover);border-color:var(--hero-button-dark-hover)}
+@media(max-width:720px){
+  html:is([lang="de"],[lang="zh-CN"]) .research-section::before{
+    background-position:center -72px;background-size:auto 360px;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 8px,#000 92px,#000 180px,transparent 288px);
+    mask-image:linear-gradient(to bottom,transparent 8px,#000 92px,#000 180px,transparent 288px);
+  }
+}
 html[lang="zh-CN"] .rl-small{line-height:1.8}
