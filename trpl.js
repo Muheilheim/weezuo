@@ -3,6 +3,7 @@
   const root=document.getElementById("trpl-calculator"), M=window.TRPL;
   if(!root || !M)return;
   const $=id=>document.getElementById("trpl-"+id);
+  const T=(en,de,zh)=>document.documentElement.lang==='de'?de:document.documentElement.lang.startsWith('zh')?zh:en;
   const field=(id,label,value,extra="")=>'<div class="rl-field"><label for="trpl-'+id+'">'+label+'</label><input id="trpl-'+id+'" type="number" step="any" value="'+value+'" '+extra+'></div>';
   root.innerHTML='<div class="rl-shell pl-shell trpl-shell"><div class="rl-main"><form id="trpl-form" class="rl-controls">'+
     '<h3>TRPL data and fitting</h3><p class="rl-small">Upload time–intensity data. Each intensity column represents one sample or condition.</p>'+
@@ -17,9 +18,9 @@
     '<div class="rl-output"><h3>TRPL decay analysis</h3><p class="rl-small" id="trpl-reference"></p><dl class="rl-metrics">'+
     '<div><dt>PL decay time τ1</dt><dd id="trpl-tau1">—</dd></div><div><dt>PL decay time τ2</dt><dd id="trpl-tau2">—</dd></div><div><dt>Amplitude-weighted PL time τA</dt><dd id="trpl-tauA">—</dd></div><div><dt>Intensity-weighted PL time τI</dt><dd id="trpl-tauI">—</dd></div><div><dt>R² · intensity-space fit</dt><dd id="trpl-r2">—</dd></div><div><dt>RMSE · intensity units</dt><dd id="trpl-rmse">—</dd></div></dl><p class="rl-error" id="trpl-warning" role="status"></p>'+
     '<div class="rl-chart-heading pl-chart-heading"><h3>Measured and fitted TRPL</h3><div class="sp-chart-switch" role="group" aria-label="TRPL plot view"><button type="button" data-trpl-view="log" aria-pressed="true">Log intensity</button><button type="button" data-trpl-view="linear" aria-pressed="false">Linear intensity</button><button type="button" data-trpl-view="residual" aria-pressed="false">Fit residuals</button></div></div><svg id="trpl-decay-chart" class="rl-chart pl-chart" viewBox="0 0 640 360" role="img" aria-label="TRPL measurements and fit"><g id="trpl-decay-content"></g></svg>'+
-    '<div class="trpl-legend"><span class="trpl-measured">Measured</span><span class="trpl-fitted">Fitted</span></div><p class="sp-caption">Background-subtracted intensity. Log plots omit nonpositive values; fitting retains them. Residual = measured − fitted.</p>'+
+    '<div class="trpl-legend" data-literal><span class="trpl-measured" id="trpl-decay-solid"></span><span class="trpl-fitted" id="trpl-decay-dashed"></span><p id="trpl-decay-context"></p></div><p class="sp-caption">Background-subtracted intensity. Log plots omit nonpositive values; fitting retains them. Residual = measured − fitted.</p>'+
     '<h3 id="trpl-voltage-title">Relative internal voltage change</h3><svg id="trpl-voltage-chart" class="rl-chart pl-chart" viewBox="0 0 640 360" role="img" aria-label="TRPL-derived voltage versus time"><g id="trpl-voltage-content"></g></svg>'+
-    '<p id="trpl-voltage-message" class="rl-small" role="status"></p><div class="rl-probe"><div class="rl-probe-top"><label for="trpl-probe">Inspect TRPL time and voltage</label><output id="trpl-probe-reading"></output></div><input id="trpl-probe" type="range" min="0" max="1" step="1" value="0" disabled></div>'+
+    '<div class="trpl-legend" data-literal><span class="trpl-measured">'+T('Solid: voltage from measured PL','Durchgezogen: Spannung aus gemessener PL','实线：由实测 PL 换算的电压')+'</span><span class="trpl-fitted">'+T('Dashed: voltage from fitted PL','Gestrichelt: Spannung aus PL-Fit','虚线：由拟合 PL 换算的电压')+'</span></div><p id="trpl-voltage-context" class="rl-small" data-literal></p><p id="trpl-voltage-message" class="rl-small" role="status"></p><div class="rl-probe"><div class="rl-probe-top"><label for="trpl-probe">Inspect TRPL time and voltage</label><output id="trpl-probe-reading"></output></div><input id="trpl-probe" type="range" min="0" max="1" step="1" value="0" disabled></div>'+
     '<p class="pl-equation" id="trpl-equation"></p><p class="rl-small">τA = (A1 τ1 + A2 τ2)/(A1 + A2); τI = (A1 τ1² + A2 τ2²)/(A1 τ1 + A2 τ2). Amplitudes refer to the fit reference time; all reported times are in ns.</p><p class="pl-equation">Vint(t) = Vref + (kBT/q) ln[(I(t) − B)/(Iref − B)]</p><p class="sp-caption">This voltage estimate assumes PL proportional to np, a uniform quasi-Fermi-level splitting, fixed temperature and unchanged optical response. Nonpositive corrected PL has no inferred voltage. TRPL decay time alone does not determine absolute voltage or Voc.</p>'+
     '<h3 class="trpl-batch-heading">TRPL sample comparison</h3><div class="rl-table-wrap"><table class="rl-table"><thead><tr><th>Sample</th><th>τ1 (ns)</th><th>τ2 (ns)</th><th>τA (ns)</th><th>τI (ns)</th><th>R²</th><th>Fit status</th></tr></thead><tbody id="trpl-rows"></tbody></table></div><div class="rl-actions"><button type="button" class="rl-action" id="trpl-export" disabled>Export TRPL results ↓</button></div><p class="rl-small">TRPL data and results stay in your browser.</p></div></div><details class="rl-method"><summary>TRPL methods, assumptions and sources</summary><p>Unweighted nonlinear least squares on intensity, with a fixed user-supplied background and positive exponential amplitudes. Fits use every point in the chosen interval; display curves may be reduced for readability. No instrument-response deconvolution or uncertainty estimation is performed.</p><p>Single and double exponentials are empirical decay descriptions. Fast and slow components do not identify recombination or extraction mechanisms; PL decay times are not automatically carrier lifetimes. A long lifetime relative to the observation window or two similar components can be poorly constrained.</p><a href="https://doi.org/10.1002/aenm.201904134" target="_blank" rel="noopener noreferrer">Kirchartz et al., Adv. Energy Mater. (2020)</a></details></div>';
   let data=null, fits=[], version=0, dirty=false, view="log", voltageRows=null;
@@ -32,7 +33,7 @@
     fits=[];voltageRows=null;$("export").disabled=true;$("probe").disabled=true;$("probe-reading").textContent="—";
     for(const id of ["tau1","tau2","tauA","tauI","r2","rmse"])$(id).textContent="—";
     for(const id of ["decay-content","voltage-content","rows"])$(id).replaceChildren();
-    for(const id of ["reference","warning","voltage-message","equation"])$(id).textContent="";
+    for(const id of ["reference","warning","voltage-message","equation","decay-solid","decay-dashed","decay-context","voltage-context"])$(id).textContent="";
     $("message").textContent=message;$("voltage-title").textContent="Relative internal voltage change";$("fit").disabled=false;
   }
   function loadData(text,label,literal=false) {
@@ -64,7 +65,7 @@
     $("export").disabled=!fits.some(item=>item.result);
     const r=selectedFit();
     for(const key of ["tau1","tau2","tauA","tauI","r2","rmse"])$(key).textContent=!r || r[key]===null?"—":key.startsWith("tau")?format(r[key])+" ns":key==="r2"?r.r2.toFixed(5):format(r.rmse);
-    if(!r){$("message").textContent=fits[Number($("sample").value)]?.error||"No TRPL fit available.";$("decay-content").replaceChildren();$("voltage-content").replaceChildren();$("probe").disabled=true;$("probe-reading").textContent="—";$("reference").textContent="";$("warning").textContent="";voltageRows=null;return;}
+    if(!r){$("message").textContent=fits[Number($("sample").value)]?.error||"No TRPL fit available.";$("decay-content").replaceChildren();$("voltage-content").replaceChildren();$("probe").disabled=true;$("probe-reading").textContent="—";$("reference").textContent="";$("warning").textContent="";voltageRows=null;for(const id of ["equation","decay-solid","decay-dashed","decay-context","voltage-context","voltage-message"])$(id).textContent="";return;}
     $("reference").replaceChildren();const label=document.createElement("span");label.textContent="Reference time / intensity: ";$("reference").append(label,format(r.tRef*M.units[$("unit").value])+" ns / "+format(r.referenceIntensity));
     $("warning").textContent=r.weak?"A component is weak or poorly resolved by this time window. Adjust the interval and compare with one exponential.":"";
     $("equation").textContent=r.tau2===null?"I(t) = B + A1 exp[−(t − tref)/τ1]":"I(t) = B + A1 exp[−(t − tref)/τ1] + A2 exp[−(t − tref)/τ2]";
@@ -95,6 +96,9 @@
     const r=selectedFit();if(!r)return;const p=parameters(),factor=M.units[p.unit];
     const measured=r.points.map((row,i)=>[row[0]*factor,view==="residual"?r.residuals[i]:row[Number($("sample").value)+1]-p.background]);
     const predicted=r.points.map((row,i)=>[row[0]*factor,view==="residual"?0:r.predictions[i]-p.background]);
+    $("decay-solid").textContent=view==="residual"?T('Solid: measured − fitted','Durchgezogen: Messung − Fit','实线：实测值－拟合值（残差）'):T('Solid: measured PL − background','Durchgezogen: gemessene PL − Untergrund','实线：实测 PL 扣除背景');
+    $("decay-dashed").textContent=view==="residual"?T('Dashed: zero residual','Gestrichelt: Nullresiduum','虚线：零残差参考线'):T('Dashed: fitted PL − background','Gestrichelt: PL-Fit − Untergrund','虚线：拟合 PL 扣除背景');
+    $("decay-context").textContent=data.names[Number($("sample").value)]+' · '+(p.model==='mono'?T('One exponential','Ein Exponentialterm','单指数'):T('Two exponentials','Zwei Exponentialterme','双指数'))+' · '+p.start+'–'+p.end+' '+$("unit").selectedOptions[0].textContent+' · B = '+p.background;
     chart("decay",measured,predicted,view==="residual"?"Residual intensity":"Corrected PL intensity",view==="log");
   }
   function updateVoltage() {
@@ -104,6 +108,7 @@
       $("export").disabled=!fits.some(item=>item.result);
       const value=v=>v===null?null:p.referenceVoltage===null?v.delta*1000:v.absolute;
       $("voltage-title").textContent=p.referenceVoltage===null?"Relative internal voltage change":"Reference-calibrated internal voltage";
+      $("voltage-context").textContent=data.names[Number($("sample").value)]+' · T = '+p.temperature+' K · '+(p.referenceVoltage===null?T('Relative to the first measured point in the fit window','Relativ zum ersten Messpunkt im Fitfenster','相对拟合区间内首个实测点'):'Vref = '+p.referenceVoltage+' V');
       chart("voltage",voltageRows.map(row=>[row.time,value(row.measured)]),voltageRows.map(row=>[row.time,value(row.fitted)]),p.referenceVoltage===null?"Relative voltage (mV)":"Internal voltage (V)");
       $("voltage-message").textContent=p.referenceVoltage===null?"Relative to the measured reference point. Supply a calibrated Vref for absolute voltage.":"Vref applies only to this sample and the displayed transient reference time.";
     }catch(error){voltageRows=null;$("voltage-content").replaceChildren();$("voltage-message").textContent=error.message;$("export").disabled=true;}

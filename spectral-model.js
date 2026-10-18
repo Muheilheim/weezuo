@@ -49,7 +49,12 @@
       const delimiter=line.includes("\t")?"\t":line.includes(",")?",":line.includes(";")?";":/\s+/;
       const cells=line.split(delimiter).map(s=>s.trim().replace(/^"|"$/g,""));
       const wave=Number(cells[0]),eff=Number((cells[1]||"").replace(/%$/,""));
-      if(!points.length&&!skippedHeader && (!Number.isFinite(wave)||!Number.isFinite(eff)) && /wavelength|lambda|波长/i.test(line) && /eqe|ipce|量子/i.test(line)) {skippedHeader=true;continue;}
+      if(!points.length&&!skippedHeader && (!Number.isFinite(wave)||!Number.isFinite(eff)) && /wavelength|lambda|波长/i.test(line) && /eqe|ipce|量子/i.test(line)) {
+        if (/(?:^|[^a-z])(?:pm|um|mm|cm|m|ev|kev|mev|hz|thz|angstroms?|microns?|micromet(?:er|re)s?|met(?:er|re)s?)(?:$|[^a-z])|[åÅ]/i.test(cells[0].replace(/[µμ]/g,"u"))) throw Error("EQE wavelength headers must use nm.");
+        const declared=/%|percent|百分/i.test(cells[1])?"percent":/fraction|小数/i.test(cells[1])?"fraction":null;
+        if(declared && declared!==unit)throw Error("The EQE unit setting conflicts with the column header.");
+        skippedHeader=true;continue;
+      }
       const numeric=/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
       if(cells.length!==2||!numeric.test(cells[0])||!numeric.test((cells[1]||"").replace(/%$/,"").trim())||!Number.isFinite(wave)||!Number.isFinite(eff))throw Error("Line "+(i+1)+": enter exactly two numeric columns (wavelength in nm, EQE). Use a decimal point.");
       if(wave<=0||wave>100000)throw Error("Line "+(i+1)+": wavelength must be positive and in nm.");

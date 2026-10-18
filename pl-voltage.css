@@ -39,3 +39,7 @@
 #pl-voltage-calculator sub,#pl-voltage-calculator sup{font-size:.75em;line-height:0;position:relative;vertical-align:baseline}
 #pl-voltage-calculator sub{bottom:-.25em}
 #pl-voltage-calculator sup{top:-.5em}
+
+.pl-legend{flex-wrap:wrap;line-height:1.7}
+.pl-legend .pl-model-line:before,.pl-legend .pl-guide-line:before{width:22px;height:0;border-top:2px solid var(--teal);border-radius:0;background:none}
+.pl-legend .pl-guide-line:before{border-top-style:dashed}

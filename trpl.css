@@ -20,3 +20,8 @@
 @media(max-width:380px){.trpl-shell .rl-metrics{grid-template-columns:1fr}}
 
 @media(max-width:680px){.trpl-shell .rl-chart .pl-axis-label[transform]{font-size:18px}}
+
+.trpl-shell .pl-curve{stroke-dasharray:6 4}
+.trpl-legend{flex-wrap:wrap;line-height:1.7}
+.trpl-legend .trpl-fitted:before{height:0;border-top:2px dashed var(--teal);background:none}
+.trpl-legend>p{flex-basis:100%;margin:0;overflow-wrap:anywhere}

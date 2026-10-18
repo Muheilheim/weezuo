@@ -122,6 +122,8 @@ updateBandgap();
 const eqRoot=$("eqe-calculator");
 if(eqRoot){
 let result=null,eqePoints=null,source="example",plot="eqe",fileVersion=0;
+window.BandgapInputs=window.BandgapInputs||{};
+window.BandgapInputs.eqe=()=>eqePoints?{points:eqePoints,identity:eqePoints,source:source==="example"?"Supplied workbook example":($("eq-file-name").textContent||"Your EQE data")}:null;
 eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-controls">'+
   '<h3>Your EQE spectrum</h3><p class="rl-small">Paste two columns from Excel or import a CSV, TSV or TXT file. Wavelength must be in nm.</p>'+
   '<div class="rl-field sp-wide"><label for="eq-unit">EQE values are in</label><select id="eq-unit"><option value="percent">Percent (%) · 0–100</option><option value="fraction">Fraction · 0–1</option></select><p class="rl-small sp-unit-help">Choose Fraction for decimal values such as 0.82; choose Percent for values such as 82. The selected unit is applied when calculating.</p></div>'+
@@ -144,7 +146,7 @@ eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-cont
   '<p>This calculation does not apply spectral-mismatch corrections, device area corrections or EQE bias-light corrections. It computes short-circuit current density from the entered external quantum efficiency.</p>'+
   '<div class="rl-source-links"><a href="https://www.nlr.gov/grid/solar-resource/spectra-am1.5" target="_blank" rel="noopener noreferrer">Reference AM1.5 spectra ↗</a><a href="https://www.pveducation.org/pvcdrom/solar-cell-operation/quantum-efficiency" target="_blank" rel="noopener noreferrer">PVEducation · Quantum efficiency ↗</a></div></details>';
 function empty(message,error=false){
-  result=null;eqePoints=null;$("eq-message").textContent=message;$("eq-message").dataset.error=String(error);
+  result=null;eqePoints=null;window.dispatchEvent(new Event("bandgap:eqe"));$("eq-message").textContent=message;$("eq-message").dataset.error=String(error);
   $("eq-data").setAttribute("aria-invalid",String(error));
   ["eq-jsc","eq-span","eq-weighted"].forEach(id=>$(id).textContent="—");
   $("eq-chart").innerHTML="";$("eq-coverage").textContent="";$("eq-legacy").textContent="";$("eq-source").textContent="No current result";
@@ -178,6 +180,7 @@ function calculate(){
     $("eq-legacy").textContent=source==="example"?"Workbook cached Jsc: "+fmt(data.meta.legacyJsc_mA_cm2,4)+" mA/cm². Full-spectrum difference: +"+fmt(result.jsc-data.meta.legacyJsc_mA_cm2,4)+" mA/cm² ("+fmt((result.jsc/data.meta.legacyJsc_mA_cm2-1)*100,4)+"%).":"";
     $("eq-export").disabled=false;$("eq-to-lab").disabled=result.jsc<1||result.jsc>60;
     drawEQE();
+    window.dispatchEvent(new Event("bandgap:eqe"));
   }catch(e){empty(e.message,true);}
 }
 function example(){
@@ -193,6 +196,7 @@ $("eq-file-choose").addEventListener("click",()=>$("eq-file").click());
 $("eq-file").addEventListener("change",async()=>{
   const file=$("eq-file").files[0],version=++fileVersion;if(!file)return;
   $("eq-file-name").textContent=file.name;
+  empty("Reading EQE file…");
   if(file.size>2000000){empty("Use a file smaller than 2 MB.",true);return;}
   if(!/\.(csv|tsv|txt)$/i.test(file.name)){empty("Save the EQE columns as CSV, TSV or TXT, or paste them directly from Excel.",true);return;}
   try{const text=await file.text();if(version!==fileVersion)return;source="custom";$("eq-data").value=text;calculate();}catch(e){empty("Unable to read this text file.",true);}

@@ -70,6 +70,7 @@
         if (width < 2 || width > 101) throw Error("Use one wavelength column and 1–100 PL intensity columns.");
         if (!numeric.test(cells[0])) {
           if (!/wavelength|lambda|波长|wellenl/i.test(cells[0]) || /eV|energy|time|时间|[uµμ]m/i.test(cells[0])) throw Error("The first column must be wavelength in nm, not time or energy.");
+          if (/(?:^|[^a-z])(?:pm|um|mm|cm|m|ev|kev|mev|hz|thz|angstroms?|microns?|micromet(?:er|re)s?|met(?:er|re)s?)(?:$|[^a-z])|[åÅ]/i.test(cells[0].replace(/[µμ]/g,"u"))) throw Error("The first column must be wavelength in nm, not time or energy.");
           names = cells.slice(1);
           if (names.some(name => !name || name.length > 120) || new Set(names).size !== names.length) throw Error("PL column names must be nonempty, unique and at most 120 characters.");
           continue;

@@ -25,7 +25,7 @@
         width = cells.length;
         if (width < 2 || width > 21) throw Error("Use one time column and 1–20 TRPL intensity columns.");
         if (!numeric.test(cells[0])) {
-          const header = cells[0].toLowerCase().replace(/[µμ]/g,"u");
+          const header = cells[0].toLowerCase().replace(/[µμ]/g,"u").replace(/_/g," ");
           if (!/^(time|delay|t\b|时间|延迟|zeit)/i.test(header) || /wavelength|nm|ev|波长/i.test(header)) throw Error("The first TRPL column must be time, not wavelength or energy.");
           const match = header.match(/(?:^|[^a-z])(ps|ns|us)(?:$|[^a-z])/);
           unit = match ? match[1] : null;
@@ -56,6 +56,26 @@
     }
     return fa<fb?a:b;
   }
+  function simplex2(fn, seed, step) {
+    const point=v=>({v,loss:fn(...v).loss});
+    let vertices=[point(seed),point([seed[0]+step,seed[1]]),point([seed[0],seed[1]+step])];
+    for(let iteration=0;iteration<320;iteration++) {
+      vertices.sort((a,b)=>a.loss-b.loss);
+      const [a,b,c]=vertices;
+      if(Math.max(...b.v.map((v,i)=>Math.abs(v-a.v[i])),...c.v.map((v,i)=>Math.abs(v-a.v[i])))<1e-9)break;
+      const center=a.v.map((v,i)=>(v+b.v[i])/2);
+      const trial=f=>point(center.map((v,i)=>v+f*(v-c.v[i])));
+      const reflected=trial(1);
+      if(reflected.loss<a.loss){const expanded=trial(2);vertices[2]=expanded.loss<reflected.loss?expanded:reflected;}
+      else if(reflected.loss<b.loss)vertices[2]=reflected;
+      else {
+        const contracted=trial(reflected.loss < c.loss ? 0.5 : -0.5);
+        if(contracted.loss<Math.min(c.loss,reflected.loss))vertices[2]=contracted;
+        else vertices=[a,...[b,c].map(p=>point(p.v.map((v,i)=>(v+a.v[i])/2)))];
+      }
+    }
+    return vertices.sort((a,b)=>a.loss-b.loss)[0];
+  }
   function fit(data,p) {
     if (!units[p.unit] || (data.unit && data.unit !== p.unit)) throw Error("The selected time unit must match the TRPL header.");
     if (!Number.isInteger(p.sample) || !data.names[p.sample]) throw Error("Choose a TRPL sample.");
@@ -75,8 +95,8 @@
     if(sst < 1e-12*y.length || slope >= 0) throw Error("No resolved decay in this fit window. Check the peak, background and interval.");
     const span=x.at(-1), step=Math.min(...x.slice(1).map((v,i)=>v-x[i]));
     const lo=Math.log(step/20), hi=Math.log(span*100), gridStep=(hi-lo)/31;
-    const yy=y.reduce((sum,v)=>sum+v*v,0);
     function solve(log1,log2=null) {
+      if(!Number.isFinite(log1) || log1<lo || log1>hi || (log2!==null && (!Number.isFinite(log2) || log2<lo || log2>hi)))return {loss:Infinity};
       const tau1=Math.exp(log1), tau2=log2===null?null:Math.exp(log2);
       if(tau2!==null && tau2/tau1 <= 1.02) return {loss:Infinity};
       let s11=0,s22=0,s12=0,b1=0,b2=0;
@@ -92,21 +112,30 @@
         if(a1<=0 || a2<=0)return {loss:Infinity};
       }
       if(a1<=0)return {loss:Infinity};
-      return {loss:Math.max(0,yy-a1*b1-a2*b2),tau1,tau2,a1,a2};
+      // Direct residuals retain precision near an exact fit; normal-equation
+      // subtraction yy - a1*b1 - a2*b2 can cancel to a false zero.
+      let loss=0;
+      for(let i=0;i<x.length;i++){const residual=y[i]-a1*Math.exp(-x[i]/tau1)-(tau2===null?0:a2*Math.exp(-x[i]/tau2));loss+=residual*residual;}
+      return {loss,tau1,tau2,a1,a2};
     }
-    let l1=lo,l2=null,best={loss:Infinity};
+    let l1=lo,l2=null,best={loss:Infinity};const seeds=[];
     for(let i=0;i<32;i++) {
       const a=lo+i*gridStep;
       if(p.model==="mono") {const value=solve(a);if(value.loss<best.loss){best=value;l1=a;}}
-      else for(let j=i+1;j<32;j++) {const b=lo+j*gridStep,value=solve(a,b);if(value.loss<best.loss){best=value;l1=a;l2=b;}}
+      else for(let j=i+1;j<32;j++) {const b=lo+j*gridStep,value=solve(a,b);if(Number.isFinite(value.loss))seeds.push({v:[a,b],loss:value.loss});if(value.loss<best.loss){best=value;l1=a;l2=b;}}
     }
     if(!Number.isFinite(best.loss))throw Error("The requested decay model could not be fitted. Try one exponential or another interval.");
     if(p.model==="mono")l1=golden(v=>solve(v).loss,Math.max(lo,l1-gridStep),Math.min(hi,l1+gridStep));
-    else for(let i=0;i<16;i++) {
-      const a=golden(v=>solve(v,l2).loss,Math.max(lo,l1-2*gridStep),Math.min(l2-Math.log(1.021),l1+2*gridStep));
-      if(solve(a,l2).loss<=solve(l1,l2).loss)l1=a;
-      const b=golden(v=>solve(l1,v).loss,Math.max(l1+Math.log(1.021),l2-2*gridStep),Math.min(hi,l2+2*gridStep));
-      if(solve(l1,b).loss<=solve(l1,l2).loss)l2=b;
+    else {
+      const starts=[];
+      for(const seed of seeds.sort((a,b)=>a.loss-b.loss)) {
+        if(starts.every(p=>Math.hypot(...seed.v.map((v,i)=>v-p.v[i]))>gridStep))starts.push(seed);
+        if(starts.length===6)break;
+      }
+      for(const seed of starts) {
+        const optimized=simplex2(solve,seed.v,gridStep/3);
+        if(optimized.loss<best.loss){best=solve(...optimized.v);[l1,l2]=optimized.v;}
+      }
     }
     best=solve(l1,l2);
     const A1=best.a1*scale,A2=best.a2*scale;
@@ -115,8 +144,9 @@
     const residuals=selected.map((row,i)=>row[p.sample+1]-predictions[i]);
     // Recompute residuals rather than using the cancelling normal-equation loss for fit quality.
     const sse=residuals.reduce((sum,v)=>sum+(v/scale)**2,0);
-    const tauA=(A1*best.tau1+A2*(best.tau2||0))/(A1+A2);
-    const tauI=(A1*best.tau1**2+A2*(best.tau2||0)**2)/(A1*best.tau1+A2*(best.tau2||0));
+    const w1=best.a1/(best.a1+best.a2),w2=1-w1;
+    const tauA=w1*best.tau1+w2*(best.tau2||0);
+    const tauI=w1*best.tau1*(best.tau1/tauA)+w2*(best.tau2||0)*((best.tau2||0)/tauA);
     const r2=1-sse/sst,rmse=Math.sqrt(sse/y.length)*scale;
     const weak=best.tau1<=step/2 || (best.tau2||best.tau1)>=span || (best.tau2!==null && (best.tau2/best.tau1<1.5 || Math.min(A1,A2)/(A1+A2)<0.01));
     if(![A1,A2,tauA,tauI,r2,rmse,...predictions].every(Number.isFinite))throw Error("The TRPL inputs exceed the numerical range.");

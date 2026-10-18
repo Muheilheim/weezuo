@@ -2,6 +2,7 @@
   "use strict";
   const root = document.getElementById("pl-voltage-calculator");
   if (!root || !window.PLVoltage) return;
+  const T=(en,de,zh)=>document.documentElement.lang==='de'?de:document.documentElement.lang.startsWith('zh')?zh:en;
   const field = (id, label, value, attributes = "") => '<div class="rl-field"><label for="pl-' + id + '">' + label + '</label><input id="pl-' + id + '" type="number" value="' + value + '" step="any" aria-describedby="pl-message" ' + attributes + '></div>';
   root.innerHTML = '<div class="sp-shell pl-shell"><div class="rl-main"><form class="rl-controls" id="pl-form">' +
     '<h3>PL calibration</h3><p class="rl-small">Use integrated, background-corrected PL measured under consistent optical conditions.</p>' +
@@ -34,7 +35,7 @@
     '<div><dt>Internal − terminal voltage</dt><dd id="pl-difference">—</dd><span class="rl-metric-note">Vint − Vterminal (mV)</span></div></dl>' +
     '<div class="rl-chart-heading pl-chart-heading"><div><h3>PL–voltage relationship</h3><p class="rl-small" id="pl-chart-context"></p></div><div class="sp-chart-switch" role="group" aria-label="PL horizontal axis"><button type="button" data-pl-axis="log" aria-pressed="true">Log PL axis</button><button type="button" data-pl-axis="linear" aria-pressed="false">Linear PL axis</button></div></div>' +
     '<svg class="rl-chart pl-chart" id="pl-chart" viewBox="0 0 640 360" role="img" aria-labelledby="pl-chart-title pl-chart-description"><title id="pl-chart-title">PL–voltage relationship</title><desc id="pl-chart-description">Model curve with the current input point and an adjustable probe. Use the slider below to inspect values.</desc><g id="pl-chart-content"></g></svg>' +
-    '<div class="pl-legend"><span class="pl-input-marker">Input point</span><span class="pl-probe-marker">Curve probe</span></div>' +
+    '<div class="pl-legend"><span class="pl-model-line" data-literal>'+T('Solid: PL–voltage model','Durchgezogen: PL–Spannungsmodell','实线：PL—电压模型曲线')+'</span><span class="pl-guide-line" data-literal>'+T('Dashed: probe guide','Gestrichelt: Ablesehilfe','虚线：读数辅助线')+'</span><span class="pl-input-marker">Input point</span><span class="pl-probe-marker">Curve probe</span></div>' +
     '<div class="rl-probe"><div class="rl-probe-top"><label for="pl-probe">Inspect PL on the curve</label><output id="pl-probe-reading" for="pl-probe"></output></div><input id="pl-probe" type="range" min="0" max="4" step="0.001" value="2" aria-describedby="pl-probe-help"></div>' +
     '<p class="sp-caption" id="pl-probe-help">Move the slider, or point to the plot. The curve holds temperature and optical response fixed; points beyond the measurement are model extrapolations.</p>' +
     '<p class="rl-equation pl-equation" id="pl-equation"></p><p class="sp-summary" id="pl-calibration-note"></p>' +
@@ -54,6 +55,8 @@
   const number = id => $(id).value.trim() === "" ? NaN : Number($(id).value);
   let result = null, parameters = null, relation = null, axis = "log";
   let spectra = null, integrals = null, batch = null, fileVersion = 0, importError = "";
+  window.BandgapInputs=window.BandgapInputs||{};
+  window.BandgapInputs.pl=()=>spectra&&!importError?{points:spectra.points.map(row=>[row[0],row[Number($("sample").value)+1]]),identity:spectra,source:spectra.names[Number($("sample").value)],background:number("baseline")}:null;
   function modeFields() {
     const mode = $("mode").value;
     for (const [id, show] of [["intensity-fields", mode !== "absolute"], ["reference-fields", mode === "reference"], ["absolute-fields", mode === "absolute"], ["terminal-fields", mode !== "relative"]]) {
@@ -96,6 +99,7 @@
       $("message").textContent = error.message; $("message").dataset.error = "true";
       root.querySelectorAll("input:enabled").forEach(input => { if (!input.validity.valid) input.setAttribute("aria-invalid", "true"); });
     }
+    window.dispatchEvent(new Event("bandgap:pl"));
   }
   function drawBatch() {
     $("batch").hidden = !spectra || parameters.mode === "absolute";

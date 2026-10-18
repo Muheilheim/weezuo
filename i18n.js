@@ -2,6 +2,9 @@
 (function (root) {
   "use strict";
   const rows = [
+    ["EQE wavelength headers must use nm.", "EQE-Wellenlängen müssen im Spaltenkopf in nm angegeben sein.", "EQE 波长表头须使用 nm；请先转换其他波长或能量单位。"],
+    ["The EQE unit setting conflicts with the column header.", "Die gewählte EQE-Einheit widerspricht dem Spaltenkopf.", "所选 EQE 单位与表头不一致，请核对百分比或小数设置。"],
+    ["Reading EQE file…", "EQE-Datei wird gelesen…", "正在读取 EQE 文件…"],
     ["Weiwei Zuo | Perovskite Photovoltaic", "Weiwei Zuo | Perowskit-Photovoltaik", "左巍巍（Weiwei Zuo）| 钙钛矿光伏"],
     ["Weiwei Zuo, Dr.-Ing., postdoctoral researcher at the Institute for Photovoltaics, University of Stuttgart. Research on perovskite crystallization, functional interfaces, and device stability.", "Weiwei Zuo, Dr.-Ing., Postdoc am Institut für Photovoltaik der Universität Stuttgart. Forschung zur Kristallisation von Perowskiten, zu funktionalen Grenzflächen und zur Stabilität von Solarzellen.", "左巍巍（Weiwei Zuo）博士，斯图加特大学光伏研究所博士后研究员。研究方向为钙钛矿结晶、功能界面和器件稳定性。"],
     ["Weiwei Zuo", "Weiwei Zuo", "左巍巍"],
