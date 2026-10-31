@@ -49,9 +49,16 @@
       const delimiter=line.includes("\t")?"\t":line.includes(",")?",":line.includes(";")?";":/\s+/;
       const cells=line.split(delimiter).map(s=>s.trim().replace(/^"|"$/g,""));
       const wave=Number(cells[0]),eff=Number((cells[1]||"").replace(/%$/,""));
-      if(!points.length&&!skippedHeader && (!Number.isFinite(wave)||!Number.isFinite(eff)) && /wavelength|lambda|波长/i.test(line) && /eqe|ipce|量子/i.test(line)) {
+      if(!points.length&&!skippedHeader && (!Number.isFinite(wave)||!Number.isFinite(eff)) && /wavelength|lambda|波长/i.test(line) && /eqe|ipce|quantum[\s_-]*efficiency|量子/i.test(line)) {
         if (/(?:^|[^a-z])(?:pm|um|mm|cm|m|ev|kev|mev|hz|thz|angstroms?|microns?|micromet(?:er|re)s?|met(?:er|re)s?)(?:$|[^a-z])|[åÅ]/i.test(cells[0].replace(/[µμ]/g,"u"))) throw Error("EQE wavelength headers must use nm.");
-        const declared=/%|percent|百分/i.test(cells[1])?"percent":/fraction|小数/i.test(cells[1])?"fraction":null;
+        // Treat explicit units as a contract; a missing unit still uses the selector.
+        const label=cells[1].normalize("NFKC").replace(/[−–—]/g,"-")
+          .replace(/(?:external[\s_-]*)?(?:quantum[\s_-]*efficiency|eqe|ipce)|(?:外部?)?量子效率/gi,"")
+          .replace(/\bto\b/gi,"-").replace(/[\s_()[\]{}]/g,"");
+        const percent=/^(?:(?:percent(?:age)?|prozent|百分(?:比|数)?)(?:%|0-100)?|%(?:0-100)?|0-100)$/i.test(label);
+        const fraction=/^(?:(?:fraction|dimensionless|unitless|anteil|小数|无量纲)(?:0-1|1)?|0-1|1)$/i.test(label);
+        const declared=percent?"percent":fraction?"fraction":null;
+        if(label&&!declared)throw Error("EQE headers must use percent (%) or fraction (0–1), or omit the unit.");
         if(declared && declared!==unit)throw Error("The EQE unit setting conflicts with the column header.");
         skippedHeader=true;continue;
       }

@@ -121,9 +121,11 @@ updateBandgap();
 }
 const eqRoot=$("eqe-calculator");
 if(eqRoot){
-let result=null,eqePoints=null,source="example",plot="eqe",fileVersion=0;
+let result=null,eqePoints=null,source="example",sourceName="",plot="eqe",fileVersion=0;
+const pastedSource=()=>document.documentElement.lang==='de'?"Eingefügte EQE-Daten":document.documentElement.lang.startsWith('zh')?"粘贴的 EQE 数据":"Pasted EQE data";
+const sourceLabel=()=>source==="example"?"Supplied workbook example":sourceName||pastedSource();
 window.BandgapInputs=window.BandgapInputs||{};
-window.BandgapInputs.eqe=()=>eqePoints?{points:eqePoints,identity:eqePoints,source:source==="example"?"Supplied workbook example":($("eq-file-name").textContent||"Your EQE data")}:null;
+window.BandgapInputs.eqe=()=>eqePoints?{points:eqePoints,identity:eqePoints,source:sourceLabel()}:null;
 eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-controls">'+
   '<h3>Your EQE spectrum</h3><p class="rl-small">Paste two columns from Excel or import a CSV, TSV or TXT file. Wavelength must be in nm.</p>'+
   '<div class="rl-field sp-wide"><label for="eq-unit">EQE values are in</label><select id="eq-unit"><option value="percent">Percent (%) · 0–100</option><option value="fraction">Fraction · 0–1</option></select><p class="rl-small sp-unit-help">Choose Fraction for decimal values such as 0.82; choose Percent for values such as 82. The selected unit is applied when calculating.</p></div>'+
@@ -184,28 +186,28 @@ function calculate(){
   }catch(e){empty(e.message,true);}
 }
 function example(){
-  fileVersion++;source="example";$("eq-unit").value="percent";$("eq-file").value="";$("eq-file-name").textContent="No file selected";
+  fileVersion++;source="example";sourceName="";$("eq-unit").value="percent";$("eq-file").value="";$("eq-file-name").removeAttribute("data-literal");$("eq-file-name").textContent="No file selected";
   $("eq-data").value="Wavelength_nm,EQE_percent\n"+data.exampleEQE.map(p=>p[0]+","+Number(p[1].toPrecision(12))).join("\n");calculate();
 }
-$("eq-data").addEventListener("input",()=>{fileVersion++;source="custom";empty("Data changed. Select Integrate EQE to update the result.");});
-$("eq-unit").addEventListener("change",()=>{source="custom";calculate();});
+$("eq-data").addEventListener("input",()=>{fileVersion++;source="custom";sourceName="";$("eq-file").value="";$("eq-file-name").removeAttribute("data-literal");$("eq-file-name").textContent=pastedSource();empty("Data changed. Select Integrate EQE to update the result.");});
+$("eq-unit").addEventListener("change",calculate);
 $("eq-calculate").addEventListener("click",calculate);
 $("eq-example").addEventListener("click",example);
-$("eq-clear").addEventListener("click",()=>{fileVersion++;source="custom";$("eq-data").value="";$("eq-file").value="";$("eq-file-name").textContent="No file selected";empty("Paste two columns or import a CSV, TSV or TXT file.");});
+$("eq-clear").addEventListener("click",()=>{fileVersion++;source="custom";sourceName="";$("eq-data").value="";$("eq-file").value="";$("eq-file-name").removeAttribute("data-literal");$("eq-file-name").textContent="No file selected";empty("Paste two columns or import a CSV, TSV or TXT file.");});
 $("eq-file-choose").addEventListener("click",()=>$("eq-file").click());
 $("eq-file").addEventListener("change",async()=>{
   const file=$("eq-file").files[0],version=++fileVersion;if(!file)return;
-  $("eq-file-name").textContent=file.name;
+  $("eq-file-name").setAttribute("data-literal","");$("eq-file-name").textContent=file.name;
   empty("Reading EQE file…");
   if(file.size>2000000){empty("Use a file smaller than 2 MB.",true);return;}
   if(!/\.(csv|tsv|txt)$/i.test(file.name)){empty("Save the EQE columns as CSV, TSV or TXT, or paste them directly from Excel.",true);return;}
-  try{const text=await file.text();if(version!==fileVersion)return;source="custom";$("eq-data").value=text;calculate();}catch(e){empty("Unable to read this text file.",true);}
+  try{const text=await file.text();if(version!==fileVersion)return;source="custom";sourceName=file.name;$("eq-data").value=text;calculate();}catch(e){if(version!==fileVersion)return;empty("Unable to read this text file.",true);}
 });
 eqRoot.querySelectorAll("[data-eq-plot]").forEach(b=>b.addEventListener("click",()=>{plot=b.dataset.eqPlot;drawEQE();}));
 $("eq-to-lab").addEventListener("click",()=>{if(result)transfer(result.jsc,$("eq-message"));});
 $("eq-export").addEventListener("click",()=>{
   if(!result)return;
-  saveCSV("eqe-integrated-jsc.csv",[["spectrum",data.meta.spectrum],["source",source==="example"?"Supplied workbook example":"User EQE"],["Jsc_mA_cm2",result.jsc],["interval_nm",result.lo,result.hi],["assumption","EQE zero outside supplied span; no spectrum renormalization"],[],["wavelength_nm","EQE_percent","irradiance_W_m2_nm","spectral_current_mA_cm2_nm","cumulative_Jsc_mA_cm2"],...result.points.map(p=>[p.w,p.eqe*100,p.irradiance,p.density,p.cumulative])]);
+  saveCSV("eqe-integrated-jsc.csv",[["spectrum",data.meta.spectrum],["source",/^\s*[=+@-]/.test(sourceLabel())?"'"+sourceLabel():sourceLabel()],["Jsc_mA_cm2",result.jsc],["interval_nm",result.lo,result.hi],["assumption","EQE zero outside supplied span; no spectrum renormalization"],[],["wavelength_nm","EQE_percent","irradiance_W_m2_nm","spectral_current_mA_cm2_nm","cumulative_Jsc_mA_cm2"],...result.points.map(p=>[p.w,p.eqe*100,p.irradiance,p.density,p.cumulative])]);
 });
 example();
 }

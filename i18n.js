@@ -2,6 +2,7 @@
 (function (root) {
   "use strict";
   const rows = [
+    ["EQE headers must use percent (%) or fraction (0–1), or omit the unit.", "EQE-Spaltenköpfe müssen Prozent (%) oder Anteil (0–1) angeben; alternativ die Einheit weglassen.", "EQE 表头请使用百分比（%）或小数（0–1）；无单位时可省略单位标注。"],
     ["EQE wavelength headers must use nm.", "EQE-Wellenlängen müssen im Spaltenkopf in nm angegeben sein.", "EQE 波长表头须使用 nm；请先转换其他波长或能量单位。"],
     ["The EQE unit setting conflicts with the column header.", "Die gewählte EQE-Einheit widerspricht dem Spaltenkopf.", "所选 EQE 单位与表头不一致，请核对百分比或小数设置。"],
     ["Reading EQE file…", "EQE-Datei wird gelesen…", "正在读取 EQE 文件…"],

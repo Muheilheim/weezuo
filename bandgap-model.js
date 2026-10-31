@@ -14,9 +14,17 @@
       const values=cells.map(x=>numeric.test(x)?Number(x):NaN);
       if(values.some(x=>!Number.isFinite(x))){
         if(!points.length&&!header&&cells.every(x=>/[a-zA-Z\u4e00-\u9fff]/.test(x)&&!/^[-+]?(?:nan|inf(?:inity)?)$/i.test(x))){
-          const label=cells[0].replace(/[µμ]/g,'u');
-          if(/(?:^|[^a-z])(?:pm|um|mm|cm|m|kev|mev|hz|thz|angstroms?)(?:$|[^a-z])|[åÅ]/i.test(label))fail('unit');
-          axisUnit=/(?:^|[^a-z])ev(?:$|[^a-z])/i.test(label)?'eV':/(?:^|[^a-z])nm(?:$|[^a-z])/i.test(label)?'nm':null;
+          const label=cells[0].normalize('NFKC').replace(/[µμ]/g,'u');
+          if(/(?:^|[^a-z])(?:pm|um|mm|cm|m|kev|mev|hz|thz|angstroms?|microns?|micromet(?:er|re)s?|millimet(?:er|re)s?|centimet(?:er|re)s?|met(?:er|re)s?)(?:$|[^a-z])|[åÅ]/i.test(label))fail('unit');
+          const suffix=label.replace(/^(?:(?:photon[\s_-]*)?energy|wavelength|lambda|wellenlänge|波长|(?:光子)?能量|λ)[\s_-]*/i,'');
+          if(suffix!==label){
+            const unitLabel=suffix.replace(/\bin\b/gi,'').replace(/[\s_()[\]{}\/]/g,'');
+            axisUnit=/^(?:nm|nanomet(?:er|re)s?|纳米)$/i.test(unitLabel)?'nm':/^(?:ev|electronvolts?|电子伏特?)$/i.test(unitLabel)?'eV':null;
+            if(unitLabel&&!axisUnit)fail('unit');
+          }else{
+            const ev=/(?:^|[^a-z])ev(?:$|[^a-z])/i.test(label),nm=/(?:^|[^a-z])nm(?:$|[^a-z])/i.test(label);
+            if(ev&&nm)fail('unit');axisUnit=ev?'eV':nm?'nm':null;
+          }
           header=true;continue;
         }
         fail('number');

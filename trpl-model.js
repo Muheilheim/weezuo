@@ -25,11 +25,13 @@
         width = cells.length;
         if (width < 2 || width > 21) throw Error("Use one time column and 1–20 TRPL intensity columns.");
         if (!numeric.test(cells[0])) {
-          const header = cells[0].toLowerCase().replace(/[µμ]/g,"u").replace(/_/g," ");
+          const header = cells[0].normalize("NFKC").toLowerCase().replace(/[µμ]/g,"u").replace(/_/g," ");
           if (!/^(time|delay|t\b|时间|延迟|zeit)/i.test(header) || /wavelength|nm|ev|波长/i.test(header)) throw Error("The first TRPL column must be time, not wavelength or energy.");
-          const match = header.match(/(?:^|[^a-z])(ps|ns|us)(?:$|[^a-z])/);
-          unit = match ? match[1] : null;
-          if (!unit && /[\[(]|\b(?:ms|s|seconds?|minutes?|bins?)\b/.test(header)) throw Error("Use ps, ns or µs for TRPL time.");
+          // Unknown suffixes are explicit unsupported units, not unit-free time axes.
+          const label=header.replace(/^(?:(?:time|delay)(?:\s+(?:time|delay))?|t\b|时间|延迟|zeit)/,"")
+            .replace(/\bin\b/g,"").replace(/[\s()[\]{}\/]/g,"");
+          unit=/^(?:ps|picoseconds?|皮秒)$/.test(label)?"ps":/^(?:ns|nanoseconds?|纳秒)$/.test(label)?"ns":/^(?:us|microseconds?|微秒)$/.test(label)?"us":null;
+          if (label && !unit) throw Error("Use ps, ns or µs for TRPL time.");
           names = cells.slice(1);
           if (names.some(name => !name || name.length > 120) || new Set(names).size !== names.length) throw Error("TRPL column names must be nonempty, unique and at most 120 characters.");
           continue;
