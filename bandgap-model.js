@@ -7,7 +7,7 @@
   function parse(text){
     if(typeof text!=='string'||text.length>2000000)fail('size');
     const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).map(x=>x.trim()).filter(x=>x&&!x.startsWith('#'));
-    const points=[];let header=false,axisUnit=null;const numeric=/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+    const points=[];let header=false,axisUnit=null,signal=null;const numeric=/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
     for(const line of lines){
       const cells=(/[\t,;]/.test(line)?line.split(/[\t,;]/):line.split(/\s+/)).map(x=>x.trim().replace(/^"(.*)"$/,'$1'));
       if(cells.length!==2)fail('columns');
@@ -25,13 +25,16 @@
             const ev=/(?:^|[^a-z])ev(?:$|[^a-z])/i.test(label),nm=/(?:^|[^a-z])nm(?:$|[^a-z])/i.test(label);
             if(ev&&nm)fail('unit');axisUnit=ev?'eV':nm?'nm':null;
           }
+          const labelSignal=cells[1].normalize('NFKC');
+          if(/^(?:A|Abs\.?|Absorbance|Absorbanz|吸光度)(?:$|[\s_(])/i.test(labelSignal))signal='absorbance';
+          else if(/^(?:alpha|α)(?:$|[\s_(])/i.test(labelSignal))signal='alpha';
           header=true;continue;
         }
         fail('number');
       }
       points.push(values);
     }
-    check(points);if(axisUnit)Object.defineProperty(points,'axisUnit',{value:axisUnit});return points.sort((a,b)=>a[0]-b[0]);
+    check(points);if(axisUnit)Object.defineProperty(points,'axisUnit',{value:axisUnit});if(signal)Object.defineProperty(points,'signal',{value:signal});return points.sort((a,b)=>a[0]-b[0]);
   }
   function check(points){
     if(!Array.isArray(points)||points.length<5||points.length>20000)fail('count');

@@ -27,3 +27,7 @@ The current bibliography was checked on 31 August 2026; citation statistics were
 Edit profile.js and the corresponding static text in index.html to update the biography. Citation statistics are loaded from scholar-metrics.json; no scheduled metric refresh is configured in this initial publication. API credentials must never be committed to this repository. Publication records and the downloadable bibliography require separate review when updated.
 
 The portrait is from the institutional team profile. The three research-card images are conceptual illustrations generated with OpenAI's built-in image-generation tool and do not represent measured data. This repository does not grant rights to third-party images or article content.
+
+## Calculator update — 8 November 2026
+
+File controls now precede pasted data in UV–Vis, PL, EQE, TRPL and PLQY pseudo J–V. PL imports are expanded above calibration settings. Main calculations share a consistent button style, 44 px minimum height and keyboard-focus feedback. Recalculating loaded PL spectra preserves the selected interval and calibration values. PL guidance explains single-spectrum references and high backgrounds; explicit UV absorbance headers initialize the signal and axis controls. The underlying numerical equations are unchanged. Raw measurement files and local test reports are not included in this repository.

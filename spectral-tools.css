@@ -29,7 +29,7 @@
 .sp-file-picker .rl-action{flex:none}
 .sp-file-picker .rl-small{overflow-wrap:anywhere;min-width:0}
 .sp-calculate{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.sp-calculate:hover{background:var(--teal);color:var(--bg)}
+.sp-calculate:enabled:hover{background:var(--ink);color:var(--bg);border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
 .sp-summary{border-left:3px solid var(--teal);padding-left:12px;font-size:12px;color:var(--muted);margin:18px 0 0}
 .sp-chart-switch{gap:6px;flex-wrap:wrap;display:flex}
 .sp-chart-switch button{font-size:12px;min-height:36px;padding:7px 10px;background:var(--surface);border:1px solid var(--control);border-radius:5px}
@@ -45,3 +45,20 @@
 @media(max-width:680px){.sp-shell .rl-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.sp-shell .rl-controls>h3,.sp-shell .rl-controls>.rl-small,.sp-shell .rl-controls>.sp-wide,.sp-shell .rl-controls>.sp-message,.sp-shell .rl-controls>.sp-row{grid-column:1/-1}.sp-shell .rl-controls>.rl-field{min-width:0}}
 @media(max-width:560px){.pv-tabs{grid-template-columns:1fr 1fr}.pv-tabs button:nth-child(2){border-right:0}.pv-tabs button:nth-child(-n+2){border-bottom:1px solid var(--line)}.pv-tabs button{min-height:64px;padding:10px 8px;font-size:11px}.pv-tabs button span{font-size:8px;letter-spacing:.7px}}
 @media(max-width:430px){.sp-shell .rl-controls{padding:18px 15px;gap:0 12px}.sp-shell .rl-metrics dd{font-size:23px}}
+
+
+/* File controls always precede pasted data; calculation stays after settings. */
+.calc-import{min-width:0;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--soft);margin:0 0 18px}
+.calc-import-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+.calc-import-toolbar .rl-action{margin:0}
+.calc-import .calc-file-status{margin:0 0 10px;overflow-wrap:anywhere;min-width:0}
+.calc-import>summary{font:600 13px/1.5 var(--sans);color:var(--ink);cursor:pointer;margin:0 0 12px}
+.calc-import .rl-small{line-height:1.7}
+.calc-import textarea{display:block;max-width:100%;box-sizing:border-box}
+.calc-import .rl-field{margin:12px 0 0}
+.calc-import .calc-actions{margin:16px 0 0}
+.rl-action.calc-quiet{background:transparent;border-color:transparent;color:var(--muted);font-weight:400}
+.rl-action.calc-quiet:enabled:hover{background:var(--surface);border-color:var(--line)}
+.calc-actions{align-items:center}
+.calc-actions>p{flex-basis:100%}
+@media(max-width:560px){.calc-import{padding:12px}.calc-import-toolbar .rl-action{flex:1 1 auto;white-space:normal}.calc-actions>.sp-calculate{width:100%}}

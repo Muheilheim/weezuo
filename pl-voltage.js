@@ -6,16 +6,14 @@
   const field = (id, label, value, attributes = "") => '<div class="rl-field"><label for="pl-' + id + '">' + label + '</label><input id="pl-' + id + '" type="number" value="' + value + '" step="any" aria-describedby="pl-message" ' + attributes + '></div>';
   root.innerHTML = '<div class="sp-shell pl-shell"><div class="rl-main"><form class="rl-controls" id="pl-form">' +
     '<h3>PL calibration</h3><p class="rl-small">Use integrated, background-corrected PL measured under consistent optical conditions.</p>' +
+    '<fieldset id="pl-import-fields" class="sp-wide"><details class="pl-import calc-import" id="pl-import" open><summary>Import steady-state PL spectra</summary><div class="calc-import-toolbar"><button type="button" class="rl-action" id="pl-file-choose">Choose file</button><button type="button" class="rl-action calc-quiet" id="pl-import-clear">Clear PL data</button></div><p id="pl-file-name" class="rl-small calc-file-status" role="status">No file selected</p><input type="file" id="pl-file" hidden accept=".csv,.tsv,.txt,text/csv,text/plain" aria-label="Import steady-state PL spectra"><p class="rl-small">Use unnormalized spectra acquired with the same detector settings and optical collection conditions.</p><p class="rl-small">CSV, TSV or TXT: first column wavelength in nm, then one PL intensity column per sample. An optional header names the samples.</p>' +
+    '<div class="rl-field"><label for="pl-data">Wavelength and PL columns</label><textarea id="pl-data" spellcheck="false" rows="5" aria-describedby="pl-import-message" placeholder="Wavelength_nm,Reference,Sample_A,Sample_B&#10;700,10,1,2&#10;750,100,10,20&#10;800,10,1,2"></textarea></div>' +
+    '<fieldset id="pl-spectrum-fields" hidden disabled><div class="rl-field"><label for="pl-sample">Displayed sample</label><select id="pl-sample"></select></div><div class="rl-field"><label for="pl-reference-sample">Reference sample</label><select id="pl-reference-sample"></select></div>' +
+    field("wave-min", "Integration start (nm)", "700", 'min="0"') + field("wave-max", "Integration end (nm)", "800", 'min="0"') + field("baseline", "Constant spectral background (a.u.)", "0", 'min="0"') +
+    '<p class="rl-small">The same interval and constant background apply to every column. Negative spectral values are retained. Detector response is not corrected automatically.</p></fieldset><div class="sp-row calc-actions"><button type="button" class="rl-action sp-calculate" id="pl-import-calculate">Integrate PL spectra</button></div><p class="sp-message" id="pl-import-message" role="status"></p></details></fieldset>' +
     '<div class="rl-field"><label for="pl-mode">Calculation method</label><select id="pl-mode"><option value="reference">Known internal-voltage reference</option><option value="relative">Relative voltage change only</option><option value="absolute">Absolute external PLQY</option></select></div>' +
     field("temperature", "Temperature T (K)", "300", 'min="0" required') +
     '<fieldset id="pl-intensity-fields"><legend class="sr-only">Relative PL intensities</legend>' +
-    '<details class="pl-import" id="pl-import"><summary>Import steady-state PL spectra</summary><p class="rl-small">Use unnormalized spectra acquired with the same detector settings and optical collection conditions.</p><p class="rl-small">CSV, TSV or TXT: first column wavelength in nm, then one PL intensity column per sample. An optional header names the samples.</p>' +
-    '<div class="rl-field"><label for="pl-data">Wavelength and PL columns</label><textarea id="pl-data" spellcheck="false" rows="5" aria-describedby="pl-import-message" placeholder="Wavelength_nm,Reference,Sample_A,Sample_B&#10;700,10,1,2&#10;750,100,10,20&#10;800,10,1,2"></textarea></div>' +
-    '<input type="file" id="pl-file" hidden accept=".csv,.tsv,.txt,text/csv,text/plain" aria-label="Import steady-state PL spectra"><div class="sp-file-picker"><button type="button" class="rl-action" id="pl-file-choose">Choose file</button><span id="pl-file-name" class="rl-small">No file selected</span></div>' +
-    '<div class="sp-row"><button type="button" class="rl-action" id="pl-import-calculate">Integrate PL spectra</button><button type="button" class="rl-action" id="pl-import-clear">Clear PL data</button></div><p class="sp-message" id="pl-import-message" role="status"></p>' +
-    '<fieldset id="pl-spectrum-fields" hidden disabled><div class="rl-field"><label for="pl-sample">Displayed sample</label><select id="pl-sample"></select></div><div class="rl-field"><label for="pl-reference-sample">Reference sample</label><select id="pl-reference-sample"></select></div>' +
-    field("wave-min", "Integration start (nm)", "700", 'min="0"') + field("wave-max", "Integration end (nm)", "800", 'min="0"') + field("baseline", "Constant spectral background (a.u.)", "0", 'min="0"') +
-    '<p class="rl-small">The same interval and constant background apply to every column. Negative spectral values are retained. Detector response is not corrected automatically.</p></fieldset></details>' +
     field("intensity", "Measured integrated PL I (a.u.)", "100", 'min="0" required') +
     field("reference-intensity", "Reference integrated PL Iref (a.u.)", "1000", 'min="0" required') +
     field("background", "Common PL background B (a.u.)", "0", 'min="0" required') + '</fieldset>' +
@@ -27,7 +25,7 @@
     field("j0rad", "Radiative dark current J0,rad (A/cm²)", "1e-23", 'min="0" required') + '</fieldset>' +
     '<fieldset id="pl-terminal-fields"><legend class="sr-only">Terminal comparison</legend>' +
     field("terminal-voltage", "Measured terminal voltage (V, optional)", "") + '</fieldset>' +
-    '<p class="sp-message" id="pl-message" role="status"></p><div class="sp-row"><button type="button" class="rl-action" id="pl-reset">Reset PL example</button></div>' +
+    '<p class="rl-small calc-auto-note" data-literal>'+T('Calibration parameters update voltage results automatically.','Kalibrierparameter aktualisieren die Spannungsergebnisse automatisch.','标定参数修改后自动更新电压结果。')+'</p><p class="sp-message" id="pl-message" role="status"></p><div class="sp-row"><button type="button" class="rl-action" id="pl-reset">Reset PL example</button></div>' +
     '</form><div class="rl-output"><div class="rl-chart-heading"><div><h3>PL-derived internal equivalent voltage</h3><p class="rl-small">Single-point inference · QFLS/q</p></div></div>' +
     '<dl class="rl-metrics" aria-live="polite" aria-atomic="true"><div><dt id="pl-main-label">Internal equivalent voltage</dt><dd id="pl-value">—</dd><span class="rl-metric-note" id="pl-main-note">Vint = QFLS/q</span></div>' +
     '<div><dt>Quasi-Fermi-level splitting</dt><dd id="pl-qfls">—</dd><span class="rl-metric-note">QFLS (eV)</span></div>' +
@@ -59,7 +57,7 @@
   window.BandgapInputs.pl=()=>spectra&&!importError?{points:spectra.points.map(row=>[row[0],row[Number($("sample").value)+1]]),identity:spectra,source:spectra.names[Number($("sample").value)],background:number("baseline")}:null;
   function modeFields() {
     const mode = $("mode").value;
-    for (const [id, show] of [["intensity-fields", mode !== "absolute"], ["reference-fields", mode === "reference"], ["absolute-fields", mode === "absolute"], ["terminal-fields", mode !== "relative"]]) {
+    for (const [id, show] of [["import-fields", mode !== "absolute"], ["intensity-fields", mode !== "absolute"], ["reference-fields", mode === "reference"], ["absolute-fields", mode === "absolute"], ["terminal-fields", mode !== "relative"]]) {
       $(id).hidden = !show; $(id).disabled = !show;
     }
     $("main-label").textContent = mode === "relative" ? "Relative internal voltage change" : "Internal equivalent voltage";
@@ -142,7 +140,7 @@
       for (const id of ["intensity", "reference-intensity", "background"]) $(id).readOnly = true;
       $("mode").value = "relative"; $("reference-voltage").value = "";
       $("data").removeAttribute("aria-invalid"); $("import-message").dataset.error = "false";
-      $("import-message").textContent = spectra.sorted ? "PL spectra loaded. Wavelengths sorted in ascending order." : "PL spectra loaded. Relative voltage mode selected; supply Vref for absolute voltage.";
+      $("import-message").textContent = spectra.names.length === 1 ? T('Single PL spectrum integrated (wavelengths sorted). Sample and reference are the same, so ΔVint = 0. Add a reference spectrum for voltage comparison; for peak energy, select Estimate from spectrum below.','Ein PL-Spektrum integriert (Wellenlängen sortiert). Probe und Referenz sind identisch, daher ΔVint = 0. Für den Spannungsvergleich ein Referenzspektrum hinzufügen; für die Peakenergie unten „Aus Spektrum schätzen“ wählen.','已积分 1 条 PL 光谱（波长已排序）。待测与参考为同一条光谱，因此 ΔVint = 0。比较电压变化需再导入参考光谱；查看发射峰请点击下方“从光谱估算”。') : spectra.sorted ? "PL spectra loaded. Wavelengths sorted in ascending order." : "PL spectra loaded. Relative voltage mode selected; supply Vref for absolute voltage.";
       modeFields(); calculate();
     } catch (error) {
       spectra = null; importError = error.message;
@@ -156,7 +154,7 @@
     $("spectrum-fields").hidden = true; $("spectrum-fields").disabled = true;
     $("import-message").textContent = importError; $("import-message").dataset.error = "false"; calculate();
   });
-  $("import-calculate").addEventListener("click", () => { fileVersion++; loadSpectra(); });
+  $("import-calculate").addEventListener("click", () => { fileVersion++; if (spectra && !importError) calculate(); else loadSpectra(); });
   $("import-clear").addEventListener("click", () => { clearImport(); $("intensity").value = ""; $("reference-intensity").value = ""; $("background").value = "0"; calculate(); });
   $("file-choose").addEventListener("click", () => $("file").click());
   $("file").addEventListener("change", async () => {

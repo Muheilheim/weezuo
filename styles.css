@@ -403,7 +403,7 @@ html[lang="zh-CN"] .research-card-content>a,html[lang="zh-CN"] .publication-tool
 @media(max-width:800px){html[lang="de"] .nav{background:#254940;border-color:#688b7b}html[lang="zh-CN"] .nav{background:#254658;border-color:#617e83}}
 @media(max-width:720px){html[lang="zh-CN"] .hero-headline{font-size:clamp(23px,7vw,27px);letter-spacing:-.4px}}
 /* Chinese typography follows the readable sans-serif approach used by major Chinese university sites. */
-html[lang="zh-CN"]{--sans:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC",Arial,sans-serif}
+html[lang="zh-CN"]{--sans:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Noto Sans SC","Source Han Sans SC",Arial,sans-serif}
 html[lang="zh-CN"] body{line-height:1.78}
 html[lang="zh-CN"] .hero h1{font-family:var(--sans);font-size:clamp(54px,6.8vw,82px);font-weight:600;letter-spacing:.03em;line-height:1.15}
 html[lang="zh-CN"] .profile-card-info strong{font-family:var(--sans);font-weight:600;letter-spacing:.02em}

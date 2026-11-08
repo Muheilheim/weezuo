@@ -23,8 +23,8 @@
 .rl-advanced summary,.rl-method summary{cursor:pointer;font-size:12px;font-weight:600}
 .rl-advanced[open] summary{margin-bottom:18px}
 .rl-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.rl-action{font-size:12px;min-height:40px;padding:8px 13px;border:1px solid var(--control);border-radius:6px;background:var(--surface);transition:background .15s,border-color .15s}
-.rl-action:hover{background:var(--soft)}
+.rl-action{font:600 13px/1.4 var(--sans);min-height:44px;padding:10px 16px;border:1px solid var(--control);border-radius:6px;background:var(--surface);transition:background .15s,border-color .15s}
+.rl-action:not(:disabled):hover{background:var(--soft)}
 .rl-action:disabled{opacity:.5;cursor:not-allowed}
 #csv-export-dialog .rl-actions a{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none}
 #csv-export-name{overflow-wrap:anywhere;font-size:13px}
@@ -111,3 +111,6 @@
 @media(max-width:680px){.resistance-section{padding-block:44px}.rl-main{grid-template-columns:1fr}.rl-controls{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.rl-controls>h3,.rl-controls>.rl-small,.rl-controls>.rl-advanced,.rl-controls>.rl-actions,.rl-controls>.rl-error,.rl-controls>.rl-preset{grid-column:1/-1}.rl-footer{align-items:start;flex-direction:column}.rl-output{padding:22px 18px}.rl-chart text{font-size:18px}}
 @media(max-width:430px){.rl-controls{gap:0 12px;padding:18px 15px}.rl-output{padding:20px 12px}.rl-chart-heading{flex-wrap:wrap}.rl-metrics dd{font-size:23px}.rl-legend{gap:9px}.rl-chart text{font-size:22px}.rl-method{padding:14px}.rl-field input[type="number"],.rl-field select{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.resistance-section{scroll-behavior:auto}.rl-action{transition:none}}
+
+/* Keep calculator actions easy to target in every language and theme. */
+.rl-action:focus-visible{outline:3px solid var(--teal);outline-offset:3px}

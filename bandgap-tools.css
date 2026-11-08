@@ -37,9 +37,9 @@
 .bg-legend>.bg-key-fit:before{border-top:2px dashed var(--orange)}
 .bg-legend>.bg-key-marker:before{border-top:2px dotted var(--muted)}
 .bg-plot-context{flex-basis:100%;margin:0;color:var(--muted);overflow-wrap:anywhere}
-#bpl-open-import{margin-left:8px}
+#bpl-open-import{margin:0}
 #pl-import.bg-needs-input{outline:2px solid var(--teal);outline-offset:5px;scroll-margin-top:120px}
 #bpl-message:not(:empty){padding:10px 12px;background:var(--soft);border-left:3px solid var(--teal)}
 
-#bpl-example{margin:8px 0 0 8px}
+#bpl-example{margin:0}
 .bg-reference-note{padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--soft)}
