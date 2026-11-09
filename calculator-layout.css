@@ -73,3 +73,16 @@
 .calc-subtool .bg-fields .rl-field{margin-bottom:16px}
 .calc-subtool .calc-controls-scroll>.calc-actions{display:flex;flex-wrap:wrap;gap:6px}
 .calc-subtool .calc-controls-scroll>.calc-actions button{flex:1 1 180px;min-width:0;white-space:normal}
+
+/* Measured curves and conversion reuse the existing input/result grid. */
+.pv-tabs{grid-template-columns:repeat(6,minmax(0,1fr))}
+.measurement-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+.measurement-converter .rl-main{height:auto}
+.measurement-converter .rl-controls,.measurement-converter .rl-output{min-width:0}
+.measurement-converter .rl-controls{display:block}
+.measurement-converter .rl-small{font-size:12px;line-height:1.7}
+.measurement-jump{width:100%;margin:8px 0 0!important;font-size:12px}
+#jv-calculator .calc-results-scroll>.rl-field{margin-top:12px}
+#jv-calculator .rl-metrics dt{overflow-wrap:anywhere}
+@media(max-width:1000px){.pv-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){.pv-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.measurement-converter .rl-main{grid-template-columns:1fr}}

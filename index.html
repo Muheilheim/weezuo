@@ -43,13 +43,15 @@
   <script defer src="./trpl.js?v=ef06b2a6b28d"></script>
   <link rel="stylesheet" href="./bandgap-tools.css?v=fa34a63f3fa5">
   <script defer src="./bandgap-model.js?v=0b69599a1114"></script>
-  <script defer src="./bandgap-tools.js?v=381d6f46ddb2"></script>
+  <script defer src="./bandgap-tools.js?v=b0b7fdd01a85"></script>
   <link rel="stylesheet" href="./pl-pseudo-jv.css?v=9f684fd9dd46">
   <script defer src="./pl-pseudo-jv-model.js?v=a3b6ccb389dc"></script>
   <script defer src="./pl-pseudo-jv.js?v=584c2c3fe7b2"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Weiwei Zuo","honorificPrefix":"Dr.-Ing.","jobTitle":"Postdoctoral Researcher","affiliation":{"@type":"Organization","name":"Institute for Photovoltaics, University of Stuttgart","url":"https://www.ipv.uni-stuttgart.de/"},"sameAs":["https://www.ipv.uni-stuttgart.de/en/institute/team/Zuo/","https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en","https://orcid.org/0000-0002-9135-1628"],"email":"weiwei.zuo@ipv.uni-stuttgart.de"}</script>
-<link rel="stylesheet" href="./calculator-layout.css?v=67cf7601f6c9">
-<script defer src="./calculator-layout.js?v=2a57943a26c7"></script>
+<link rel="stylesheet" href="./calculator-layout.css?v=36a53445ad3e">
+<script defer src="./measurement-model.js?v=e249c9a3040a"></script>
+<script defer src="./measurement-tools.js?v=cf55f15ecb4f"></script>
+<script defer src="./calculator-layout.js?v=8a757058e472"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -111,6 +113,7 @@
         <button id="pv-tab-resistance" type="button" role="tab" data-pv-tool="solar-cell-tools" aria-selected="true" aria-controls="resistance-panel"><span>03 / COMBINED</span>Effect of Both Resistances Calculator</button>
         <button id="pv-tab-pl" type="button" role="tab" data-pv-tool="pl-voltage" aria-selected="false" aria-controls="pl-voltage" tabindex="-1"><span>04 / LUMINESCENCE</span>PL → Internal voltage</button>
         <button id="pv-tab-trpl" type="button" role="tab" data-pv-tool="trpl" aria-selected="false" aria-controls="trpl" tabindex="-1"><span>05 / TIME RESOLVED</span>TRPL → Decay &amp; voltage</button>
+        <button id="pv-tab-jv" type="button" role="tab" data-pv-tool="jv-analysis" aria-selected="false" aria-controls="jv-analysis" tabindex="-1"><span>06 / MEASURED</span>J–V parameters</button>
       </div>
       <div id="resistance-panel" role="tabpanel" aria-labelledby="pv-tab-resistance" tabindex="0" data-pv-panel>
         <div id="resistance-calculator"></div>
@@ -126,6 +129,9 @@
       </div>
       <div id="trpl" role="tabpanel" aria-labelledby="pv-tab-trpl" tabindex="0" data-pv-panel hidden>
         <div id="trpl-calculator"></div>
+      </div>
+      <div id="jv-analysis" role="tabpanel" aria-labelledby="pv-tab-jv" tabindex="0" data-pv-panel hidden>
+        <div id="jv-calculator"></div>
       </div>
       <noscript><p>Enable JavaScript to use these calculators. <a class="inline-link" href="https://www.nlr.gov/grid/solar-resource/spectra-am1.5">Reference AM1.5 spectra.</a></p></noscript>
     </section>
