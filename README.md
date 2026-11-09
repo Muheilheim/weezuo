@@ -35,3 +35,9 @@ File controls now precede pasted data in UV–Vis, PL, EQE, TRPL and PLQY pseudo
 ## Layout follow-up — 9 November 2026
 
 The measurement calculators follow the established EQE/resistance layout: data import and parameters on the left, results and plots on the right. UV–Vis and UPS/IPES use the same shared shell; PL retains the existing sidebar. On narrow screens the sections stack. File controls stay above pasted data and primary calculation actions keep their common style. Script and stylesheet URLs include content versions in English, German and Chinese pages.
+
+## Unified calculator workspaces — 9 November 2026
+
+English, German and Chinese share a consistent input/result layout across the five main modules and ten tools. File import remains visible above editable data; calculations and exports have consistent panel positions. Summary metrics precede plots. UV retains its fixed result window, while EQE and PL bandgap subtools appear below their respective main panels and reuse the existing spectra. Parameters and results use independent scrolling on desktop and stack naturally on narrow screens. Numerical models and equations are unchanged.
+
+The release package passes 387 interaction/import checks. Local browser checks cover 90 distinct language/viewport/tool combinations and keyboard scrolling, mode guards, empty-data feedback and the simulated 1.55 eV UV example. Physical phones, other browser engines and completed native CSV downloads were not tested in this release.

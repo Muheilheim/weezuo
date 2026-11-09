@@ -48,3 +48,49 @@
 .bg-input-shell .rl-controls{display:block}
 .bg-input-shell .rl-controls .bg-fields{grid-template-columns:minmax(0,1fr)}
 .bg-input-shell .calc-actions>.sp-calculate{width:100%}
+
+
+/* Selected anchored-results workspace; other calculators keep their existing layout. */
+.uv-workspace>.rl-main{height:clamp(560px,calc(100dvh - 370px),690px)}
+.uv-workspace .rl-controls{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:18px}
+.uv-workspace .uv-import-header{flex:none;padding:0 0 12px;margin:0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}
+.uv-import-header h4{font:600 15px/1.4 var(--sans);margin:0 0 10px}
+.uv-import-header .calc-import-toolbar{gap:6px;margin-bottom:8px}
+.uv-import-header .calc-import-toolbar .rl-action{padding:8px 10px;flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.uv-import-header .calc-file-status{font-size:11px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uv-data-editor{margin-top:4px}
+.uv-data-editor>summary{cursor:pointer;min-height:36px;padding:8px 0;font-size:12px;line-height:1.6;box-sizing:border-box}
+.uv-data-editor .rl-small{font-size:11px;line-height:1.6}
+.uv-data-editor textarea{height:100px;max-height:180px}
+.uv-parameters{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:12px 8px 0 0}
+.uv-parameters:focus-visible,.uv-data-editor>summary:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.uv-parameters>.bg-fields:first-child{margin-top:0}
+.uv-parameters .rl-field{min-width:0}
+.uv-unit-pair{display:grid;gap:12px}
+.uv-workspace .rl-controls>.calc-actions{flex:none;margin:12px 0 0}
+.uv-workspace .rl-output{display:flex;flex-direction:column;min-height:0;overflow:auto;padding:18px}
+.uv-result-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.uv-result-heading h3{margin:0;font-size:18px}
+.uv-fixed-note{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.uv-icon{display:inline-block;flex:none;width:14px;height:14px;background:currentColor;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.uv-icon-folder{-webkit-mask-image:url("./assets/folder.svg");mask-image:url("./assets/folder.svg")}
+.uv-icon-pin{color:var(--teal);-webkit-mask-image:url("./assets/pin-angle-fill.svg");mask-image:url("./assets/pin-angle-fill.svg")}
+.uv-workspace .bg-result{flex:none;margin:12px 0 0;padding:12px;gap:8px 12px}
+.uv-workspace .bg-result strong{font-size:32px}
+.uv-workspace .bg-result span{font-size:12px}
+.uv-workspace .bg-message{flex:none;margin:8px 0;font-size:12px}
+.uv-workspace .bg-message:empty{display:none}
+.uv-result-plot{flex:1 1 auto;min-height:210px;display:flex;flex-direction:column;justify-content:center}
+.uv-result-plot>.bg-chart{margin:10px 0 0;max-height:340px;min-height:150px;flex:1 1 auto}
+.uv-result-plot .bg-chart text{font-size:15px}
+.uv-result-plot .bg-legend{flex:none;margin:4px 0 8px;gap:4px 12px;font-size:12px}
+.uv-result-plot .bg-plot-context{display:none}
+.uv-empty-hint{flex:1;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted);font-size:13px;line-height:1.7}
+.uv-analysis-record{flex:none;margin:4px 0 10px;font-size:12px;line-height:1.5}
+.uv-analysis-record>div{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:12px;padding:5px 0;border-bottom:1px solid var(--line)}
+.uv-analysis-record dt{color:var(--muted)}
+.uv-analysis-record dd{margin:0;overflow-wrap:anywhere}
+.uv-workspace .rl-output>.rl-actions{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.uv-workspace .rl-output>.rl-actions .rl-action{min-width:0;white-space:normal}
+@media(min-width:1200px){.uv-unit-pair{grid-template-columns:1fr 1fr;gap:8px}}
+@media(max-width:680px){.uv-workspace>.rl-main{height:auto}.uv-workspace .rl-controls{display:block;overflow:visible}.uv-parameters{overflow:visible;padding-right:0}.uv-workspace .rl-output{overflow:visible}.uv-result-plot{min-height:0}.uv-result-plot>.bg-chart{min-height:0;max-height:none}.uv-fixed-note{display:none}.uv-result-plot .bg-chart text{font-size:26px}}

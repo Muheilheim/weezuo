@@ -82,6 +82,35 @@ for(const [panelId,id]of [['bga-uv','buv'],['bga-ups','bup']]){
  panel.append(shell);
 }
 
+
+// Keep import controls and the calculation action visible while parameters scroll.
+{
+ const panel=$('bga-uv'),workspace=panel.querySelector('.bg-input-shell'),controls=workspace.querySelector('.rl-controls'),results=workspace.querySelector('.rl-output');
+ workspace.classList.add('uv-workspace');
+ const imported=controls.querySelector('.calc-import'),toolbar=imported.querySelector('.calc-import-toolbar'),source=$('buv-source'),calculate=controls.querySelector('.calc-actions');
+ imported.classList.add('uv-import-header');
+ const importTitle=document.createElement('h4');importTitle.textContent=T('Import data','Daten importieren','导入数据');imported.prepend(importTitle);
+ const editor=document.createElement('details');editor.id='buv-editor';editor.className='uv-data-editor';editor.innerHTML='<summary>'+T('Paste / edit data','Daten einfügen / bearbeiten','粘贴／编辑数据')+'</summary>';
+ for(const child of [...imported.children])if(![importTitle,toolbar,source].includes(child))editor.append(child);
+ imported.append(editor);
+ if(!source.textContent.trim())source.textContent=T('No file selected','Keine Datei ausgewählt','未选择文件');source.title=source.textContent;
+ const folder=document.createElement('span');folder.className='uv-icon uv-icon-folder';folder.setAttribute('aria-hidden','true');$('buv-choose').prepend(folder);
+ const parameters=document.createElement('div');parameters.className='uv-parameters';parameters.tabIndex=0;parameters.setAttribute('role','region');parameters.setAttribute('aria-label',T('Spectrum parameters','Spektrenparameter','光谱分析参数'));
+ for(const child of [...controls.children])if(child!==imported&&child!==calculate)parameters.append(child);
+ controls.replaceChildren(imported,parameters,calculate);
+ const units=document.createElement('div');units.className='uv-unit-pair';const unitField=$('buv-unit').closest('.rl-field'),signalField=$('buv-signal').closest('.rl-field'),settings=unitField.parentElement;units.append(unitField,signalField);settings.prepend(units);
+ const method=results.querySelector('.rl-method');if(method)panel.append(method);
+ const heading=results.querySelector('h3');heading.textContent=T('Estimate','Schätzergebnis','估算结果');
+ const header=document.createElement('div');header.className='uv-result-heading';header.append(heading);
+ const fixed=document.createElement('span');fixed.className='uv-fixed-note';fixed.innerHTML='<span class="uv-icon uv-icon-pin" aria-hidden="true"></span><span>'+T('Results stay visible','Ergebnis bleibt sichtbar','结果保持可见')+'</span>';header.append(fixed);
+ const plot=document.createElement('div');plot.className='uv-result-plot';plot.append($('buv-chart'),$('buv-legend'));
+ const empty=document.createElement('p');empty.id='buv-empty-hint';empty.className='uv-empty-hint';empty.textContent=T('Choose a file or paste a spectrum on the left, select a linear fit window, then estimate.','Links eine Datei wählen oder ein Spektrum einfügen, einen linearen Fitbereich festlegen und die Schätzung starten.','在左侧选择文件或粘贴光谱，设置线性拟合区间后进行估算。');plot.append(empty);
+ const meta=document.createElement('dl');meta.id='buv-analysis-record';meta.className='uv-analysis-record';meta.hidden=true;
+ meta.innerHTML='<div><dt>'+T('Fit window','Fitbereich','拟合区间')+'</dt><dd id="buv-record-window"></dd></div><div><dt>'+T('Transition','Übergang','跃迁类型')+'</dt><dd id="buv-record-transition"></dd></div><div><dt>'+T('Background / correction','Hintergrund / Korrektur','背景与校准')+'</dt><dd id="buv-record-correction"></dd></div>';
+ const value=results.querySelector('.bg-result'),message=$('buv-message'),actions=results.querySelector('.rl-actions');
+ results.replaceChildren(header,value,message,plot,meta,actions);
+}
+
 const eqSection=section('eq-bandgap',words.eqe,T('Reuses the current EQE import. Energy-domain local quadratic differentiation; no second upload.','Nutzt den aktuellen EQE-Import. Lokale quadratische Differentiation im Energieraum; kein erneuter Upload.','直接使用当前导入的 EQE，以能量为横轴进行局部二次拟合求导，无需重复上传。'));
 eqSection.innerHTML+=opticalControls('beq',field('beq-smoothing',T('Derivative window (odd points)','Ableitungsfenster (ungerade Punktzahl)','求导平滑窗口（奇数点）'),'11','min="5" max="51" step="2"'))+`<p class="rl-small">${words.eqeLimit}</p><p class="rl-small">${T('Solid: EQE fraction. Dashed: derivative scaled to its positive maximum.','Durchgezogen: EQE-Anteil. Gestrichelt: Ableitung, auf ihr positives Maximum skaliert.','实线：EQE（小数）；虚线：按正最大值归一化的导数。')}</p><a class="bg-source" href="https://doi.org/10.1002/aenm.202100022" target="_blank" rel="noopener noreferrer">Almora et al., Advanced Energy Materials (2021)</a>`;
 $('eq-output').append(eqSection);
@@ -89,10 +118,16 @@ const plSection=section('pl-bandgap',words.pl,T('Reuses the selected imported PL
 plSection.innerHTML+=`<p class="rl-small" id="bpl-source"></p>`+opticalControls('bpl',select('bpl-density',T('Peak convention','Peakkonvention','峰位定义'),[['density',T('Energy density · apply wavelength Jacobian','Energiedichte · Wellenlängen-Jakobi-Faktor anwenden','能量谱密度峰 · 应用波长雅可比变换')],['supplied',T('Supplied-spectrum peak · no intensity conversion','Peak des Eingabespektrums · keine Intensitätsumrechnung','输入光谱峰 · 不转换强度')]]))+`<p class="rl-small">${words.plLimit}</p><details class="rl-method"><summary>${words.settings}</summary><p>${T('For signal per nm, IE = Iλ λ²/(hc). Select the supplied-spectrum option when the signal is already per eV or is not a density per nm. The peak is refined with a quadratic through its three neighboring samples; no smoothing or spectral-response correction. Sampling step is not an uncertainty.','Für Signal pro nm: IE = Iλ λ²/(hc). Option für das gelieferte Spektrum wählen, wenn das Signal bereits pro eV oder keine Dichte pro nm ist. Peakverfeinerung mit drei benachbarten Punkten; keine Glättung oder spektrale Antwortkorrektur. Abtastschritt ist keine Unsicherheit.','信号为每 nm 谱密度时，IE = Iλ λ²/(hc)。若信号已按每 eV 表示或并非每 nm 谱密度，请选择原始光谱峰。以峰附近三个采样点作二次插值，不进行平滑或仪器响应校正；采样步长不等于不确定度。')}</p></details>`;
 $('pl-voltage-calculator').querySelector('.rl-output').append(plSection);
 const ids={uv:'buv',eqe:'beq',pl:'bpl',ups:'bup'};
-function clear(method,message=''){delete records[method];const id=ids[method];$(id+'-value').textContent='—';$(id+'-detail').textContent=words.empty;$(id+'-message').textContent=message;$(id+'-chart').setAttribute('hidden','');$(id+'-legend').hidden=true;$(id+'-export').disabled=true;if($(id+'-use'))$(id+'-use').disabled=true;comparison();}
+function clear(method,message=''){delete records[method];const id=ids[method];$(id+'-value').textContent='—';$(id+'-detail').textContent=words.empty;$(id+'-message').textContent=message;$(id+'-chart').setAttribute('hidden','');$(id+'-legend').hidden=true;$(id+'-export').disabled=true;if(method==='uv'){$('buv-analysis-record').hidden=true;$('buv-empty-hint').hidden=false;}if($(id+'-use'))$(id+'-use').disabled=true;comparison();}
 function render(r,source){source=source==='Supplied workbook example'?T('Supplied workbook example','Mitgeliefertes Arbeitsmappenbeispiel','随附工作簿示例'):['Your EQE data','No file selected'].includes(source)?T('Current EQE data','Aktuelle EQE-Daten','当前 EQE 数据'):source;r.source=source;records[r.method]=r;const id=ids[r.method];$(id+'-value').textContent=fmt(r.value)+' eV';
  const detail=r.method==='uv'?`R² = ${fmt(r.fit.r2,5)} · n = ${r.fit.n} · ${T('fit-only SE','nur Fit-SE','仅拟合 SE')} = ${fmt(r.se,5)} eV`:r.method==='ups'?`EV = ${fmt(r.ev)} eV · EC = ${fmt(r.ec)} eV`+(r.sigma===null?'':` · σ = ${fmt(r.sigma)} eV`):`${T('Local energy step','Lokaler Energieschritt','局部能量采样步长')} ≈ ${fmt(r.spacing,5)} eV`;
  $(id+'-detail').textContent=detail;$(id+'-message').textContent=r.warnings.filter(w=>!['plLimit','eqeLimit','upsLimit'].includes(w)).map(w=>warnings[w]).filter(Boolean).join(' ');$(id+'-export').disabled=false;if($(id+'-use'))$(id+'-use').disabled=r.value<.5||r.value>3;
+ if(r.method==='uv'){
+  const p=r.parameters;$('buv-record-window').textContent=fmt(p.lo,3)+'–'+fmt(p.hi,3)+' eV';
+  $('buv-record-transition').textContent=p.transition==='direct'?T('Direct allowed','Direkt erlaubt','直接允许跃迁'):T('Indirect allowed','Indirekt erlaubt','间接允许跃迁');
+  $('buv-record-correction').textContent='B = '+String(p.background??0)+' '+(p.signal==='alpha'?'cm⁻¹':'A')+' · ΔE = '+fmt(p.offset,3)+' eV';
+  $('buv-analysis-record').hidden=false;$('buv-empty-hint').hidden=true;
+ }
  if(r.points.length)draw(id,r);comparison();
 }
 function draw(id,r){
@@ -129,10 +164,10 @@ function params(id){return {lo:number(id+'-lo'),hi:number(id+'-hi'),offset:numbe
 let uvSource=T('Pasted absorption data','Eingefügte Absorptionsdaten','粘贴的吸收光谱'),fileVersion=0;
 function uvBounds(event){try{const data=M.parse($('buv-data').value);if(event?.type!=='change'){if(data.axisUnit)$('buv-unit').value=data.axisUnit;if(data.signal)$('buv-signal').value=data.signal;}$('buv-thickness').disabled=$('buv-signal').value!=='absorbance';const es=M.energy(data,{unit:$('buv-unit').value,offset:0});$('buv-offset').value=0;$('buv-lo').value=es[0][0].toFixed(6);$('buv-hi').value=es.at(-1)[0].toFixed(6);}catch{}}
 $('buv-calc').addEventListener('click',()=>{try{const r=M.tauc(M.parse($('buv-data').value),{...params('buv'),unit:$('buv-unit').value,signal:$('buv-signal').value,thickness:number('buv-thickness'),background:number('buv-background'),transition:$('buv-transition').value});render(r,uvSource);}catch(e){clear('uv',errors[e.message]||errors.number);}});
-$('buv-example').addEventListener('click',()=>{fileVersion++;$('buv-file').value='';$('buv-unit').value='eV';$('buv-signal').value='alpha';$('buv-transition').value='direct';$('buv-background').value=0;$('buv-offset').value=0;$('buv-lo').value=1.62;$('buv-hi').value=1.9;uvSource=T('Synthetic example · Eg = 1.55 eV','Synthetisches Beispiel · Eg = 1,55 eV','模拟示例 · Eg = 1.55 eV');$('buv-source').textContent=uvSource;$('buv-data').value='Energy_eV,alpha_cm-1\n'+Array.from({length:101},(_,i)=>{const e=1.3+i*.01;return e.toFixed(3)+','+(1e5*Math.sqrt(Math.max(0,e-1.55))/e).toFixed(8);}).join('\n');clear('uv');$('buv-calc').click();});
+$('buv-example').addEventListener('click',()=>{fileVersion++;$('buv-file').value='';$('buv-unit').value='eV';$('buv-signal').value='alpha';$('buv-thickness').disabled=true;$('buv-transition').value='direct';$('buv-background').value=0;$('buv-offset').value=0;$('buv-lo').value=1.62;$('buv-hi').value=1.9;uvSource=T('Synthetic example · Eg = 1.55 eV','Synthetisches Beispiel · Eg = 1,55 eV','模拟示例 · Eg = 1.55 eV');$('buv-source').textContent=uvSource;$('buv-source').title=uvSource;$('buv-data').value='Energy_eV,alpha_cm-1\n'+Array.from({length:101},(_,i)=>{const e=1.3+i*.01;return e.toFixed(3)+','+(1e5*Math.sqrt(Math.max(0,e-1.55))/e).toFixed(8);}).join('\n');clear('uv');$('buv-calc').click();});
 $('buv-choose').addEventListener('click',()=>$('buv-file').click());
-$('buv-file').addEventListener('change',async()=>{const f=$('buv-file').files[0],version=++fileVersion;if(!f)return;clear('uv');try{if(f.size>2000000)throw Error('size');if(!/\.(csv|tsv|txt)$/i.test(f.name))throw Error('columns');const text=await f.text();if(version!==fileVersion)return;M.parse(text);$('buv-data').value=text;uvSource=f.name;$('buv-source').textContent=f.name;uvBounds();}catch(e){if(version===fileVersion){$('buv-data').value='';clear('uv',errors[e.message]||errors.number);}}});
-$('buv-data').addEventListener('input',()=>{fileVersion++;uvSource=T('Pasted absorption data','Eingefügte Absorptionsdaten','粘贴的吸收光谱');$('buv-source').textContent=uvSource;$('buv-file').value='';clear('uv',words.invalid);uvBounds();});
+$('buv-file').addEventListener('change',async()=>{const f=$('buv-file').files[0],version=++fileVersion;if(!f)return;clear('uv');try{if(f.size>2000000)throw Error('size');if(!/\.(csv|tsv|txt)$/i.test(f.name))throw Error('columns');const text=await f.text();if(version!==fileVersion)return;M.parse(text);$('buv-data').value=text;uvSource=f.name;$('buv-source').textContent=f.name;$('buv-source').title=f.name;uvBounds();}catch(e){if(version===fileVersion){$('buv-data').value='';clear('uv',errors[e.message]||errors.number);}}});
+$('buv-data').addEventListener('input',()=>{fileVersion++;uvSource=T('Pasted absorption data','Eingefügte Absorptionsdaten','粘贴的吸收光谱');$('buv-source').textContent=uvSource;$('buv-source').title=uvSource;$('buv-file').value='';clear('uv',words.invalid);uvBounds();});
 $('buv-unit').addEventListener('change',uvBounds);
 $('buv-signal').addEventListener('change',()=>{$('buv-thickness').disabled=$('buv-signal').value!=='absorbance';});$('buv-thickness').disabled=true;
 $('bup-calc').addEventListener('click',()=>{try{render(M.electronic({v:number('bup-v'),c:number('bup-c'),dv:number('bup-dv'),dc:number('bup-dc'),convention:$('bup-convention').value,sv:$('bup-sv').value.trim()===''?null:number('bup-sv'),sc:$('bup-sc').value.trim()===''?null:number('bup-sc')}),T('Entered band onsets','Eingegebene Bandkanten','手动输入的拟合带边'));}catch(e){clear('ups',errors[e.message]||errors.number);}});
