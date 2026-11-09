@@ -43,3 +43,8 @@
 
 #bpl-example{margin:0}
 .bg-reference-note{padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--soft)}
+
+/* Reuse the same sidebar proportions and responsive breakpoints as EQE. */
+.bg-input-shell .rl-controls{display:block}
+.bg-input-shell .rl-controls .bg-fields{grid-template-columns:minmax(0,1fr)}
+.bg-input-shell .calc-actions>.sp-calculate{width:100%}

@@ -34,4 +34,4 @@ File controls now precede pasted data in UV–Vis, PL, EQE, TRPL and PLQY pseudo
 
 ## Layout follow-up — 9 November 2026
 
-PL spectrum import now spans the calculator width, with calibration fields below and results following the input area. Desktop fields use two columns and narrow screens use one. Script and stylesheet URLs include content versions so reloading a newly published page requests the matching assets.
+The measurement calculators follow the established EQE/resistance layout: data import and parameters on the left, results and plots on the right. UV–Vis and UPS/IPES use the same shared shell; PL retains the existing sidebar. On narrow screens the sections stack. File controls stay above pasted data and primary calculation actions keep their common style. Script and stylesheet URLs include content versions in English, German and Chinese pages.
