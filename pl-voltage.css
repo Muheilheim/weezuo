@@ -43,3 +43,13 @@
 .pl-legend{flex-wrap:wrap;line-height:1.7}
 .pl-legend .pl-model-line:before,.pl-legend .pl-guide-line:before{width:22px;height:0;border-top:2px solid var(--teal);border-radius:0;background:none}
 .pl-legend .pl-guide-line:before{border-top-style:dashed}
+
+
+/* Keep spectrum import full width instead of squeezing it into the calibration sidebar. */
+.pl-shell .rl-main{grid-template-columns:minmax(0,1fr)}
+.pl-shell .rl-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;border-right:0;border-bottom:1px solid var(--line)}
+.pl-shell .rl-controls>h3,.pl-shell .rl-controls>.rl-small,.pl-shell .rl-controls>fieldset,.pl-shell .rl-controls>.sp-message,.pl-shell .rl-controls>.sp-row{grid-column:1/-1}
+.pl-shell .rl-controls>fieldset:not([hidden]):not(#pl-import-fields),.pl-import #pl-spectrum-fields:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+.pl-shell .rl-controls>fieldset>.rl-small,.pl-import #pl-spectrum-fields>.rl-small{grid-column:1/-1}
+.pl-import.calc-import{padding:16px;border-radius:8px}
+@media(max-width:560px){.pl-shell .rl-controls,.pl-shell .rl-controls>fieldset:not([hidden]):not(#pl-import-fields),.pl-import #pl-spectrum-fields:not([hidden]){grid-template-columns:minmax(0,1fr)}.pl-import.calc-import{padding:12px}}

@@ -31,3 +31,7 @@ The portrait is from the institutional team profile. The three research-card ima
 ## Calculator update — 8 November 2026
 
 File controls now precede pasted data in UV–Vis, PL, EQE, TRPL and PLQY pseudo J–V. PL imports are expanded above calibration settings. Main calculations share a consistent button style, 44 px minimum height and keyboard-focus feedback. Recalculating loaded PL spectra preserves the selected interval and calibration values. PL guidance explains single-spectrum references and high backgrounds; explicit UV absorbance headers initialize the signal and axis controls. The underlying numerical equations are unchanged. Raw measurement files and local test reports are not included in this repository.
+
+## Layout follow-up — 9 November 2026
+
+PL spectrum import now spans the calculator width, with calibration fields below and results following the input area. Desktop fields use two columns and narrow screens use one. Script and stylesheet URLs include content versions so reloading a newly published page requests the matching assets.
