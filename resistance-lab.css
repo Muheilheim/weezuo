@@ -114,3 +114,13 @@
 
 /* Keep calculator actions easy to target in every language and theme. */
 .rl-action:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+.rl-measurement{border:1px solid var(--line);border-radius:8px;padding:14px;margin:18px 0}
+.rl-measurement[hidden]{display:none}
+.rl-measurement h3{margin:0 0 10px;font-size:16px}
+.rl-measurement .rl-small{overflow-wrap:anywhere}
+.rl-measurement .rl-table-wrap{margin:10px 0}
+.rl-measurement .rl-actions{display:flex;flex-wrap:wrap;gap:8px}
+.rl-measurement .rl-action{max-width:100%;white-space:normal}
+.rl-measurement summary{cursor:pointer;font-size:12px}
+.rl-measured-curve{stroke:var(--orange);stroke-width:3.2;stroke-dasharray:12 3 2 3}

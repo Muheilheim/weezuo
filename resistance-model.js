@@ -1,6 +1,6 @@
 /* Single-cell, area-normalized single-diode model. SI current density: A/cm2.
  * Reference Voc calibrates J0 at the selected n and T. It is not a temperature model.
- * See the linked Sandia PVPMC single-diode model in the calculator documentation.
+ * Governing equation: Green, Solid-State Electronics (1981), doi:10.1016/0038-1101(81)90062-9.
  */
 (function (root) {
   "use strict";
@@ -62,6 +62,18 @@
     const both = model(p);
     return {ideal, series, shunt, both};
   }
+  function fromMeasured(measured, {n, temperature, rs, rsh, pin}) {
+    validate({voc: measured.voc, jph: measured.jsc, n, temperature, rs, rsh, pin});
+    const a = n * KB * temperature / Q, s = measured.jsc / 1000, v = measured.voc;
+    const u = s * rs, g = rsh === Infinity ? 0 : 1 / rsh;
+    const numerator = s + (u - v) * g;
+    if (v <= u || numerator <= 0) throw new RangeError("Incompatible measured endpoints");
+    // Solve the single-diode equation at (0, Jsc) and (Voc, 0), using assumed resistances.
+    const j0 = numerator / (Math.exp(u / a) * Math.expm1((v - u) / a));
+    const jph = j0 * Math.expm1(v / a) + v * g;
+    if (!Number.isFinite(j0) || j0 <= 0) throw new RangeError("Invalid endpoint calibration");
+    return validate({voc: a * Math.log1p(jph / j0), jph: jph * 1000, n, temperature, rs, rsh, pin});
+  }
   function idealityFromSlope(slopeMv, temperature, base = "log10") {
     if (!Number.isFinite(slopeMv) || slopeMv <= 0) throw new RangeError("Slope must be positive");
     if (!Number.isFinite(temperature) || temperature < 200 || temperature > 400) throw new RangeError("Invalid temperature");
@@ -108,7 +120,7 @@
     return {area, isc: result.jsc * area, imp: result.jmp * area, pmax: result.pmax * area,
       incidentPower: p.pin * area / 1000, rs: p.rs / area, rsh: p.rsh / area};
   }
-  const api = {model, compare, validate, limits, idealityFromSlope, targetFF, areaLimits, deviceValues};
+  const api = {model, compare, fromMeasured, validate, limits, idealityFromSlope, targetFF, areaLimits, deviceValues};
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.SolarResistance = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

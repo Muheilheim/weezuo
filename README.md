@@ -50,3 +50,8 @@ The sixth calculator imports two-column measured J-V or I-V text files, separate
 UV-Vis and PL reuse their imported spectra for nm-to-eV preview and export, preserving the original samples in increasing energy order. UV absorbance and absorption coefficient retain their ordinate values; PL offers a per-nm-to-per-eV Jacobian or horizontal-axis-only display. Bin counts require bin-width normalization before density conversion. User files remain in the browser.
 
 Method references: Green, Solid-State Electronics 24 (1981), DOI 10.1016/0038-1101(81)90062-9; Smestad et al., Solar Energy Materials and Solar Cells 92 (2008), DOI 10.1016/j.solmat.2008.01.003; Tada, Physica Status Solidi A 215 (2018), DOI 10.1002/pssa.201800448; Mooney and Kambhampati, J. Phys. Chem. Lett. 4 (2013), DOI 10.1021/jz401508t, together with their official 2014 absorption correction, DOI 10.1021/jz502066v.
+
+
+## Measured J–V comparison (2026-11-09)
+
+Module 06 sends the selected measured scan to module 03 as a saved comparison snapshot. J–V/P–V overlays and a live Voc/Jsc/FF/PCE table keep measured and simulated values separate. An explicit starting-model action assumes the apparent slope resistances are circuit inputs, retains user-selected n/T, and algebraically calibrates ideal reference Jph and Voc to the measured endpoints. It is not a unique full-curve fit; incompatible or out-of-range inputs are rejected without clamping. CSV preserves scan provenance, fit windows and assumptions. Governing equation: Green (1981), doi:10.1016/0038-1101(81)90062-9; apparent-resistance limitation: Tada (2018), doi:10.1002/pssa.201800448.
