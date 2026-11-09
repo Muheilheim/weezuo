@@ -75,7 +75,7 @@
 .calc-subtool .calc-controls-scroll>.calc-actions button{flex:1 1 180px;min-width:0;white-space:normal}
 
 /* Measured curves and conversion reuse the existing input/result grid. */
-.pv-tabs{grid-template-columns:repeat(6,minmax(0,1fr))}
+.pv-tabs{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:1fr}
 .measurement-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
 .measurement-converter .rl-main{height:auto}
 .measurement-converter .rl-controls,.measurement-converter .rl-output{min-width:0}
@@ -84,5 +84,15 @@
 .measurement-jump{width:100%;margin:8px 0 0!important;font-size:12px}
 #jv-calculator .calc-results-scroll>.rl-field{margin-top:12px}
 #jv-calculator .rl-metrics dt{overflow-wrap:anywhere}
-@media(max-width:1000px){.pv-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:680px){.pv-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.measurement-converter .rl-main{grid-template-columns:1fr}}
+@media(max-width:1000px){
+ .pv-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .pv-tabs button:nth-child(3n){border-right:0}
+ .pv-tabs button:nth-child(-n+3){border-bottom:1px solid var(--line)}
+}
+@media(max-width:680px){
+ .pv-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pv-tabs button:nth-child(n){border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+ .pv-tabs button:nth-child(2n){border-right:0}
+ .pv-tabs button:nth-last-child(-n+2){border-bottom:0}
+ .measurement-converter .rl-main{grid-template-columns:1fr}
+}

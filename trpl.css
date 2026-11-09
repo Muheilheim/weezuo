@@ -16,7 +16,7 @@
 #trpl-calculator sup{top:-.5em}
 @media(max-width:900px){.pv-tabs button{padding:12px 10px}}
 @media(max-width:680px){.pv-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.pv-tabs button:nth-child(3){border-right:0}.pv-tabs button:nth-child(-n+3){border-bottom:1px solid var(--line)}.trpl-shell .rl-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.pv-tabs{grid-template-columns:1fr 1fr}.pv-tabs button:nth-child(3){border-right:1px solid var(--line)}.pv-tabs button:nth-child(2n){border-right:0}.pv-tabs button:nth-child(-n+4){border-bottom:1px solid var(--line)}.pv-tabs button:last-child{grid-column:1/-1}}
+@media(max-width:560px){.pv-tabs{grid-template-columns:1fr 1fr}.pv-tabs button:nth-child(3){border-right:1px solid var(--line)}.pv-tabs button:nth-child(2n){border-right:0}.pv-tabs button:nth-child(-n+4){border-bottom:1px solid var(--line)}}
 @media(max-width:380px){.trpl-shell .rl-metrics{grid-template-columns:1fr}}
 
 @media(max-width:680px){.trpl-shell .rl-chart .pl-axis-label[transform]{font-size:18px}}
