@@ -59,3 +59,7 @@ Module 06 sends the selected measured scan to module 03 as a saved comparison sn
 ## Signed-voltage measured curves (2026-11-10)
 
 Module 06 accepts either voltage polarity. Voc retains its original sign; curves, power, slope fits and module 03 comparisons use the positive generating-voltage coordinate and retain signed provenance in the interface and CSV. Extra zero crossings are accepted only if all subsequent generating-current excursions remain at or below 0.1% of Jsc; the first crossing from 0 V is used with an explicit warning. This software threshold is not a calibrated instrument uncertainty. Ambiguous branches remain rejected. Valid input remains previewable when parameters cannot be extracted; no endpoint extrapolation is applied.
+
+## Full calculator results (2026-11-10)
+
+Results and charts expand with their content and scroll with the page. On wider screens the result column sets the row height; longer input forms scroll within the matching left column. On narrow screens input panels have a bounded height while result panels remain fully expanded. Numerical calculations are unchanged.

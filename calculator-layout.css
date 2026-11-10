@@ -1,7 +1,7 @@
-/* Calculator workspaces share the selected 02/03 grid and the UV result-window rhythm. */
-.calc-workspace>.rl-main{height:clamp(560px,calc(100dvh - 230px),740px);align-items:stretch}
-.calc-workspace .rl-controls{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;padding:18px}
-.calc-workspace .rl-output{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:18px}
+/* Results determine row height; size containment keeps longer forms in the input scroller. */
+.calc-workspace>.rl-main{height:auto;min-height:420px;align-items:stretch}
+.calc-workspace .rl-controls{display:flex;flex-direction:column;contain:size;min-height:0;min-width:0;overflow:hidden;padding:18px}
+.calc-workspace .rl-output{display:flex;flex-direction:column;min-height:0;max-height:none;overflow:visible;padding:18px}
 .calc-controls-title,.uv-import-header h4{flex:none;font:600 15px/1.4 var(--sans);margin:0 0 12px!important}
 .calc-workspace fieldset.calc-input-header,.calc-workspace fieldset.calc-primary-actions{border:0;min-width:0;padding:0;margin:0}
 .calc-workspace .calc-input-header{flex:none;border-bottom:1px solid var(--line)!important;padding-bottom:12px!important;margin-bottom:12px!important;background:transparent;border-radius:0}
@@ -9,7 +9,8 @@
 .calc-workspace .calc-import-toolbar.calc-single-upload{grid-template-columns:1fr}
 .calc-workspace .calc-import-toolbar .rl-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px;min-width:0;white-space:normal;overflow-wrap:anywhere;hyphens:auto}
 .calc-workspace .calc-file-status{font-size:12px;line-height:1.6;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.calc-controls-scroll,.calc-results-scroll{flex:1 1 auto;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:8px}
+.calc-controls-scroll{flex:1 1 auto;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:8px}
+.calc-results-scroll{flex:none;min-width:0;max-height:none;overflow:visible}
 .calc-controls-scroll:focus-visible,.calc-results-scroll:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 .calc-controls-scroll>.rl-small:first-child{margin-top:0}
 .calc-controls-scroll .rl-field{min-width:0}
@@ -24,7 +25,8 @@
 .calc-controls-footer .sp-message,.calc-controls-footer .rl-error{margin:0 0 10px;max-height:100px;overflow:auto}
 .calc-controls-footer .sp-message:empty,.calc-controls-footer .rl-error:empty{display:none}
 .calc-controls-footer>.calc-quiet{min-height:36px;padding:7px 0;font-size:12px}
-.calc-workspace.uv-workspace .rl-output{overflow:auto}
+.calc-workspace.uv-workspace .rl-output{overflow:visible}
+.calc-workspace .uv-fixed-note{display:none}
 .calc-controls-footer .calc-auto-note{font-size:12px;line-height:1.6;margin:0 0 8px}
 .calc-primary-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .calc-primary-actions>.sp-calculate{width:100%;margin:0}
@@ -54,9 +56,9 @@
 .calc-workspace .uv-result-plot{min-height:210px}
 @media(max-width:1000px){.calc-workspace .rl-metrics dd{font-size:24px}}
 @media(max-width:680px){
- .calc-workspace>.rl-main{height:auto}
- .calc-workspace .rl-controls,.calc-workspace .rl-output{display:block;overflow:visible;padding:18px 15px}
- .calc-controls-scroll,.calc-results-scroll{overflow:visible;padding-right:0}
+ .calc-workspace>.rl-main{min-height:0}
+ .calc-workspace .rl-controls{contain:none;max-height:max(420px,75dvh);padding:18px 15px}
+ .calc-workspace .rl-output{padding:18px 15px}
  .calc-workspace .rl-controls .rl-field{margin-bottom:16px}
  .calc-controls-footer{margin-top:16px}
  .calc-workspace .calc-import-toolbar .rl-action,.calc-workspace .calc-primary-actions>.calc-quiet,.calc-workspace .sp-chart-switch button,.calc-workspace .rl-view-switch button{min-height:44px}
@@ -64,7 +66,7 @@
  .calc-workspace .rl-metrics dd{font-size:24px}
  .calc-workspace.uv-workspace .rl-output{overflow:visible}
  .calc-workspace .uv-result-plot{min-height:0}
- .calc-workspace .uv-parameters{padding-right:0;overflow:visible}
+ .calc-workspace .uv-parameters{overflow:auto}
 }
 
 .calc-subtool>.sp-shell{margin-top:18px}
@@ -77,9 +79,9 @@
 /* Measured curves and conversion reuse the existing input/result grid. */
 .pv-tabs{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:1fr}
 .measurement-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
-.measurement-converter .rl-main{height:auto}
+.measurement-converter .rl-main{height:auto;min-height:420px}
 .measurement-converter .rl-controls,.measurement-converter .rl-output{min-width:0}
-.measurement-converter .rl-controls{display:block}
+.measurement-converter .rl-controls{display:block;contain:size;overflow:auto}
 .measurement-converter .rl-small{font-size:12px;line-height:1.7}
 .measurement-jump{width:100%;margin:8px 0 0!important;font-size:12px}
 #jv-calculator .calc-results-scroll>.rl-field{margin-top:12px}
@@ -94,5 +96,6 @@
  .pv-tabs button:nth-child(n){border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
  .pv-tabs button:nth-child(2n){border-right:0}
  .pv-tabs button:nth-last-child(-n+2){border-bottom:0}
- .measurement-converter .rl-main{grid-template-columns:1fr}
+ .measurement-converter .rl-main{grid-template-columns:1fr;min-height:0}
+ .measurement-converter .rl-controls{contain:none;max-height:max(420px,75dvh)}
 }
