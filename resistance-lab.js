@@ -103,7 +103,7 @@
   function updateMeasurement() {
     if (!measurement) return;
     const m = measurement, active = valid ? results?.both : null;
-    $("#rl-measured-source").textContent = m.source + " · " + T("Scan ", "Scan ", "扫描 ") + m.index + (m.direction > 0 ? " · V ↑" : " · V ↓") + " · " + T("Snapshot", "Gespeicherter Stand", "快照");
+    $("#rl-measured-source").textContent = m.source + " · " + T("Scan ", "Scan ", "扫描 ") + m.index + (m.direction > 0 ? " · V ↑" : " · V ↓") + " · " + T("Snapshot", "Gespeicherter Stand", "快照") + (m.voltagePolarity < 0 ? " · " + T("Original Voc = ", "Original-Voc = ", "原始 Voc = ") + fmt(m.signedVoc, 4) + " V · " + T("comparison uses positive generating voltage", "Vergleich mit positiver Generatorspannung", "对照使用归一后的正向发电电压") : "");
     $("#rl-measured-slopes").textContent = "Rs,app = " + (m.rs.resistance == null ? "—" : deviceFmt(m.rs.resistance)) + " · Rsh,app = " + (m.rsh.resistance == null ? "—" : deviceFmt(m.rsh.resistance)) + " Ω·cm² · " + T("fit half-width: ", "Fit-Halbbreite: ", "拟合半宽：") + m.parameters.fitPercent + "% Voc" +
       (quantity === "total" && measuredScale() === null ? " · " + T("Use Per cm² to view the measured curve: its active area is unknown.", "Für die Messkurve Per cm² wählen: Messfläche unbekannt.", "实测面积未知，请切换“每 cm²”查看实测曲线。") : "");
     $("#rl-measured-table").replaceChildren();
@@ -412,7 +412,7 @@
       const m = measurement, safe = value => /^[=+@-]/.test(String(value).trimStart()) ? "'" + value : value;
       rows.push([], ["measurement_snapshot_source", safe(m.source)], ["measurement_scan", m.index, m.direction > 0 ? "increasing_V" : "decreasing_V"],
         ["measurement_Pin_mW_cm2", m.parameters.pin], ["measurement_area_cm2", m.parameters.area || "unknown"],
-        ["measurement_Voc_V", m.voc], ["measurement_Jsc_mA_cm2", m.jsc], ["measurement_FF_percent", m.ff], ["measurement_PCE_percent", m.pce],
+        ["measurement_Voc_V", m.voc], ["measurement_original_Voc_V", m.signedVoc ?? m.voc], ["measurement_voltage_polarity", m.voltagePolarity ?? 1], ["measurement_near_zero_threshold_mA_cm2", m.noiseTolerance ?? ""], ["measurement_Jsc_mA_cm2", m.jsc], ["measurement_FF_percent", m.ff], ["measurement_PCE_percent", m.pce],
         ["measurement_Rs_apparent_ohm_cm2", m.rs.resistance ?? ""], ["measurement_Rsh_apparent_ohm_cm2", m.rsh.resistance ?? ""],
         ["measurement_fit_half_width_percent_Voc", m.parameters.fitPercent], ["measurement_warnings", m.warnings.join(";")],
         ["measurement_note", "Snapshot; apparent slopes are not unique circuit parameters. Initialization assumes Rs/Rsh and retains n/T, solving reference Jph and Voc from measured endpoints; FF and PCE are independent comparisons."],

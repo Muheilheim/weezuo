@@ -83,16 +83,20 @@ function analyzeJV(data,p){
  return splitSweeps(converted).map((sweep,index)=>{
   const points=[...sweep.points].sort((a,b)=>a[0]-b[0]);
   const j0=at(points,0);if(j0===0)fail('jsc');
-  const polarity=Math.sign(j0),normalized=points.map(([v,j])=>[v,j*polarity]),jsc=Math.abs(j0);
+  const polarity=Math.sign(j0),signed=points.map(([v,j])=>[v,j*polarity]),jsc=Math.abs(j0);
   const roots=[];
-  for(let i=0;i<normalized.length;i++){
-   const a=normalized[i],b=normalized[i+1];
-   if(a[0]>0&&a[1]===0)roots.push(a[0]);
-   if(b&&a[1]*b[1]<0){const v=a[0]-a[1]*(b[0]-a[0])/(b[1]-a[1]);if(v>0)roots.push(v);}
+  for(let i=0;i<signed.length;i++){
+   const a=signed[i],b=signed[i+1];
+   if(a[0]!==0&&a[1]===0)roots.push(a[0]);
+   if(b&&a[1]*b[1]<0){const v=a[0]-a[1]*(b[0]-a[0])/(b[1]-a[1]);if(v!==0)roots.push(v);}
   }
   if(!roots.length)fail('voc');
-  if(roots.length!==1)fail('crossings');
-  const voc=roots[0],knots=[[0,jsc],...normalized.filter(([v])=>v>0&&v<voc),[voc,0]];
+  const voltagePolarity=Math.sign(roots[0]);
+  if(roots.some(v=>Math.sign(v)!==voltagePolarity))fail('crossings');
+  const voc=Math.min(...roots.map(Math.abs)),normalized=signed.map(([v,j])=>[v===0?0:v*voltagePolarity,j]).sort((a,b)=>a[0]-b[0]),noiseTolerance=jsc*.001;
+  // shortcut: 0.1% of Jsc bounds post-crossing recovery; use instrument uncertainty for calibrated noise handling.
+  if(roots.length>1&&normalized.some(([v,j])=>v>voc&&j>noiseTolerance))fail('crossings');
+  const knots=[[0,jsc],...normalized.filter(([v])=>v>0&&v<voc),[voc,0]];
   let pmax=0,vmp=0,jmp=0;
   const consider=(v,j)=>{if(v*j>pmax){pmax=v*j;vmp=v;jmp=j;}};
   for(let i=1;i<knots.length;i++){
@@ -103,10 +107,11 @@ function analyzeJV(data,p){
   const ff=100*pmax/(voc*jsc),pce=100*pmax/p.pin;
   if(![jsc,voc,pmax,vmp,jmp,ff,pce].every(finite)||pmax<=0)fail('range');
   const rs=slopeFit(normalized,voc,p.fitPercent*voc/100),rsh=slopeFit(normalized,0,p.fitPercent*voc/100),warnings=[];
+  if(roots.length>1)warnings.push('noise_crossings');
   for(const [name,fit]of [['rs',rs],['rsh',rsh]])if(fit.resistance===null)warnings.push(fit.count<3?'sparse_'+name:'slope_'+name);
   if(normalized.some((p,i)=>i&&p[0]>=0&&p[0]<=voc&&p[1]>normalized[i-1][1]+jsc*1e-3))warnings.push('nonmonotonic');
   if(ff>100||pce>100)warnings.push('physical');
-  return {index:index+1,direction:sweep.direction,points:normalized,polarity,jsc,voc,pmax,vmp,jmp,ff,pce,rs,rsh,warnings,parameters:{...p}};
+  return {index:index+1,direction:sweep.direction,points:normalized,polarity,voltagePolarity,signedVoc:voc*voltagePolarity,zeroCrossings:roots.length,noiseTolerance,jsc,voc,pmax,vmp,jmp,ff,pce,rs,rsh,warnings,parameters:{...p}};
  });
 }
 function convertSpectrum(points,{unit='nm',density=false}={}){

@@ -55,3 +55,7 @@ Method references: Green, Solid-State Electronics 24 (1981), DOI 10.1016/0038-11
 ## Measured J–V comparison (2026-11-09)
 
 Module 06 sends the selected measured scan to module 03 as a saved comparison snapshot. J–V/P–V overlays and a live Voc/Jsc/FF/PCE table keep measured and simulated values separate. An explicit starting-model action assumes the apparent slope resistances are circuit inputs, retains user-selected n/T, and algebraically calibrates ideal reference Jph and Voc to the measured endpoints. It is not a unique full-curve fit; incompatible or out-of-range inputs are rejected without clamping. CSV preserves scan provenance, fit windows and assumptions. Governing equation: Green (1981), doi:10.1016/0038-1101(81)90062-9; apparent-resistance limitation: Tada (2018), doi:10.1002/pssa.201800448.
+
+## Signed-voltage measured curves (2026-11-10)
+
+Module 06 accepts either voltage polarity. Voc retains its original sign; curves, power, slope fits and module 03 comparisons use the positive generating-voltage coordinate and retain signed provenance in the interface and CSV. Extra zero crossings are accepted only if all subsequent generating-current excursions remain at or below 0.1% of Jsc; the first crossing from 0 V is used with an explicit warning. This software threshold is not a calibrated instrument uncertainty. Ambiguous branches remain rejected. Valid input remains previewable when parameters cannot be extracted; no endpoint extrapolation is applied.
