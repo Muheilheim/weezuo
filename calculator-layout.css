@@ -99,3 +99,61 @@
  .measurement-converter .rl-main{grid-template-columns:1fr;min-height:0}
  .measurement-converter .rl-controls{contain:none;max-height:max(420px,75dvh)}
 }
+
+/* Eight tools: four columns on desktop, two on narrow screens. */
+.pv-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pv-tabs button:nth-child(n){border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pv-tabs button:nth-child(4n){border-right:0}
+.pv-tabs button:nth-last-child(-n+4){border-bottom:0}
+.electrical-tool .el-method{font-size:12px;line-height:1.7;margin:16px 0}
+.electrical-tool .el-method summary{cursor:pointer;min-height:44px;padding:10px 0}
+.electrical-tool .el-interval{border:1px solid var(--line);min-width:0;margin:16px 0;padding:12px}
+.electrical-tool .el-interval legend{font-size:12px;padding:0 5px;max-width:100%}
+.electrical-tool .el-interval .rl-field{margin-bottom:10px}
+.electrical-tool .el-chart-title{font:500 13px/1.6 var(--sans);margin:22px 0 8px}
+.electrical-tool .el-chart{display:block;width:100%;height:auto;max-height:none}
+.electrical-tool .el-chart[hidden]{display:none}
+.el-point{fill:var(--teal)}
+.el-line{fill:none;stroke:var(--teal);stroke-width:2}
+.el-fit{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4}
+.el-marker{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:3 4}
+.electrical-tool .el-warnings{color:var(--ink);border-left:2px solid var(--teal);padding-left:10px}
+.electrical-tool .el-warnings:empty{display:none}
+.el-table-wrap{overflow-x:auto;max-width:100%;margin-top:20px}
+.el-table-wrap table{border-collapse:collapse;font:12px/1.6 var(--sans);width:100%}
+.el-table-wrap th,.el-table-wrap td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.el-table-wrap caption{text-align:left;margin-bottom:8px}
+@media(max-width:680px){
+ .pv-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pv-tabs button:nth-child(n){border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+ .pv-tabs button:nth-child(2n){border-right:0}
+ .pv-tabs button:nth-last-child(-n+2){border-bottom:0}
+ .electrical-tool .measurement-metrics{grid-template-columns:1fr 1fr}
+}
+
+/* Keep SVG labels readable after viewBox scaling in narrow result columns. */
+.electrical-tool .el-chart text{font-size:13px}
+@media(min-width:681px) and (max-width:1000px){.electrical-tool .el-chart text{font-size:20px}}
+@media(max-width:680px){
+ .electrical-tool .el-chart text{font-size:26px}
+ .electrical-tool .calc-controls-footer>.calc-quiet{min-height:44px}
+}
+
+.electrical-tool .calc-import-toolbar{align-items:stretch}
+
+/* Dark mode shares the calculator layout while keeping the illuminated workspace intact. */
+.jv-mode{max-width:580px;margin:0 0 18px}
+.jv-mode .rl-field{margin:0}
+.dark-jv-tool .djv-diagnostics{margin:20px 0}
+.dark-jv-tool summary{cursor:pointer;min-height:44px;padding:10px 0;font:500 13px/1.7 var(--sans)}
+.dark-jv-tool .rl-table,.dark-comparison .rl-table,.rl-dark .rl-table{table-layout:fixed;width:100%}
+.dark-jv-tool .rl-table th,.dark-comparison .rl-table th,.rl-dark .rl-table th{width:55%;white-space:normal;overflow-wrap:anywhere}
+.dark-jv-tool .rl-table td,.dark-comparison .rl-table td,.rl-dark .rl-table td{white-space:normal;overflow-wrap:anywhere}
+#sclc-dark-guard{border:1px solid var(--line);padding:12px;line-height:1.7}
+#sclc-dark-guard label{display:flex;gap:10px;align-items:flex-start}
+#sclc-dark-confirm{width:18px;min-height:24px;flex:0 0 18px}
+.dark-comparison>summary{cursor:pointer;min-height:44px;padding:10px 0;font:500 13px/1.7 var(--sans)}
+
+.dark-jv-tool .el-chart text{fill:var(--ink)}
+/* Keep material inputs usable before an imported dark scan has any SCLC results. */
+@media(min-width:681px){#sclc-calculator:has(#sclc-dark-guard:not([hidden])) .rl-main{min-height:630px}}

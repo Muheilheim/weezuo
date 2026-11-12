@@ -15,6 +15,9 @@ for(const id of ['eq-bandgap','pl-bandgap']){
  main.append(controls,output);shell.append(main);addon.append(shell);addon.classList.add('calc-subtool');owner.after(addon);
 }
 const configurations=[
+ ['eis-calculator','eis-calc','eis-choose','eis-source',null,'eis-reset','eis-export'],
+ ['sclc-calculator','sclc-calc','sclc-choose','sclc-source',null,'sclc-reset','sclc-export'],
+ ['dark-jv-calculator','djv-calc','djv-choose','djv-source',null,'djv-reset','djv-export'],
  ['jv-calculator','jv-calc','jv-choose','jv-source',null,null,'jv-export'],
  ['resistance-calculator',null,null,null,null,'rl-reset','rl-export'],
  ['bandgap-calculator',null,null,null,null,null,null],

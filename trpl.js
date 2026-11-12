@@ -151,9 +151,10 @@
   });
   $("export").addEventListener("click",()=>{
     if(!fits.some(item=>item.result))return;
-    try{window.CSVExport.save("trpl-decay-and-voltage.csv",M.exportRows(data,fits,parameters(),voltageParameters(),Number($("sample").value),$("source").textContent));}
+    try{const rows=M.exportRows(data,fits,parameters(),voltageParameters(),Number($("sample").value),$("source").textContent);window.CharacterizationLink?.appendRows("trpl",rows);window.DarkJVLab?.appendRows("trpl",rows);window.CSVExport.save("trpl-decay-and-voltage.csv",rows);}
     catch(error){$("voltage-message").textContent=error.message;}
   });
+  window.TRPLLab={comparisonSummary(){const r=selectedFit();if(!r||dirty)return null;return {source:$("source").textContent,sample:data.names[Number($("sample").value)],model:$("model").value,tau1:r.tau1,tau2:r.tau2,tauA:r.tauA,tauI:r.tauI,r2:r.r2,weak:r.weak};}};
   let chartWidth=0;
   new ResizeObserver(([entry])=>{const width=entry.contentRect.width;if(width>0 && width!==chartWidth){chartWidth=width;if(selectedFit()){drawDecay();updateVoltage();}}}).observe(root);
   $("example").click();

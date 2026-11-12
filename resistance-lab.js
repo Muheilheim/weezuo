@@ -4,6 +4,7 @@
   if (!root || !window.SolarResistance) return;
   const lang = document.documentElement.lang, T = (en, de, zh) => lang === "de" ? de : lang.startsWith("zh") ? zh : en;
   let measurement = null;
+  const electricalSnapshots = {eis:null,sclc:null};
   const defaults = {voc: 1.2, jph: 25, n: 1.5, temperature: 300, rs: 2, rsh: 2000, pin: 100};
   const highFF = {voc: 1.2, jph: 25, n: 1, temperature: 300, rs: 0.1, rsh: 100000, pin: 100};
   const silicon = {voc: 0.65, jph: 35, n: 1, temperature: 300, rs: 2, rsh: 2000, pin: 100};
@@ -97,6 +98,20 @@
     '<div class="rl-actions"><button type="button" class="rl-action" id="rl-use-measured">' + T("Build starting model from apparent values", "Startmodell aus scheinbaren Werten", "用表观参数建立起始模型") + '</button><button type="button" class="rl-action" id="rl-back-jv">' + T("Back to module 06", "Zurück zu Modul 06", "返回模块 06") + '</button></div><p id="rl-measured-status" class="sp-message" role="status"></p>' +
     '<details><summary>' + T("Assumptions & paper sources", "Annahmen und Fachliteratur", "假设与论文依据") + '</summary><p class="rl-small">' + T("This is a saved snapshot of the selected scan. Send it again after editing module 06; Reset example clears it. Density comparisons use mA/cm². Whole-device overlays need a known measured active area; model and measured illumination are listed separately. The endpoint conversion is an algebraic rearrangement of the single-diode equation, not a published parameter-fitting method.", "Gespeicherter Stand des gewählten Scans. Nach Änderungen in Modul 06 erneut senden; Beispiel zurücksetzen löscht ihn. Dichtevergleich in mA/cm². Gerätekurven benötigen eine bekannte Messfläche; Beleuchtungen sind separat angegeben. Die Endpunktumrechnung ist eine algebraische Umstellung der Ein-Dioden-Gleichung, kein publiziertes Fitverfahren.", "对照保存当前扫描的快照；修改模块 06 后需重新发送，重置示例会清除快照。电流密度按 mA/cm² 对照；器件总量叠图需要已知实测面积，实测与模型的光强分别列出。端点换算由单二极管方程代数推导，不声称是论文提出的参数拟合方法。") + '</p><div class="rl-source-links"><a href="https://doi.org/10.1016/0038-1101(81)90062-9" target="_blank" rel="noopener noreferrer">Green · Solid-State Electronics (1981) ↗</a><a href="https://doi.org/10.1002/pssa.201800448" target="_blank" rel="noopener noreferrer">Tada · Phys. Status Solidi A (2018) ↗</a></div></details>';
   $(".rl-metrics").after(measuredSection);
+  const electricalSection=document.createElement('section');electricalSection.className='rl-electrical';electricalSection.hidden=true;electricalSection.setAttribute('data-literal','');
+  electricalSection.innerHTML='<h3>'+T('EIS / SCLC comparison','EIS- / SCLC-Vergleich','EIS／SCLC 对照')+'</h3><p id="rl-electrical-current" class="rl-small"></p>'+['eis','sclc'].map(kind=>'<div id="rl-electrical-'+kind+'" hidden><h4>'+kind.toUpperCase()+'</h4><p id="rl-'+kind+'-source" class="rl-small"></p><div class="rl-table-wrap"><table class="rl-table"><tbody id="rl-'+kind+'-table"></tbody></table></div><button id="rl-back-'+kind+'" type="button" class="rl-action">'+T('Back to module ','Zurück zu Modul ','返回模块 ')+(kind==='eis'?'07':'08')+'</button></div>').join('')+'<p class="rl-small">'+T('Applying EIS Rs to a DC model is an assumption. Its parallel-branch R is not Rsh. SCLC trap density and mobility are comparison quantities, without an automatic resistance conversion. Snapshots remain until resent or this model is reset.','Die Übernahme von EIS-Rs in ein DC-Modell ist eine Annahme. Der Parallelwiderstand ist nicht Rsh. SCLC-Fallendichte und Mobilität dienen zum Vergleich, ohne automatische Widerstandsumrechnung. Schnappschüsse bleiben bis zum erneuten Senden oder Modellreset.','将 EIS 的 Rs 用于直流模型属于建模假设，并联支路 R 不等于 Rsh。SCLC 陷阱密度与迁移率仅作对照，不自动换算电阻。快照保留至重新发送或重置本模型。')+'</p><button type="button" class="rl-action" id="rl-use-eis">'+T('Use EIS Rs as a starting value','EIS-Rs als Startwert verwenden','用 EIS 的 Rs 作为起始值')+'</button><p id="rl-electrical-status" class="sp-message" role="status"></p>';
+  $('.rl-metrics').after(electricalSection);
+  function updateElectrical(){
+    electricalSection.hidden=!electricalSnapshots.eis&&!electricalSnapshots.sclc;
+    $('#rl-electrical-current').textContent=valid?'03 · Rs = '+deviceFmt(parameters.rs)+' Ω·cm² · A = '+areaText()+' cm²':T('Correct the model inputs before applying Rs.','Modelleingaben vor Übernahme von Rs korrigieren.','请先修正模型输入，再使用 Rs。');
+    for(const kind of ['eis','sclc']){
+      const e=electricalSnapshots[kind];$('#rl-electrical-'+kind).hidden=!e;const table=$('#rl-'+kind+'-table');table.replaceChildren();if(!e)continue;
+      $('#rl-'+kind+'-source').textContent=e.source+' · '+T('Sample: ','Probe: ','样品：')+(e.sampleId||T('not specified','nicht angegeben','未填写'))+' · '+(e.conditions||T('conditions not specified','Bedingungen nicht angegeben','未填写测量条件'));
+      const values=kind==='eis'?[['Rs (Ω)',e.rs],['Rs·A (Ω·cm²)',e.area?e.rs*e.area:null],['Rbranch (Ω)',e.r],['τ (s)',e.tau],['Ceff (F)',e.ceff],['n',e.n],['A (cm²)',e.area]]:[['Nt,app (cm⁻³)',e.nt],['μapp (cm² V⁻¹ s⁻¹)',e.mu],['V₂ (Veff)',e.tfl],['L (nm)',e.thickness],['εr',e.epsilon],['log slope',e.slope],['R²',e.r2]];
+      for(const [key,value]of values){const row=document.createElement('tr'),label=document.createElement('th'),cell=document.createElement('td');label.scope='row';label.textContent=key;cell.textContent=Number.isFinite(value)?deviceFmt(value):'—';row.append(label,cell);table.append(row);}
+    }
+    const e=electricalSnapshots.eis,rs=e?.rs*e?.area;$('#rl-use-eis').hidden=!e;$('#rl-use-eis').disabled=!valid||!e?.converged||e.warnings.length>0||!Number.isFinite(e.area)||e.area<SolarResistance.areaLimits[0]||e.area>SolarResistance.areaLimits[1]||!Number.isFinite(rs)||rs<SolarResistance.limits.rs[0]||rs>SolarResistance.limits.rs[1];
+  }
   function measuredScale() {
     return !measurement ? null : quantity === "density" ? 1 : measurement.parameters.area > 0 ? measurement.parameters.area : null;
   }
@@ -118,13 +133,52 @@
       $("#rl-measured-table").append(row);
     }
   }
+  let darkMeasurement=null;
+  const darkSection=document.createElement('section');darkSection.className='char-comparison rl-dark';darkSection.hidden=true;darkSection.setAttribute('data-literal','');
+  darkSection.innerHTML='<h3>'+T('Dark J–V snapshot · 06','Dunkel-J–V-Schnappschuss · 06','暗态 J–V 快照 · 06')+'</h3><p id="rl-dark-source" class="rl-small"></p><div class="rl-table-wrap"><table class="rl-table"><tbody id="rl-dark-table"></tbody></table></div><p class="rl-small">'+T('Rdiff,0 may initialize Rsh only as an approximation; napp and T are separate starting assumptions. Check diode/contact/series contributions. Illuminated reference Jph and Voc stay as entered; the model recalibrates its own J0. Dark J0,app is only a comparison quantity. Snapshot stays until resent or reset.','Rdiff,0 nähert Rsh nur als Startannahme an; napp und T sind eigene Startannahmen. Dioden-/Kontakt-/Serienbeiträge prüfen. Beleuchtete Referenzen Jph und Voc bleiben; das Modell kalibriert sein eigenes J0. Dunkel-J0,app dient nur zum Vergleich. Schnappschuss bleibt bis erneut gesendet/zurückgesetzt.','Rdiff,0 仅可近似用作 Rsh 起始假设；napp 与温度是独立起始假设，需核对二极管、接触及串联贡献。光照参考 Jph、Voc 保持输入值，模型会重新标定自身 J0；暗态 J0,app 仅作对照。快照保留至重新发送或重置。')+'</p><div class="sp-row"><button type="button" class="rl-action" id="rl-dark-rsh">'+T('Use Rdiff,0 as Rsh start','Rdiff,0 als Rsh-Start','用 Rdiff,0 作为 Rsh 起始值')+'</button><button type="button" class="rl-action" id="rl-dark-n">'+T('Use napp + T as start','napp + T als Start','用 napp 与温度作为起始值')+'</button></div><p id="rl-dark-status" class="sp-message" role="status"></p>';
+  $('.rl-metrics').after(darkSection);
+  const darkInRange=(key,value)=>Number.isFinite(value)&&value>=SolarResistance.limits[key][0]&&value<=SolarResistance.limits[key][1];
+  function updateDark(){
+    const d=darkMeasurement;darkSection.hidden=!d;if(!d)return;
+    $('#rl-dark-source').textContent=d.parameters.sampleId+' · '+d.source+' · scan '+d.index+' · '+d.parameters.conditions;
+    $('#rl-dark-table').replaceChildren();for(const [label,value]of [['Jreverse (A/cm²)',d.reverseJ],['Vreverse (V)',d.reverseV],['Rdiff,0 (Ω·cm²)',d.zero.resistance],['R² · near zero',d.zero.r2],['napp',d.diode.n],['J₀,app (A/cm²)',d.diode.j0],['R² · forward ln J',d.diode.r2],['T (K)',d.parameters.temperature]]){const row=document.createElement('tr'),th=document.createElement('th'),td=document.createElement('td');th.scope='row';th.textContent=label;td.textContent=value===Infinity?'∞':Number.isFinite(value)?deviceFmt(value):'—';row.append(th,td);$('#rl-dark-table').append(row);}
+    $('#rl-dark-rsh').disabled=!valid||!d.zero.usable||!darkInRange('rsh',d.zero.resistance);
+    $('#rl-dark-n').disabled=!valid||!d.diode.usable||!darkInRange('n',d.diode.n)||!darkInRange('temperature',d.parameters.temperature);
+  }
   window.ResistanceLab = {compareMeasurement(scan, source) {
     if (!scan || !Array.isArray(scan.points) || scan.points.length > 20000 || !scan.points.every(p => p.length === 2 && p.every(Number.isFinite))) return false;
     measurement = {...scan, source: String(source), points: scan.points.map(p => [...p]), parameters: {...scan.parameters}, rs: {...scan.rs}, rsh: {...scan.rsh}, warnings: [...scan.warnings]};
     measuredSection.hidden = false; $(".rl-metrics").after(measuredSection);
     $("#rl-measured-status").textContent = T("Comparison loaded. Model inputs are unchanged.", "Vergleich geladen. Modelleingaben sind unverändert.", "已载入对照，尚未修改模型输入。");
     updateMeasurement(); drawChart(); return true;
+  },compareElectrical(kind,r,source){
+    if(!['eis','sclc'].includes(kind)||!r?.parameters||typeof source!=='string'||source.length>2000)return false;
+    const p=r.parameters;if(typeof p.sampleId!=='string'||p.sampleId.length>80||typeof p.conditions!=='string'||p.conditions.length>240||p.area!==null&&(!Number.isFinite(p.area)||p.area<=0))return false;
+    const rows=kind==='eis'?r.all:r.points,width=kind==='eis'?3:2;if(!Array.isArray(rows)||rows.length<5||rows.length>(kind==='eis'?5000:20000)||rows.some(a=>!Array.isArray(a)||a.length!==width||!a.every(Number.isFinite)))return false;
+    const base={source,sampleId:p.sampleId,conditions:p.conditions,area:p.area,points:rows.map(a=>[...a]),applied:null};let next;
+    if(kind==='eis'){
+      if(![r.rs,r.r,r.q,r.n,r.tau,r.ceff].every(v=>Number.isFinite(v)&&v>0)||!Number.isFinite(r.nrmse)||r.nrmse<0||!Array.isArray(r.warnings)||r.warnings.some(v=>typeof v!=='string'))return false;
+      next={...base,rs:r.rs,r:r.r,q:r.q,n:r.n,tau:r.tau,ceff:r.ceff,nrmse:r.nrmse,converged:r.converged===true,warnings:[...r.warnings],model:p.model,fmin:p.fmin,fmax:p.fmax};
+    }else{
+      if([r.nt,r.mu,r.tfl].some(v=>v!==null&&(!Number.isFinite(v)||v<=0))||![p.thickness,p.epsilon,r.high?.slope,r.high?.r2].every(Number.isFinite))return false;
+      next={...base,nt:r.nt,mu:r.mu,tfl:r.tfl,thickness:p.thickness,epsilon:p.epsilon,slope:r.high.slope,r2:r.high.r2,scan:p.scan+1,tflSource:r.tflSource};
+    }
+    electricalSnapshots[kind]=next;$('.rl-metrics').after(electricalSection);updateElectrical();$('#rl-electrical-status').textContent=T('Snapshot loaded. Select Use EIS Rs explicitly; SCLC does not change model parameters. Applying Rs requires a converged fit without warnings, known measured area and Rs·A within 0–50 Ω·cm².','Schnappschuss geladen. EIS-Rs ausdrücklich übernehmen; SCLC ändert keine Parameter. Rs erfordert einen konvergierten Fit ohne Warnungen, bekannte Messfläche und Rs·A von 0–50 Ω·cm².','已载入快照。使用 EIS 的 Rs 需明确点击起始值按钮；SCLC 不改变模型参数。 使用 Rs 需无警告的收敛拟合、已知测量面积，且 Rs·A 在 0–50 Ω·cm² 内。');return true;
   }};
+  Object.assign(window.ResistanceLab,{compareDark(r,source){
+    if(!r?.parameters||!r.zero||!r.diode||typeof source!=='string'||source.length>2000||!Array.isArray(r.points)||r.points.length<5||r.points.length>20000||r.points.some(a=>!Array.isArray(a)||a.length!==2||!a.every(Number.isFinite)))return false;
+    const p=r.parameters;if(typeof p.sampleId!=='string'||!p.sampleId.trim()||p.sampleId.length>80||typeof p.conditions!=='string'||p.conditions.length>240||!Number.isFinite(p.temperature)||p.temperature<=0||!Array.isArray(r.warnings)||r.warnings.some(v=>typeof v!=='string')||[r.reverseJ,r.diode.n,r.diode.j0].some(v=>v!==null&&!Number.isFinite(v)))return false;
+    darkMeasurement={...r,source,parameters:{...p},zero:{...r.zero},diode:{...r.diode},points:r.points.map(a=>[...a]),warnings:[...r.warnings],applied:[]};$('.rl-metrics').after(darkSection);updateDark();$('#rl-dark-status').textContent=T('Snapshot loaded without changing model inputs. Apply each qualified starting assumption explicitly; out-of-range or unqualified values are disabled.','Schnappschuss ohne Modelländerung geladen. Geprüfte Startannahmen ausdrücklich übernehmen; ungeeignete Werte deaktiviert.','已载入快照，模型参数未改动。起始假设需分别点击；未满足质量条件或超出模型范围的值不可应用。');return true;
+  },clearDark(){darkMeasurement=null;darkSection.hidden=true;}});
+  for(const kind of ['rsh','n'])$('#rl-dark-'+kind).addEventListener('click',()=>{
+    const d=darkMeasurement;if(!d||$('#rl-dark-'+kind).disabled)return;const values=kind==='rsh'?{rsh:d.zero.resistance}:{n:d.diode.n,temperature:d.parameters.temperature},next={...results.both.parameters,...values};
+    try{SolarResistance.model(next,{sampleCurve:false});$('#rl-preset').value='custom';setControls(next);d.applied.push({kind,...values});$('#rl-dark-status').textContent=T('Starting assumption applied. Model J0 is recalibrated from its illuminated reference; dark J0,app was not assigned.','Startannahme übernommen. Modell-J0 aus beleuchteter Referenz neu kalibriert; Dunkel-J0,app nicht zugewiesen.','已应用起始假设；模型 J0 按光照参考重新标定，未直接使用暗态 J0,app。');}catch{$('#rl-dark-status').textContent=T('Check fit quality and model ranges.','Fitqualität und Modellgrenzen prüfen.','请检查拟合质量及模型范围。');}
+  });
+  $('#rl-use-eis').addEventListener('click',()=>{
+    const e=electricalSnapshots.eis;if(!e||$('#rl-use-eis').disabled)return;
+    try{const next={...results.both.parameters,rs:e.rs*e.area};SolarResistance.model(next,{sampleCurve:false});$('#rl-area').value=e.area;$('#rl-preset').value='custom';setControls(next);e.applied={...next,area:e.area};$('#rl-electrical-status').textContent=T('EIS Rs·A applied as a starting assumption. Parallel R was not used as Rsh.','EIS Rs·A als Startannahme übernommen. Parallel-R wird nicht als Rsh verwendet.','已将 EIS 的 Rs·A 用作起始假设，并联支路 R 未作为 Rsh。');}catch{$('#rl-electrical-status').textContent=T('Cannot apply: verify fit quality, measured area and model ranges.','Übernahme nicht möglich: Fitqualität, Messfläche und Modellgrenzen prüfen.','无法应用：请核对拟合质量、测量面积和模型范围。');}
+  });
+  for(const kind of ['eis','sclc'])$('#rl-back-'+kind).addEventListener('click',()=>{document.getElementById('pv-tab-'+kind).click();document.getElementById(kind+'-analysis').scrollIntoView({behavior:'smooth',block:'start'});});
   $("#rl-use-measured").addEventListener("click", () => {
     if (!measurement) return;
     try {
@@ -256,7 +310,7 @@
     $("#rl-rsh").disabled = $("#rl-infinite").checked;
     $("#rl-rsh-slider").disabled = $("#rl-infinite").checked;
     updateEstimate();
-    if (!readInputs()) {updateTarget(); updateMeasurement(); return;}
+    if (!readInputs()) {updateTarget(); updateMeasurement(); updateElectrical(); updateDark(); return;}
     const p = {...parameters, rsh: $("#rl-infinite").checked ? Infinity : parameters.rsh};
     results = SolarResistance.compare(p);
     const active = results[mode], ideal = results.ideal, device = SolarResistance.deviceValues(active, area), scale = displayScale();
@@ -334,7 +388,7 @@
       entry.innerHTML = '<svg aria-hidden="true"><line class="rl-curve rl-measured-curve" x1="0" y1="5" x2="23" y2="5"/></svg>';
       entry.append(document.createTextNode(measuredLabel)); $("#rl-legend").append(entry);
     }
-    updateMeasurement();
+    updateMeasurement(); updateElectrical(); updateDark();
     $("#rl-chart-title").textContent = (isPower ? "Power" : "Current") + (quantity === "density" ? " density" : "") + "–voltage";
     $("#rl-svg-title").textContent = $("#rl-chart-title").textContent;
     $('[data-plot="jv"]').textContent = quantity === "total" ? "I–V" : "J–V";
@@ -375,7 +429,7 @@
     $("#rl-n").value = fmt(n, 3); $("#rl-preset").value = "custom"; update();
   });
   $("#rl-reset").addEventListener("click", () => {
-    measurement = null; measuredSection.hidden = true;
+    measurement = null; measuredSection.hidden = true; darkMeasurement=null; darkSection.hidden=true; electricalSnapshots.eis=null; electricalSnapshots.sclc=null; electricalSection.hidden=true;
     $("#rl-preset").value = "perovskite"; $("#rl-target-ff").value = 89;
     $("#rl-log-base").value = "log10"; $("#rl-slope").value = 89.3;
     $("#rl-area").value = 1; quantity = "density";
@@ -421,6 +475,11 @@
       for (const key of ["rs", "rsh"]) {const f = m[key]; rows.push(["measurement_" + key + "_fit", "lo_V", f.lo ?? "", "hi_V", f.hi ?? "", "N", f.count, "R2", f.r2 ?? ""]);}
       rows.push([], ["measured_voltage_V", "measured_output_current_density_mA_cm2"], ...m.points);
     }
+    for(const [kind,e]of Object.entries(electricalSnapshots))if(e){
+      const safe=v=>typeof v==='string'&&/^[=+@-]/.test(v.trimStart())?"'"+v:v;
+      rows.push([],['electrical_snapshot',kind],...Object.entries(e).filter(([k])=>k!=='points').map(([k,v])=>[kind+'_'+k,safe(v&&typeof v==='object'?JSON.stringify(v):v??'')]),[kind+'_note',kind==='eis'?'Rs*measured area may initialize only series resistance as a modelling assumption; parallel R is not Rsh.':'Classical apparent Nt/mu, not converted into Rs/Rsh.'],[],kind==='eis'?['eis_f_Hz','eis_Re_Z_ohm','eis_Im_Z_ohm']:['sclc_Veff_V','sclc_J_A_cm-2'],...e.points);
+    }
+    if(darkMeasurement){const d=darkMeasurement,safe=v=>typeof v==='string'&&/^[=+@-]/.test(v.trimStart())?"'"+v:v;rows.push([],['dark_snapshot_source',safe(d.source)],['dark_sample_id',safe(d.parameters.sampleId)],['dark_conditions',safe(d.parameters.conditions)],['dark_scan',d.index],['dark_reverse_V',d.reverseV],['dark_reverse_J_A_cm-2',d.reverseJ??''],['dark_Rdiff0_ohm_cm2',d.zero.resistance??''],['dark_n_apparent',d.diode.n??''],['dark_J0_apparent_A_cm-2',d.diode.j0??''],['dark_temperature_K',d.parameters.temperature],['dark_near_zero_fit',JSON.stringify(d.zero)],['dark_forward_fit',JSON.stringify(d.diode)],['dark_warnings',d.warnings.join(';')],['dark_applied_assumptions',JSON.stringify(d.applied)],['dark_note','Only explicit qualified Rdiff0/Rsh or n/T starting assumptions; illuminated Jph/Voc retained; dark J0 is not assigned.'],[],['dark_original_V','dark_signed_J_A_cm-2'],...d.points);}
     window.CSVExport.save("solar-cell-resistance-" + mode + ".csv", rows);
   });
   setControls(defaults);

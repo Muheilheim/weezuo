@@ -124,3 +124,12 @@
 .rl-measurement .rl-action{max-width:100%;white-space:normal}
 .rl-measurement summary{cursor:pointer;font-size:12px}
 .rl-measured-curve{stroke:var(--orange);stroke-width:3.2;stroke-dasharray:12 3 2 3}
+
+.rl-electrical,.char-comparison{border:1px solid var(--line);border-radius:8px;padding:14px;margin:18px 0;min-width:0}
+.rl-electrical[hidden],.char-comparison[hidden]{display:none}
+.rl-electrical h3,.char-comparison h3{font-size:16px;margin:0 0 12px}
+.rl-electrical h4{margin:14px 0 8px}
+.rl-electrical .rl-small,.char-comparison .rl-small{overflow-wrap:anywhere}
+.rl-electrical .rl-action,.char-comparison .rl-action{white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.rl-electrical .rl-table th,.char-comparison .rl-table th{white-space:normal;overflow-wrap:anywhere}
+.electrical-tool input[type=text],.char-identity input[type=text]{width:100%;box-sizing:border-box;min-height:44px;padding:7px 10px;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font-size:14px}

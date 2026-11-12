@@ -2,6 +2,11 @@
 (function (root) {
   "use strict";
   const rows = [
+    ["07 / IMPEDANCE", "07 / IMPEDANZ", "07 / 阻抗"],
+    ["EIS analysis", "EIS-Analyse", "EIS 分析"],
+    ["08 / TRANSPORT", "08 / TRANSPORT", "08 / 输运"],
+    ["SCLC analysis", "SCLC-Analyse", "SCLC 分析"],
+    ["Analyze solar-cell limits, spectra, J–V curves, impedance and space-charge-limited current.", "Analysieren Sie Solarzellengrenzen, Spektren, J–V-Kurven, Impedanz und raumladungsbegrenzten Strom.", "分析太阳能电池的理论上限、光谱、J–V 曲线、阻抗及空间电荷限制电流。"],
     ["EQE headers must use percent (%) or fraction (0–1), or omit the unit.", "EQE-Spaltenköpfe müssen Prozent (%) oder Anteil (0–1) angeben; alternativ die Einheit weglassen.", "EQE 表头请使用百分比（%）或小数（0–1）；无单位时可省略单位标注。"],
     ["EQE wavelength headers must use nm.", "EQE-Wellenlängen müssen im Spaltenkopf in nm angegeben sein.", "EQE 波长表头须使用 nm；请先转换其他波长或能量单位。"],
     ["The EQE unit setting conflicts with the column header.", "Die gewählte EQE-Einheit widerspricht dem Spaltenkopf.", "所选 EQE 单位与表头不一致，请核对百分比或小数设置。"],
