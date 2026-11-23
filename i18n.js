@@ -23,7 +23,7 @@
     ["MATERIALS · INTERFACES · STABILITY", "MATERIALIEN · GRENZFLÄCHEN · STABILITÄT", "材料 · 界面 · 稳定性"],
     ["UNIVERSITY OF STUTTGART", "UNIVERSITÄT STUTTGART", "斯图加特大学"],
     ["RESEARCH & PUBLICATIONS", "FORSCHUNG & PUBLIKATIONEN", "研究与论文"],
-    ["About", "Über mich", "关于"], ["Research", "Forschung", "研究"], ["Tools", "Werkzeuge", "工具"],
+    ["About", "Über mich", "关于"], ["Research", "Forschung", "研究"], ["Tools", "Werkzeuge", "工具"], ["Drawing", "Zeichnen", "绘图"],
     ["Publications", "Publikationen", "论文"], ["Updates", "Aktuelles", "动态"], ["Contact", "Kontakt", "联系"],
     ["RESEARCH IN PEROVSKITE PHOTOVOLTAICS", "FORSCHUNG ZUR PEROWSKIT-PHOTOVOLTAIK", "钙钛矿光伏研究"],
     ["Postdoctoral Researcher", "Postdoc", "博士后研究员"],

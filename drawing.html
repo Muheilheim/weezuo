@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="科研绘图区：绘制钙钛矿晶体和器件层状结构，编辑配色、层序与视角，导出 SVG 与高清 PNG。">
+  <meta name="robots" content="index, follow">
+  <meta name="color-scheme" content="light dark">
+  <title>科研绘图区 · Weiwei Zuo</title>
+  <link rel="icon" href="./assets/weiwei-zuo-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css?v=a208180c8eee">
+  <link rel="stylesheet" href="./perovskite-drawing.css?v=522b9606c16f">
+  <script defer src="./perovskite-model.js?v=544996b7fec4"></script>
+  <script defer src="./layered-device-model.js?v=2ec042c377ee"></script>
+  <script defer src="./perovskite-drawing.js?v=4dd06672c897"></script>
+  <script defer src="./layered-device-drawing.js?v=88835255ff4f"></script>
+  <link rel="canonical" href="https://muheilheim.github.io/weezuo/drawing.html">
+</head>
+<body class="drawing-page">
+  <a class="skip-link" href="#main" data-i18n="skip">跳转到绘图区</a>
+  <header class="drawing-header">
+    <div class="drawing-wrap drawing-header-inner">
+      <a class="drawing-brand" id="drawing-brand" href="./zh.html"><img src="./assets/weiwei-zuo-logo.png" width="1846" height="852" alt="Weiwei Zuo"><span data-i18n="studio">科研绘图区</span></a>
+      <nav class="drawing-nav" aria-label="导航" data-label="navigation">
+        <a id="home-link" href="./zh.html" data-i18n="home">返回主页</a>
+        <div class="drawing-languages" aria-label="语言" data-label="language">
+          <a href="./drawing.html?lang=en" lang="en" data-lang="en">EN</a>
+          <a href="./drawing.html?lang=de" lang="de" data-lang="de">DE</a>
+          <a href="./drawing.html?lang=zh" lang="zh-CN" data-lang="zh" aria-current="page">中文</a>
+        </div>
+        <button id="drawing-theme" type="button" aria-pressed="false" data-label="theme">◐</button>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="drawing-wrap">
+    <div class="drawing-intro">
+      <div><p class="drawing-eyebrow">STRUCTURE STUDIO / CRYSTAL &amp; DEVICE</p><h1 data-i18n="heading">科研插图，从这里开始</h1></div>
+      <p data-i18n="intro">绘制钙钛矿晶体或器件层状结构，自定义配色与视角。所有绘制与导出均在本机完成。</p>
+    </div>
+    <div class="drawing-mode-switch" role="group" aria-label="绘图类型" data-device-label="drawingType">
+      <button type="button" id="drawing-mode-crystal" aria-pressed="true" aria-controls="crystal-settings crystal-preview" data-device-i18n="crystalMode">晶体结构</button>
+      <button type="button" id="drawing-mode-device" aria-pressed="false" aria-controls="device-settings device-preview" data-device-i18n="deviceMode">器件层状结构</button>
+    </div>
+    <div class="drawing-workspace">
+      <aside class="drawing-settings" aria-label="绘图设置" data-label="settings">
+        <div id="crystal-settings">
+        <details open>
+          <summary><span class="drawing-step">01</span><span data-i18n="structure">组成与超胞</span></summary>
+          <div class="drawing-fields">
+            <label class="drawing-field"><span data-i18n="compound">组成预设</span><select id="compound"><option value="Cs|Pb|Br">CsPbBr₃</option><option value="Cs|Pb|I">CsPbI₃</option><option value="Cs|Sn|I">CsSnI₃</option><option value="MA|Pb|I">MAPbI₃</option><option value="FA|Pb|I">FAPbI₃</option><option value="Sr|Ti|O">SrTiO₃</option><option value="" data-i18n="custom">自定义</option></select></label>
+            <div class="drawing-sites">
+              <label>A<select id="a" data-param="a"><option>Cs</option><option>Rb</option><option>K</option><option>MA</option><option>FA</option><option>Sr</option><option>Ba</option><option>Ca</option></select></label>
+              <label>B<select id="b" data-param="b"><option>Pb</option><option>Sn</option><option>Ge</option><option>Ti</option><option>Zr</option></select></label>
+              <label>X<select id="x" data-param="x"><option>Br</option><option>I</option><option>Cl</option><option>O</option></select></label>
+            </div>
+            <label class="drawing-field"><span data-i18n="cells">超胞尺寸</span><select id="cells" data-param="cells"><option value="1">1 × 1 × 1</option><option value="2" selected>2 × 2 × 2</option><option value="3">3 × 3 × 3</option><option value="4">4 × 4 × 4</option></select></label>
+            <p class="drawing-note" data-i18n="ideal">理想立方 ABX₃（Pm3̅m）示意。BX₆ 正八面体共顶点连接。更换元素不判定物相或稳定性；MA/FA 以球体简化表示。</p>
+          </div>
+        </details>
+        <details open>
+          <summary><span class="drawing-step">02</span><span data-i18n="appearance">配色与光影</span></summary>
+          <div class="drawing-fields">
+            <label class="drawing-field"><span data-i18n="style">风格预设</span><select id="drawing-style"><option value="reference" data-i18n="reference">旧图柔光 · 青绿与暗红</option><option value="paper" data-i18n="paper">清爽投稿 · 蓝与金</option><option value="cover" data-i18n="cover">深色封面 · 烟蓝与珊瑚</option><option value="" data-i18n="custom">自定义</option></select></label>
+            <div class="drawing-style-labels"><span data-i18n="siteColor">位点 / 颜色</span><span data-i18n="size">相对球半径</span></div>
+            <div class="drawing-site-style"><label for="aColor">A</label><input id="aColor" data-param="aColor" type="color" value="#3f8c82" aria-label="A 位颜色" data-label="aColor"><input id="aScale" data-param="aScale" type="range" min="0.25" max="1.8" step="0.05" value="1" aria-label="A 位相对半径" data-label="aScale"><output for="aScale" id="aScale-value">1.00</output></div>
+            <div class="drawing-site-style"><label for="bColor">B</label><input id="bColor" data-param="bColor" type="color" value="#65303a" aria-label="B 位颜色" data-label="bColor"><input id="bScale" data-param="bScale" type="range" min="0.25" max="1.8" step="0.05" value="1" aria-label="B 位相对半径" data-label="bScale"><output for="bScale" id="bScale-value">1.00</output></div>
+            <div class="drawing-site-style"><label for="xColor">X</label><input id="xColor" data-param="xColor" type="color" value="#b65a60" aria-label="X 位颜色" data-label="xColor"><input id="xScale" data-param="xScale" type="range" min="0.25" max="1.8" step="0.05" value="1" aria-label="X 位相对半径" data-label="xScale"><output for="xScale" id="xScale-value">1.00</output></div>
+            <label class="drawing-field"><span data-i18n="faces">八面体面色</span><input id="faceColor" data-param="faceColor" type="color" value="#80a9b2"></label>
+            <label class="drawing-field"><span data-i18n="opacity">面不透明度</span><input id="faceOpacity" data-param="faceOpacity" type="range" min="0" max="1" step="0.02" value="0.3"><output for="faceOpacity" id="faceOpacity-value">30%</output></label>
+            <label class="drawing-field"><span data-i18n="edges">八面体边色</span><input id="edgeColor" data-param="edgeColor" type="color" value="#637d85"></label>
+            <label class="drawing-field"><span data-i18n="edgeWidth">边线宽度</span><input id="edgeWidth" data-param="edgeWidth" type="range" min="0" max="4" step="0.2" value="1.2"><output for="edgeWidth" id="edgeWidth-value">1.2</output></label>
+            <label class="drawing-field"><span data-i18n="background">画布底色</span><input id="background" data-param="background" type="color" value="#f6f5ef"></label>
+            <div class="drawing-checks">
+              <label><input id="showOcta" data-param="showOcta" type="checkbox" checked><span data-i18n="showOcta">BX₆ 八面体</span></label>
+              <label><input id="showBonds" data-param="showBonds" type="checkbox" checked><span data-i18n="showBonds">B–X 键</span></label>
+              <label><input id="showA" data-param="showA" type="checkbox" checked><span data-i18n="showA">A 位原子</span></label>
+              <label><input id="showCell" data-param="showCell" type="checkbox"><span data-i18n="showCell">晶胞框架</span></label>
+              <label><input id="showLabels" data-param="showLabels" type="checkbox"><span data-i18n="showLabels">原子标签</span></label>
+              <label><input id="showAxes" data-param="showAxes" type="checkbox" checked><span data-i18n="showAxes">晶轴方向</span></label>
+              <label><input id="shaded" data-param="shaded" type="checkbox" checked><span data-i18n="shaded">球面柔光</span></label>
+              <label><input id="shadow" data-param="shadow" type="checkbox" checked><span data-i18n="shadow">柔和投影</span></label>
+            </div>
+            <p class="drawing-note" data-i18n="radiusNote">半径仅控制视觉尺寸，不代表离子半径。旧图预设提取既有参考图的配色与柔光特征。</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="drawing-step">03</span><span data-i18n="rotation">精确视角</span></summary>
+          <div class="drawing-fields">
+            <label class="drawing-field"><span>X</span><input id="rx" data-param="rx" type="range" min="-180" max="180" step="1" value="24" aria-label="绕 X 轴旋转" data-label="rx"><output for="rx" id="rx-value">24°</output></label>
+            <label class="drawing-field"><span>Y</span><input id="ry" data-param="ry" type="range" min="-180" max="180" step="1" value="-32" aria-label="绕 Y 轴旋转" data-label="ry"><output for="ry" id="ry-value">−32°</output></label>
+            <label class="drawing-field"><span>Z</span><input id="rz" data-param="rz" type="range" min="-180" max="180" step="1" value="-6" aria-label="绕 Z 轴旋转" data-label="rz"><output for="rz" id="rz-value">−6°</output></label>
+          </div>
+        </details>
+        </div>
+        <div id="device-settings" hidden>
+          <details open>
+            <summary><span class="drawing-step">01</span><span data-device-i18n="layerStack">器件层序</span></summary>
+            <div class="drawing-fields">
+              <label class="drawing-field"><span data-device-i18n="preset">层序预设</span><select id="device-preset"><option value="pin">p–i–n</option><option value="nip">n–i–p</option><option value="" data-device-i18n="custom">自定义</option></select></label>
+              <p class="drawing-note" data-device-i18n="orderNote">列表从上到下对应器件顶部至基底；点击一层进行编辑。</p>
+              <div id="device-layer-list" class="device-layer-list" role="group" aria-label="选择器件层" data-device-label="chooseLayer"></div>
+              <div class="device-layer-actions"><button type="button" id="device-up" aria-label="向顶部移动" data-device-label="moveUp">↑</button><button type="button" id="device-down" aria-label="向基底移动" data-device-label="moveDown">↓</button><button type="button" id="device-remove" data-device-i18n="remove">删除该层</button><button type="button" id="device-add" data-device-i18n="add">添加层</button></div>
+              <fieldset class="device-layer-editor"><legend data-device-i18n="selectedLayer">所选层</legend>
+                <label class="drawing-field"><span data-device-i18n="name">层名称</span><input id="device-layer-name" type="text" maxlength="32" data-device-field="name" value="Perovskite" autocomplete="off"></label>
+                <label class="drawing-field"><span data-device-i18n="role">功能类型</span><select id="device-layer-role" data-device-field="role"></select></label>
+                <label class="drawing-field"><span data-device-i18n="thickness">相对厚度</span><input id="device-layer-thickness" type="number" min="0.02" max="1.5" step="0.005" value="0.46" data-device-field="thickness"></label>
+                <label class="drawing-field"><span data-device-i18n="color">该层颜色</span><input id="device-layer-color" type="color" value="#7c3e51" data-device-field="color"></label>
+                <label class="drawing-field"><span data-device-i18n="opacity">不透明度</span><input id="device-layer-opacity" type="range" min="0" max="1" step="0.01" value="0.92" data-device-field="opacity"><output id="device-opacity-value" for="device-layer-opacity">92%</output></label>
+                <label class="drawing-field"><span data-device-i18n="coverage">平面尺寸比例</span><input id="device-layer-coverage" type="range" min="0.35" max="1.15" step="0.01" value="1" data-device-field="coverage"><output id="device-coverage-value" for="device-layer-coverage">1.00</output></label>
+              </fieldset>
+              <p class="drawing-note" data-device-i18n="scaleNote">厚度、平面尺寸和间距均为绘图相对值，不代表实测尺寸；预设中的 HTL/ETL 为功能层占位名称。</p>
+            </div>
+          </details>
+          <details open>
+            <summary><span class="drawing-step">02</span><span data-device-i18n="appearance">主页概念图风格</span></summary>
+            <div class="drawing-fields">
+              <label class="drawing-field"><span data-device-i18n="style">配色预设</span><select id="device-style"><option value="home" data-device-i18n="homeStyle">主页柔光 · 酒红与石墨</option><option value="paper" data-device-i18n="paperStyle">清爽投稿 · 蓝绿</option><option value="cover" data-device-i18n="coverStyle">深色封面</option><option value="" data-device-i18n="custom">自定义</option></select></label>
+              <label class="drawing-field"><span data-device-i18n="gap">层间距</span><input id="device-gap" type="range" min="0" max="0.5" step="0.01" value="0.18" data-device-param="gap"><output id="device-gap-value" for="device-gap">0.18</output></label>
+              <label class="drawing-field"><span data-device-i18n="width">基准宽度</span><input id="device-width" type="range" min="2" max="5" step="0.1" value="3.6" data-device-param="width"><output id="device-width-value" for="device-width">3.6</output></label>
+              <label class="drawing-field"><span data-device-i18n="depth">基准深度</span><input id="device-depth" type="range" min="1.5" max="4" step="0.1" value="2.4" data-device-param="depth"><output id="device-depth-value" for="device-depth">2.4</output></label>
+              <label class="drawing-field"><span data-device-i18n="background">画布底色</span><input id="device-background" type="color" value="#f4f0e7" data-device-param="background"></label>
+              <div class="drawing-checks">
+                <label><input id="device-showLattice" type="checkbox" checked data-device-param="showLattice"><span data-device-i18n="lattice">吸收层晶格</span></label>
+                <label><input id="device-showLabels" type="checkbox" checked data-device-param="showLabels"><span data-device-i18n="labels">层名称标注</span></label>
+                <label><input id="device-softLight" type="checkbox" checked data-device-param="softLight"><span data-device-i18n="softLight">柔光</span></label>
+                <label><input id="device-shadow" type="checkbox" checked data-device-param="shadow"><span data-device-i18n="shadow">柔和投影</span></label>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="drawing-step">03</span><span data-device-i18n="rotation">精确视角</span></summary>
+            <div class="drawing-fields">
+              <label class="drawing-field"><span>X</span><input id="device-rx" type="range" min="-180" max="180" step="1" value="26" data-device-param="rx"><output id="device-rx-value" for="device-rx">26°</output></label>
+              <label class="drawing-field"><span>Y</span><input id="device-ry" type="range" min="-180" max="180" step="1" value="-32" data-device-param="ry"><output id="device-ry-value" for="device-ry">−32°</output></label>
+              <label class="drawing-field"><span>Z</span><input id="device-rz" type="range" min="-180" max="180" step="1" value="0" data-device-param="rz"><output id="device-rz-value" for="device-rz">0°</output></label>
+            </div>
+          </details>
+        </div>
+        <details open>
+          <summary><span class="drawing-step">04</span><span data-i18n="export">导出插图</span></summary>
+          <div class="drawing-fields">
+            <label class="drawing-field"><span data-i18n="resolution">PNG 宽度</span><select id="export-width"><option value="1200">1200 px</option><option value="2400" selected>2400 px</option><option value="3600">3600 px</option></select></label>
+            <label class="drawing-check"><input type="checkbox" id="export-transparent"><span data-i18n="transparent">透明背景</span></label>
+            <div class="drawing-export-actions"><button id="export-png" class="drawing-primary" type="button" data-i18n="png">导出 PNG</button><button id="export-svg" type="button" data-i18n="svg">导出 SVG</button></div>
+            <p class="drawing-note" data-i18n="exportNote">按当前视角导出。SVG 可继续编辑；透明背景会保留开启的投影。</p>
+          </div>
+        </details>
+        <p id="drawing-status" role="status" aria-live="polite"></p>
+      </aside>
+      <section id="crystal-preview" class="drawing-stage" aria-label="晶体预览" data-label="preview">
+        <div class="drawing-stage-heading"><div><p class="drawing-eyebrow" data-i18n="live">LIVE CANVAS</p><h2 id="drawing-formula">CsPbBr₃</h2></div><span id="drawing-cell-badge">2 × 2 × 2</span></div>
+        <div class="drawing-toolbar" role="group" aria-label="视角控制" data-label="views">
+          <button type="button" data-view="a" data-i18n="alongA">沿 a 轴</button><button type="button" data-view="b" data-i18n="alongB">沿 b 轴</button><button type="button" data-view="c" data-i18n="alongC">沿 c 轴</button><button type="button" data-view="iso" data-i18n="iso">等轴测</button>
+          <button type="button" id="zoom-out" aria-label="缩小" data-label="zoomOut">−</button><button type="button" id="zoom-in" aria-label="放大" data-label="zoomIn">+</button><button type="button" id="reset-view" data-i18n="reset">重置视角</button>
+        </div>
+        <div id="drawing-viewport" tabindex="0" role="group" aria-label="可旋转晶体视图" data-label="viewport" aria-describedby="drawing-help"><div id="drawing-canvas"><p data-i18n="loading">正在准备晶体…</p></div></div>
+        <div class="drawing-legend" id="drawing-legend" aria-label="位点图例" data-label="legend"></div>
+        <p class="drawing-help" id="drawing-help" data-i18n="help">拖动旋转 · 滚轮缩放 · 双击复位。键盘：方向键旋转，+/− 缩放，0 复位。</p>
+        <div class="drawing-caption"><p id="drawing-counts" aria-live="polite"></p><p data-i18n="caption">角点 A · 体心 B · 面心 X。边界加权后 A:B:X = 1:1:3。</p><p data-i18n="approximation">正交投影示意；透明面的遮挡为近似排序，适合结构说明图。</p></div>
+        <details class="drawing-science">
+          <summary data-i18n="rulesTitle">结构依据与绘图范围</summary>
+          <div><p data-i18n="rulesBody">每个 BX₆ 单元含 6 个 X 顶点、8 个等边三角面和 12 条等长边；相邻单元共用 X 顶点，A 位处于十二配位空隙。这里绘制理想立方模型，不模拟真实材料的八面体倾斜、键长畸变或分子取向。</p><p><span data-i18n="sources">结构参考</span>：<a href="https://journals.iucr.org/a/issues/2019/02/00/kx5068/index.html" target="_blank" rel="noopener noreferrer">IUCr · 2019</a> · <a href="https://journals.iucr.org/a/issues/2023/02/00/lu5021/index.html" target="_blank" rel="noopener noreferrer">IUCr · 2023</a></p></div>
+        </details>
+      </section>
+      <section id="device-preview" class="drawing-stage" hidden aria-label="器件预览" data-device-label="preview">
+        <div class="drawing-stage-heading"><div><p class="drawing-eyebrow">DEVICE CONCEPT / LAYER STACK</p><h2 data-device-i18n="deviceTitle">器件层状结构</h2></div><span id="device-stack-badge">p-i-n · 7</span></div>
+        <div class="drawing-toolbar" role="group" aria-label="器件视图控制" data-device-label="viewControls">
+          <button type="button" id="device-assemble" aria-pressed="false" data-device-i18n="assembled">组装视图</button><button type="button" id="device-explode" aria-pressed="true" data-device-i18n="exploded">爆炸视图</button>
+          <button type="button" id="device-iso" data-device-i18n="isometric">立体视角</button><button type="button" id="device-front" data-device-i18n="front">正视</button><button type="button" id="device-top" data-device-i18n="top">俯视</button>
+          <button type="button" id="device-zoom-out" aria-label="缩小器件" data-device-label="zoomOut">−</button><button type="button" id="device-zoom-in" aria-label="放大器件" data-device-label="zoomIn">+</button><button type="button" id="device-reset" data-device-i18n="reset">重置视角</button>
+        </div>
+        <div id="device-viewport" class="device-viewport" tabindex="0" role="group" aria-label="可旋转器件视图" data-device-label="viewport" aria-describedby="device-help"><div id="device-canvas" class="device-canvas"></div></div>
+        <p id="device-help" class="drawing-help" data-device-i18n="help">拖动旋转 · 滚轮缩放 · 双击复位。方向键旋转，+/− 缩放，0 复位。</p>
+        <div class="drawing-caption"><p id="device-stack-summary" aria-live="polite"></p><p data-device-i18n="conceptNote">概念示意，层厚与间距不按实际尺度；晶格为等比例缩放的理想共顶点 BX₆ 正八面体。</p></div>
+      </section>
+    </div>
+    <noscript><p class="drawing-noscript">请启用 JavaScript 以使用绘图区。Please enable JavaScript to use the drawing studio.</p></noscript>
+  </main>
+  <footer class="drawing-wrap drawing-footer"><span>WEIWEI ZUO / RESEARCH TOOLS</span><a id="tools-link" href="./zh.html#solar-cell-tools" data-i18n="tools">返回光伏分析工具 →</a></footer>
+</body>
+</html>
