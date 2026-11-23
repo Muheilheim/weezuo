@@ -9,10 +9,10 @@
   <title>科研绘图区 · Weiwei Zuo</title>
   <link rel="icon" href="./assets/weiwei-zuo-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css?v=a208180c8eee">
-  <link rel="stylesheet" href="./perovskite-drawing.css?v=522b9606c16f">
-  <script defer src="./perovskite-model.js?v=544996b7fec4"></script>
+  <link rel="stylesheet" href="./perovskite-drawing.css?v=a6d8c62af213">
+  <script defer src="./perovskite-model.js?v=38766941cd35"></script>
   <script defer src="./layered-device-model.js?v=2ec042c377ee"></script>
-  <script defer src="./perovskite-drawing.js?v=4dd06672c897"></script>
+  <script defer src="./perovskite-drawing.js?v=9b5885162d34"></script>
   <script defer src="./layered-device-drawing.js?v=88835255ff4f"></script>
   <link rel="canonical" href="https://muheilheim.github.io/weezuo/drawing.html">
 </head>
@@ -47,11 +47,22 @@
         <details open>
           <summary><span class="drawing-step">01</span><span data-i18n="structure">组成与超胞</span></summary>
           <div class="drawing-fields">
-            <label class="drawing-field"><span data-i18n="compound">组成预设</span><select id="compound"><option value="Cs|Pb|Br">CsPbBr₃</option><option value="Cs|Pb|I">CsPbI₃</option><option value="Cs|Sn|I">CsSnI₃</option><option value="MA|Pb|I">MAPbI₃</option><option value="FA|Pb|I">FAPbI₃</option><option value="Sr|Ti|O">SrTiO₃</option><option value="" data-i18n="custom">自定义</option></select></label>
-            <div class="drawing-sites">
+            <label class="drawing-field"><span data-i18n="compound">组成预设</span><select id="compound"><option value="Cs|Pb|Br">CsPbBr₃</option><option value="Cs|Pb|I">CsPbI₃</option><option value="Cs|Sn|I">CsSnI₃</option><option value="MA|Pb|I">MAPbI₃</option><option value="FA|Pb|I">FAPbI₃</option><option value="Sr|Ti|O">SrTiO₃</option><option value="mixed" data-i18n="mixed">混合组成 · 自定义比例</option><option value="" data-i18n="custom">自定义</option></select></label>
+            <div class="drawing-sites" id="pure-sites">
               <label>A<select id="a" data-param="a"><option>Cs</option><option>Rb</option><option>K</option><option>MA</option><option>FA</option><option>Sr</option><option>Ba</option><option>Ca</option></select></label>
               <label>B<select id="b" data-param="b"><option>Pb</option><option>Sn</option><option>Ge</option><option>Ti</option><option>Zr</option></select></label>
               <label>X<select id="x" data-param="x"><option>Br</option><option>I</option><option>Cl</option><option>O</option></select></label>
+            </div>
+            <div id="mixture-panel" class="mixture-panel" hidden>
+              <p class="drawing-note" data-i18n="mixtureGuide">分别填写 A、B、X 位各组分的占位分数；每个位点总和必须为 1。0 表示不含该组分，不会自动归一化。</p>
+              <div id="mixture-fields"></div>
+              <button id="mixture-example" type="button" data-i18n="mixtureExample">载入 Cs₀.₀₅MA₀.₀₅FA₀.₉ 示例</button>
+              <p class="drawing-note" data-i18n="mixtureExampleNote">示例只填 A 位与 Pb；I、Cl 比例留空，需自行填写。</p>
+              <label class="drawing-field"><span data-i18n="occupancy">占位显示</span><select id="occupancy-mode"><option value="average" data-i18n="average">平均占位 · 按比例分色</option><option value="discrete" data-i18n="discrete">离散原子 · 有限超胞近似</option></select></label>
+              <p id="mixture-validation" class="drawing-note" aria-live="polite"></p>
+              <p id="mixture-formula" class="drawing-note"></p>
+              <button id="mixture-apply" type="button" data-i18n="applyComposition">应用组成</button>
+              <button id="mixture-shuffle" type="button" data-i18n="shuffle">换一组示意排列</button>
             </div>
             <label class="drawing-field"><span data-i18n="cells">超胞尺寸</span><select id="cells" data-param="cells"><option value="1">1 × 1 × 1</option><option value="2" selected>2 × 2 × 2</option><option value="3">3 × 3 × 3</option><option value="4">4 × 4 × 4</option></select></label>
             <p class="drawing-note" data-i18n="ideal">理想立方 ABX₃（Pm3̅m）示意。BX₆ 正八面体共顶点连接。更换元素不判定物相或稳定性；MA/FA 以球体简化表示。</p>
@@ -61,6 +72,8 @@
           <summary><span class="drawing-step">02</span><span data-i18n="appearance">配色与光影</span></summary>
           <div class="drawing-fields">
             <label class="drawing-field"><span data-i18n="style">风格预设</span><select id="drawing-style"><option value="reference" data-i18n="reference">旧图柔光 · 青绿与暗红</option><option value="paper" data-i18n="paper">清爽投稿 · 蓝与金</option><option value="cover" data-i18n="cover">深色封面 · 烟蓝与珊瑚</option><option value="" data-i18n="custom">自定义</option></select></label>
+            <label class="drawing-check"><input id="speciesStyle" data-param="speciesStyle" type="checkbox" checked><span data-i18n="speciesStyle">按组分区分颜色与示意大小</span></label>
+            <p class="drawing-note" data-i18n="speciesStyleNote">颜色和相对大小仅用于区分组分，不是实测半径。修改位点颜色或风格会切换为自定义配色。</p>
             <div class="drawing-style-labels"><span data-i18n="siteColor">位点 / 颜色</span><span data-i18n="size">相对球半径</span></div>
             <div class="drawing-site-style"><label for="aColor">A</label><input id="aColor" data-param="aColor" type="color" value="#3f8c82" aria-label="A 位颜色" data-label="aColor"><input id="aScale" data-param="aScale" type="range" min="0.25" max="1.8" step="0.05" value="1" aria-label="A 位相对半径" data-label="aScale"><output for="aScale" id="aScale-value">1.00</output></div>
             <div class="drawing-site-style"><label for="bColor">B</label><input id="bColor" data-param="bColor" type="color" value="#65303a" aria-label="B 位颜色" data-label="bColor"><input id="bScale" data-param="bScale" type="range" min="0.25" max="1.8" step="0.05" value="1" aria-label="B 位相对半径" data-label="bScale"><output for="bScale" id="bScale-value">1.00</output></div>
@@ -148,6 +161,7 @@
         <p id="drawing-status" role="status" aria-live="polite"></p>
       </aside>
       <section id="crystal-preview" class="drawing-stage" aria-label="晶体预览" data-label="preview">
+        <p id="composition-pending" class="composition-pending" hidden aria-live="polite" data-i18n="pendingComposition">组成尚未应用；预览仍显示上一组已应用组成。请检查比例并应用后导出。</p>
         <div class="drawing-stage-heading"><div><p class="drawing-eyebrow" data-i18n="live">LIVE CANVAS</p><h2 id="drawing-formula">CsPbBr₃</h2></div><span id="drawing-cell-badge">2 × 2 × 2</span></div>
         <div class="drawing-toolbar" role="group" aria-label="视角控制" data-label="views">
           <button type="button" data-view="a" data-i18n="alongA">沿 a 轴</button><button type="button" data-view="b" data-i18n="alongB">沿 b 轴</button><button type="button" data-view="c" data-i18n="alongC">沿 c 轴</button><button type="button" data-view="iso" data-i18n="iso">等轴测</button>
@@ -156,7 +170,7 @@
         <div id="drawing-viewport" tabindex="0" role="group" aria-label="可旋转晶体视图" data-label="viewport" aria-describedby="drawing-help"><div id="drawing-canvas"><p data-i18n="loading">正在准备晶体…</p></div></div>
         <div class="drawing-legend" id="drawing-legend" aria-label="位点图例" data-label="legend"></div>
         <p class="drawing-help" id="drawing-help" data-i18n="help">拖动旋转 · 滚轮缩放 · 双击复位。键盘：方向键旋转，+/− 缩放，0 复位。</p>
-        <div class="drawing-caption"><p id="drawing-counts" aria-live="polite"></p><p data-i18n="caption">角点 A · 体心 B · 面心 X。边界加权后 A:B:X = 1:1:3。</p><p data-i18n="approximation">正交投影示意；透明面的遮挡为近似排序，适合结构说明图。</p></div>
+        <div class="drawing-caption"><p id="composition-summary" class="composition-summary"></p><p id="drawing-counts" aria-live="polite"></p><p data-i18n="caption">角点 A · 体心 B · 面心 X。边界加权后 A:B:X = 1:1:3。</p><p data-i18n="approximation">正交投影示意；透明面的遮挡为近似排序，适合结构说明图。</p></div>
         <details class="drawing-science">
           <summary data-i18n="rulesTitle">结构依据与绘图范围</summary>
           <div><p data-i18n="rulesBody">每个 BX₆ 单元含 6 个 X 顶点、8 个等边三角面和 12 条等长边；相邻单元共用 X 顶点，A 位处于十二配位空隙。这里绘制理想立方模型，不模拟真实材料的八面体倾斜、键长畸变或分子取向。</p><p><span data-i18n="sources">结构参考</span>：<a href="https://journals.iucr.org/a/issues/2019/02/00/kx5068/index.html" target="_blank" rel="noopener noreferrer">IUCr · 2019</a> · <a href="https://journals.iucr.org/a/issues/2023/02/00/lu5021/index.html" target="_blank" rel="noopener noreferrer">IUCr · 2023</a></p></div>

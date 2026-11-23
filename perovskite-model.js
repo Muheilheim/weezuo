@@ -5,6 +5,10 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const sites = { a: ["Cs", "Rb", "K", "MA", "FA", "Sr", "Ba", "Ca"], b: ["Pb", "Sn", "Ge", "Ti", "Zr"], x: ["Br", "I", "Cl", "O"] };
+  const mixtureSites = { a: ["Cs", "Rb", "K", "MA", "FA"], b: ["Pb", "Sn", "Ge"], x: ["I", "Br", "Cl"] };
+  const speciesColors = { Cs: "#3f8c82", Rb: "#789d65", K: "#b5954c", MA: "#d5a65d", FA: "#7b82ba", Pb: "#65303a", Sn: "#ce8250", Ge: "#9d71a3", I: "#936ab1", Br: "#b65a60", Cl: "#74a874", Sr: "#758ba2", Ba: "#aa895c", Ca: "#719975", Ti: "#4a7f9e", Zr: "#876d9a", O: "#ca6058" };
+  // Deliberately illustrative size cues, not tabulated ionic or molecular radii.
+  const speciesSizes = { Cs: 0.9, Rb: 0.83, K: 0.76, MA: 1.04, FA: 1.22, Pb: 1, Sn: 0.88, Ge: 0.78, I: 1.16, Br: 1, Cl: 0.82 };
   const styles = {
     reference: { aColor: "#3f8c82", bColor: "#65303a", xColor: "#b65a60", faceColor: "#80a9b2", edgeColor: "#637d85", background: "#f6f5ef", faceOpacity: 0.30 },
     paper: { aColor: "#219ebc", bColor: "#023047", xColor: "#e5a52b", faceColor: "#90c9e6", edgeColor: "#4c8398", background: "#ffffff", faceOpacity: 0.24 },
@@ -14,11 +18,11 @@
     a: "Cs", b: "Pb", x: "Br", cells: 2, ...styles.reference,
     aScale: 1, bScale: 1, xScale: 1, edgeWidth: 1.2,
     showOcta: true, showBonds: true, showCell: false, showLabels: false,
-    showA: true, showAxes: true, shaded: true, shadow: true,
+    showA: true, speciesStyle: true, showAxes: true, shaded: true, shadow: true,
     rx: 24, ry: -32, rz: -6, zoom: 1
   };
   const ranges = { cells: [1, 4], aScale: [0.25, 1.8], bScale: [0.25, 1.8], xScale: [0.25, 1.8], faceOpacity: [0, 1], edgeWidth: [0, 4], rx: [-180, 180], ry: [-180, 180], rz: [-180, 180], zoom: [0.45, 2.4] };
-  const bools = ["showOcta", "showBonds", "showCell", "showLabels", "showA", "showAxes", "shaded", "shadow"];
+  const bools = ["showOcta", "showBonds", "showCell", "showLabels", "showA", "speciesStyle", "showAxes", "shaded", "shadow"];
   const colors = ["aColor", "bColor", "xColor", "faceColor", "edgeColor", "background"];
   function normalize(input = {}) {
     const p = { ...defaults };
@@ -30,7 +34,57 @@
     if (!Number.isInteger(p.cells)) throw new Error("Supercell must be an integer");
     for (const key of colors) if (typeof p[key] !== "string" || !/^#[0-9a-f]{6}$/i.test(p[key])) throw new Error("Invalid color: " + key);
     for (const key of bools) if (typeof p[key] !== "boolean") throw new Error("Invalid switch: " + key);
+    p.composition = input.composition == null ? null : normalizeComposition(input.composition);
+    p.occupancyMode = input.occupancyMode ?? "average";
+    if (!["average", "discrete"].includes(p.occupancyMode)) throw new Error("Invalid occupancy mode");
+    p.seed = input.seed ?? 1;
+    if (!Number.isInteger(p.seed) || p.seed < 0 || p.seed > 1000000) throw new Error("Invalid arrangement seed");
     return p;
+  }
+  function normalizeComposition(input) {
+    if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).some(k => !Object.hasOwn(mixtureSites, k))) throw new Error("Invalid composition");
+    const result = {};
+    for (const [site, allowed] of Object.entries(mixtureSites)) {
+      const values = input[site];
+      if (!values || typeof values !== "object" || Array.isArray(values) || Object.keys(values).some(k => !allowed.includes(k))) throw new Error("Invalid mixture site " + site);
+      result[site] = {};
+      let sum = 0;
+      for (const species of allowed) {
+        const fraction = Object.hasOwn(values, species) ? values[species] : 0;
+        if (typeof fraction !== "number" || !Number.isFinite(fraction) || fraction < 0 || fraction > 1) throw new Error("Invalid fraction " + species);
+        if (fraction > 0) result[site][species] = fraction;
+        sum += fraction;
+      }
+      if (Math.abs(sum - 1) > 1e-8) throw new Error("Fractions must sum to 1 at " + site);
+    }
+    return result;
+  }
+  function compositionOf(p) { return p.composition || { a: { [p.a]: 1 }, b: { [p.b]: 1 }, x: { [p.x]: 1 } }; }
+  const fractionText = value => String(Number(value.toPrecision(10)));
+  const subscript = value => String(value).replace(/[0-9.\-]/g, ch => ({"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉",".":".","-":"₋"})[ch]);
+  function formula(p, ascii = false) {
+    const c = compositionOf(p), number = v => ascii ? fractionText(v) : subscript(fractionText(v));
+    const parts = site => Object.entries(c[site]).map(([name, ratio]) => name + (ratio === 1 ? "" : number(ratio))).join("");
+    return parts("a") + (Object.keys(c.b).length > 1 ? "(" + parts("b") + ")" : parts("b")) + (Object.keys(c.x).length > 1 ? "(" + parts("x") + ")" : parts("x")) + (ascii ? "3" : "₃");
+  }
+  function appearance(p, site, species) {
+    return { color: p.speciesStyle ? speciesColors[species] : p[site + "Color"], size: p.speciesStyle ? (speciesSizes[species] || 1) : 1 };
+  }
+  function siteOccupancies(input = {}) {
+    const p = normalize(input), c = compositionOf(p), geometry = buildGeometry(p.cells), assignments = new Map(), stats = {};
+    const periodicKey = atom => atom.position.map(v => (v * 2) % (p.cells * 2)).join(",");
+    const hash = key => { let h = (2166136261 ^ p.seed) >>> 0; for (const ch of key) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0; h ^= h >>> 16; h = Math.imul(h, 0x7feb352d); h ^= h >>> 15; return h >>> 0; };
+    for (const site of Object.keys(sites)) {
+      const atoms = geometry.atoms.filter(atom => atom.site === site), keys = [...new Set(atoms.map(periodicKey))].sort((a,b) => hash(site+a)-hash(site+b) || a.localeCompare(b));
+      const total = keys.length, allocation = Object.entries(c[site]).map(([species, fraction], order) => ({ species, fraction, count: Math.floor(fraction * total), remainder: fraction * total % 1, order }));
+      const remaining = total - allocation.reduce((sum, item) => sum + item.count, 0);
+      [...allocation].sort((a,b) => b.remainder-a.remainder || a.order-b.order).slice(0,remaining).forEach(item => item.count++);
+      const lookup = new Map();let offset = 0;
+      for (const item of allocation) for (let i=0;i<item.count;i++) lookup.set(keys[offset++], item.species);
+      stats[site] = { total, requested: { ...c[site] }, counts: Object.fromEntries(allocation.map(v => [v.species,v.count])), realized: Object.fromEntries(allocation.map(v => [v.species,v.count/total])) };
+      atoms.forEach(atom => assignments.set(site + ":" + atom.id, lookup.get(periodicKey(atom))));
+    }
+    return { assignments, stats };
   }
   const escapeXML = value => String(value).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[ch]);
   const subtract = (a, b) => a.map((v, i) => v - b[i]);
@@ -87,12 +141,12 @@
     const channels = hex.slice(1).match(/../g).map(c => parseInt(c, 16));
     return "#" + channels.map(c => Math.round(amount >= 0 ? c + (255 - c) * amount : c * (1 + amount)).toString(16).padStart(2, "0")).join("");
   }
-  const formula = p => p.a + p.b + p.x + "₃";
   function renderSVG(input = {}, options = {}) {
-    const p = normalize(input), geometry = buildGeometry(p.cells);
+    const p = normalize(input), geometry = buildGeometry(p.cells), composition = compositionOf(p), occupancy = siteOccupancies(p);
     const width = 1000, height = 760, center = p.cells / 2;
     const transformed = geometry.atoms.map(a => rotate(a.position.map(v => v - center), p));
-    const maxRadius = Math.max(p.aScale * 0.17, p.bScale * 0.13, p.xScale * 0.12);
+    const radii = { a: 0.17, b: 0.13, x: 0.12 };
+    const maxRadius = Math.max(...Object.keys(sites).flatMap(site => Object.keys(composition[site]).map(species => p[site + "Scale"] * radii[site] * appearance(p,site,species).size)));
     const xs = transformed.map(v => v[0]), ys = transformed.map(v => v[1]);
     const scale = Math.min(820 / (Math.max(...xs) - Math.min(...xs) + maxRadius * 2), 580 / (Math.max(...ys) - Math.min(...ys) + maxRadius * 2)) * p.zoom;
     const project = point => [500 + point[0] * scale, 350 - point[1] * scale, point[2]];
@@ -113,19 +167,33 @@
       if (p.edgeWidth) octa.edges.forEach(([a, b]) => line(points[a], points[b], p.edgeColor, p.edgeWidth, 0.7));
     });
     if (p.showBonds) geometry.bonds.forEach(([a, b]) => line(points[a], points[b], tint(p.bColor, 0.3), 4, 0.75));
-    const radii = { a: 0.17, b: 0.13, x: 0.12 };
     geometry.atoms.forEach((atom, i) => {
       if (atom.site === "a" && !p.showA) return;
-      const [x, y, depth] = points[i], r = radii[atom.site] * p[atom.site + "Scale"] * scale;
-      const label = p[atom.site];
-      let markup = `<circle data-site="${atom.site}" cx="${f(x)}" cy="${f(y)}" r="${f(r)}" fill="${p.shaded ? `url(#sphere-${atom.site})` : p[atom.site + "Color"]}" stroke="${tint(p[atom.site + "Color"], -0.25)}" stroke-width="0.5"/>`;
-      if (p.showLabels) markup += `<text x="${f(x)}" y="${f(y + 5)}" text-anchor="middle" font-size="${f(Math.max(12, Math.min(24, r * 0.9)))}" fill="${p.shaded ? "#ffffff" : (dot(p[atom.site + "Color"].slice(1).match(/../g).map(c => parseInt(c, 16)), [0.299, 0.587, 0.114]) > 150 ? "#142c35" : "#ffffff")}" stroke="#142c35" stroke-width="0.6" paint-order="stroke">${escapeXML(label)}</text>`;
-      scene.push({ depth, markup });
+      const [x,y,depth] = points[i], site = atom.site, entries = Object.entries(composition[site]);
+      const discrete = p.occupancyMode === "discrete", selected = occupancy.assignments.get(site + ":" + atom.id);
+      const occupants = discrete ? [[selected,1]] : entries;
+      const size = occupants.reduce((sum,[species,fraction]) => sum + appearance(p,site,species).size * fraction,0);
+      const r = radii[site] * p[site + "Scale"] * size * scale;
+      const color = appearance(p,site,occupants[0][0]).color, fill = species => p.shaded ? `url(#sphere-${site}-${species})` : appearance(p,site,species).color;
+      let markup = `<g data-atom="${site}:${atom.id}" data-occupancy="${discrete ? "discrete" : "average"}"><circle data-site="${site}" data-species="${occupants.map(v=>v[0]).join(" ")}" cx="${f(x)}" cy="${f(y)}" r="${f(r)}" fill="${fill(occupants[0][0])}" stroke="${tint(color,-0.25)}" stroke-width="0.5"/>`;
+      if (occupants.length > 1) {
+        let angle = -Math.PI / 2;
+        for (const [species,fraction] of occupants) {
+          const next = angle + fraction * 2 * Math.PI, start = [x+r*Math.cos(angle),y+r*Math.sin(angle)], end = [x+r*Math.cos(next),y+r*Math.sin(next)];
+          markup += `<path data-species="${species}" data-fraction="${fractionText(fraction)}" d="M ${f(x)} ${f(y)} L ${f(start[0])} ${f(start[1])} A ${f(r)} ${f(r)} 0 ${fraction>0.5?1:0} 1 ${f(end[0])} ${f(end[1])} Z" fill="${fill(species)}"/>`;
+          angle = next;
+        }
+      }
+      if (p.showLabels) markup += `<text x="${f(x)}" y="${f(y+5)}" text-anchor="middle" font-size="${f(Math.max(10,Math.min(24,r*0.9)))}" fill="#ffffff" stroke="#142c35" stroke-width="0.6" paint-order="stroke">${escapeXML(occupants.length > 1 ? site.toUpperCase() : occupants[0][0])}</text>`;
+      scene.push({depth,markup:markup+"</g>"});
     });
     // shortcut: transparent faces use painter depth ordering; use a depth buffer for dense intersecting geometry.
     scene.sort((a, b) => a.depth - b.depth);
     const title = `${formula(p)} · ${p.cells} × ${p.cells} × ${p.cells}`;
-    const definitions = Object.keys(radii).map(site => `<radialGradient id="sphere-${site}" cx="30%" cy="24%" r="78%"><stop offset="0" stop-color="${tint(p[site + "Color"], 0.74)}"/><stop offset="0.32" stop-color="${tint(p[site + "Color"], 0.12)}"/><stop offset="0.72" stop-color="${tint(p[site + "Color"], -0.15)}"/><stop offset="1" stop-color="${tint(p[site + "Color"], -0.56)}"/></radialGradient>`).join("");
+    const definitions = Object.keys(sites).flatMap(site => Object.keys(composition[site]).map(species => {
+      const color = appearance(p,site,species).color;
+      return `<radialGradient id="sphere-${site}-${species}" cx="30%" cy="24%" r="78%"><stop offset="0" stop-color="${tint(color,0.74)}"/><stop offset="0.32" stop-color="${tint(color,0.12)}"/><stop offset="0.72" stop-color="${tint(color,-0.15)}"/><stop offset="1" stop-color="${tint(color,-0.56)}"/></radialGradient>`;
+    })).join("");
     const background = options.transparent ? "" : `<rect width="1000" height="760" fill="${p.background}"/>`;
     const shadow = p.shadow ? Array.from({ length: 18 }, (_, i) => {
       const radius = 1 - i / 22;
@@ -140,7 +208,11 @@
         axes += `<line x1="90" y1="656" x2="${f(end[0])}" y2="${f(end[1])}" stroke="${axisColors[i]}" stroke-width="3"/><text x="${f(90 + x * 90)}" y="${f(666 - y * 90)}" font-size="30" text-anchor="middle" fill="${axisColors[i]}">${["a", "b", "c"][i]}</text>`;
       });
     }
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760" role="img" aria-labelledby="drawing-title drawing-description"><title id="drawing-title">${escapeXML(title)}</title><desc id="drawing-description">Ideal cubic ABX3 schematic. A: ${escapeXML(p.a)}; B: ${escapeXML(p.b)}; X: ${escapeXML(p.x)}. Boundary-weighted ratio 1:1:3. Relative visual sizes, not measured radii. Orthographic view.</desc><defs>${definitions}</defs>${background}<g font-family="Arial, sans-serif">${shadow}${scene.map(item => item.markup).join("")}${axes}</g></svg>`;
+    const ink = dot(p.background.slice(1).match(/../g).map(c=>parseInt(c,16)),[0.299,0.587,0.114]) < 128 && !options.transparent ? "#f5f3ed" : "#203b46";
+    const labels = Object.keys(sites).map((site,i) => `<text x="30" y="${700+i*22}" font-size="14" fill="${ink}">${site.toUpperCase()}: ${Object.entries(composition[site]).map(([species,ratio])=>escapeXML(species+" "+fractionText(ratio*100)+"%")).join(" · ")}</text>`).join("");
+    const compositionDescription = Object.entries(composition).map(([site,values])=>site.toUpperCase()+": "+Object.entries(values).map(([species,ratio])=>species+"="+fractionText(ratio)).join(", ")).join("; ");
+    const realizedDescription = p.composition && p.occupancyMode === "discrete" ? " Periodic-cell realized fractions: " + Object.entries(occupancy.stats).map(([site,stats])=>site.toUpperCase()+": "+Object.entries(stats.realized).map(([species,ratio])=>species+"="+fractionText(ratio)).join(", ")).join("; ")+". Finite supercell approximation, not measured chemical order." : " Mixed-color sectors denote average site occupancies, not multiple atoms at one position or measured ordering.";
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760" role="img" aria-labelledby="drawing-title drawing-description"><title id="drawing-title">${escapeXML(title)}</title><desc id="drawing-description">Ideal cubic ABX3 schematic. ${escapeXML(compositionDescription)}. Boundary-weighted ratio 1:1:3. Relative visual sizes, not measured radii. Orthographic view.${escapeXML(realizedDescription)}</desc><defs>${definitions}</defs>${background}<g font-family="Arial, sans-serif"><text x="30" y="30" font-size="18" fill="${ink}">${escapeXML(formula(p))}${p.composition ? " · " + (p.occupancyMode === "average" ? "Average occupancy" : "Discrete schematic") : ""}</text>${shadow}${scene.map(item=>item.markup).join("")}${axes}${p.composition ? labels : ""}</g></svg>`;
   }
-  return { sites, styles, defaults, ranges, normalize, buildGeometry, rotate, formula, renderSVG };
+  return { sites, mixtureSites, speciesColors, styles, defaults, ranges, normalize, normalizeComposition, compositionOf, appearance, siteOccupancies, fractionText, buildGeometry, rotate, formula, renderSVG };
 });

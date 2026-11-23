@@ -53,9 +53,13 @@
       rulesTitle: "Struktur und Darstellungsumfang", rulesBody: "Jede BX₆-Einheit hat 6 X-Ecken, 8 gleichseitige Dreiecksflächen und 12 gleich lange Kanten. Benachbarte Einheiten teilen X-Ecken; A liegt in zwölffach koordinierten Hohlräumen. Das ideale kubische Modell simuliert weder Oktaederkippungen noch Bindungslängenverzerrungen oder Molekülorientierungen.", sources: "Strukturquellen"
     }
   };
+  Object.assign(copy.zh, { mixed: "混合组成 · 自定义比例", mixtureGuide: "分别填写 A、B、X 位各组分的占位分数；每个位点总和必须为 1。0 表示不含该组分，不会自动归一化。", mixtureExample: "载入 Cs₀.₀₅MA₀.₀₅FA₀.₉ 示例", mixtureExampleNote: "示例只填 A 位与 Pb；I、Cl 比例留空，需自行填写。", occupancy: "占位显示", average: "平均占位 · 按比例分色", discrete: "离散原子 · 有限超胞近似", applyComposition: "应用组成", shuffle: "换一组示意排列", fraction: "占位分数", siteTotal: "合计", validComposition: "各位点比例合计均为 1，可以应用。", invalidComposition: "请填入 0–1 的数值，并使 A、B、X 各自合计为 1。空白项需填写。", pendingComposition: "组成尚未应用；预览仍显示上一组已应用组成。请检查比例并应用后导出。", speciesStyle: "按组分区分颜色与示意大小", speciesStyleNote: "颜色和相对大小仅用于区分组分，不是实测半径。修改位点颜色或风格会切换为自定义配色。", averageNote: "平均占位：每个分色球表示该位点的组分比例，不表示多个原子共处同一位置或真实排列。", discreteNote: "离散示意的实际比例（按周期单胞计数）：", finiteNote: "有限超胞可能无法精确容纳输入比例，稀少组分也可能为 0；目标比例见图例。此排列不是实验测定或结构优化结果。", draftFormula: "待应用组成：" });
+  Object.assign(copy.en, { mixed: "Mixed composition · custom fractions", mixtureGuide: "Enter site fractions for A, B and X separately. Each site must sum to 1. Zero excludes a species; fractions are not automatically normalized.", mixtureExample: "Load Cs₀.₀₅MA₀.₀₅FA₀.₉ example", mixtureExampleNote: "This example fills A and Pb only. I and Cl fractions are left blank for you to enter.", occupancy: "Occupancy display", average: "Average occupancy · color sectors", discrete: "Discrete atoms · finite-cell approximation", applyComposition: "Apply composition", shuffle: "Change schematic arrangement", fraction: "site fraction", siteTotal: "Total", validComposition: "Each site sums to 1. Ready to apply.", invalidComposition: "Enter numbers from 0 to 1, with A, B and X each summing to 1. Fill all blank entries.", pendingComposition: "Composition not applied. The preview still shows the last applied composition. Check the fractions and apply before exporting.", speciesStyle: "Distinguish species by color and visual size", speciesStyleNote: "Colors and sizes identify species; they are not measured radii. Editing site colors or style uses your custom palette.", averageNote: "Average occupancy: each color-segmented ball shows site fractions, not several atoms at the same position or measured ordering.", discreteNote: "Realized fractions in this discrete schematic (periodic-cell counts):", finiteNote: "A finite cell may not reproduce the requested fractions; a minor species can have zero atoms. The legend shows target fractions. This arrangement is not a measured or relaxed structure.", draftFormula: "Pending composition: " });
+  Object.assign(copy.de, { mixed: "Mischzusammensetzung · eigene Anteile", mixtureGuide: "Anteile für A, B und X getrennt eingeben. Jede Position muss insgesamt 1 ergeben. Null schließt eine Spezies aus; keine automatische Normierung.", mixtureExample: "Beispiel Cs₀.₀₅MA₀.₀₅FA₀.₉ laden", mixtureExampleNote: "Das Beispiel setzt nur A und Pb. I- und Cl-Anteile bleiben zur eigenen Eingabe leer.", occupancy: "Besetzungsdarstellung", average: "Mittlere Besetzung · Farbsegmente", discrete: "Einzelatome · endliche Superzelle", applyComposition: "Zusammensetzung anwenden", shuffle: "Andere schematische Anordnung", fraction: "Besetzungsanteil", siteTotal: "Summe", validComposition: "Alle Positionen ergeben 1. Bereit zum Anwenden.", invalidComposition: "Werte von 0 bis 1 eingeben; A, B und X müssen jeweils 1 ergeben. Leere Felder ausfüllen.", pendingComposition: "Zusammensetzung nicht angewendet. Die Vorschau zeigt den letzten angewendeten Stand. Anteile prüfen und vor dem Export anwenden.", speciesStyle: "Spezies durch Farbe und visuelle Größe unterscheiden", speciesStyleNote: "Farben und Größen kennzeichnen Spezies, keine gemessenen Radien. Eigene Positionsfarben oder Stilvorlagen verwenden die eigene Farbwahl.", averageNote: "Mittlere Besetzung: Farbsegmente zeigen Positionsanteile, keine mehreren Atome am selben Ort und keine gemessene Ordnung.", discreteNote: "Realisierte Anteile dieser diskreten Darstellung (periodische Zählung):", finiteNote: "Eine endliche Zelle kann Zielanteile nicht immer exakt darstellen; geringe Anteile können null Atome ergeben. Die Legende zeigt Zielanteile. Keine gemessene oder relaxierte Struktur.", draftFormula: "Noch anzuwenden: " });
   let lang = new URLSearchParams(location.search).get("lang");
   if (!Object.hasOwn(copy, lang)) lang = "zh";
   let params = { ...model.defaults }, frame = 0, drag = null, exportBusy = false;
+  let mixtureMode = false, mixturePending = false, mixtureInitialized = false;
   const canvasHost = byId("drawing-canvas"), viewport = byId("drawing-viewport");
   const text = key => copy[lang][key];
   function status(key, error = false) {
@@ -71,7 +75,9 @@
       if (output) output.textContent = key === "faceOpacity" ? Math.round(params[key] * 100) + "%" : /Scale$/.test(key) ? params[key].toFixed(2) : /^r[xyz]$/.test(key) ? Math.round(params[key]) + "°" : params[key].toFixed(1);
     });
     const compound = [params.a, params.b, params.x].join("|");
-    byId("compound").value = Array.from(byId("compound").options).some(o => o.value === compound) ? compound : "";
+    byId("compound").value = mixtureMode ? "mixed" : Array.from(byId("compound").options).some(o => o.value === compound) ? compound : "";
+    byId("mixture-panel").hidden = !mixtureMode;
+    byId("pure-sites").hidden = mixtureMode;
   }
   function render() {
     frame = 0;
@@ -82,13 +88,16 @@
     const counts = model.buildGeometry(params.cells).counts;
     const message = text("counts").replace("{a}", params.showA ? counts.a : 0).replace("{b}", counts.b).replace("{x}", counts.x);
     if (byId("drawing-counts").textContent !== message) byId("drawing-counts").textContent = message;
-    byId("drawing-legend").replaceChildren(...["a", "b", "x"].map(site => {
+    byId("drawing-legend").replaceChildren(...Object.entries(model.compositionOf(params)).flatMap(([site,values]) => Object.entries(values).map(([species,fraction]) => {
       const span = document.createElement("span"), dot = document.createElement("i");
-      dot.style.backgroundColor = params[site + "Color"];
+      dot.style.backgroundColor = model.appearance(params,site,species).color;
       dot.setAttribute("aria-hidden", "true");
-      span.append(dot, `${site.toUpperCase()} · ${params[site]}`);
+      span.append(dot, `${site.toUpperCase()} · ${species}${params.composition ? " " + model.fractionText(fraction*100) + "%" : ""}`);
       return span;
-    }));
+    })));
+    byId("composition-summary").textContent = !params.composition ? "" : params.occupancyMode === "discrete" ? text("discreteNote") + " " + Object.entries(model.siteOccupancies(params).stats).map(([site,v])=>site.toUpperCase()+" ["+v.total+"]: "+Object.entries(v.realized).map(([species,ratio])=>species+" "+model.fractionText(ratio*100)+"%").join(" / ")).join("; ") + " " + text("finiteNote") : text("averageNote");
+    byId("composition-pending").hidden = !mixturePending;
+    updateExportAvailability();
     syncControls();
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(render); }
@@ -98,6 +107,53 @@
       if (manual) document.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed", "false"));
       schedule();
     } catch { status("invalid", true); }
+  }
+  function updateExportAvailability() {
+    const blocked = exportBusy || (mixturePending && !window.LayeredDeviceUI?.isActive());
+    byId("export-png").disabled = byId("export-svg").disabled = blocked;
+    byId("mixture-shuffle").disabled = mixturePending || !params.composition || params.occupancyMode !== "discrete";
+  }
+  function buildMixtureControls() {
+    for (const [site,species] of Object.entries(model.mixtureSites)) {
+      const fieldset = document.createElement("fieldset"), legend = document.createElement("legend"), total = document.createElement("p");
+      fieldset.className = "mixture-site";legend.textContent = site.toUpperCase();fieldset.append(legend);
+      for (const name of species) {
+        const label = document.createElement("label"), swatch = document.createElement("i"), word = document.createElement("span"), input = document.createElement("input");
+        swatch.style.backgroundColor = model.speciesColors[name];swatch.setAttribute("aria-hidden","true");word.textContent=name;
+        input.type="number";input.min="0";input.max="1";input.step="any";input.value="0";input.id=`mix-${site}-${name}`;
+        input.dataset.mixtureSite=site;input.dataset.mixtureSpecies=name;input.autocomplete="off";
+        label.append(swatch,word,input);fieldset.append(label);
+      }
+      total.id="mix-total-"+site;total.className="drawing-note";fieldset.append(total);byId("mixture-fields").append(fieldset);
+    }
+  }
+  function setMixtureFields(composition, blanks = []) {
+    document.querySelectorAll("[data-mixture-site]").forEach(input => { input.value = blanks.includes(input.id) ? "" : String(composition[input.dataset.mixtureSite]?.[input.dataset.mixtureSpecies] || 0); });
+    mixtureInitialized = true;
+  }
+  function validateMixtureDraft() {
+    const draft = {a:{},b:{},x:{}};let valid=true;
+    document.querySelectorAll("[data-mixture-site]").forEach(input => {
+      const value=input.value.trim()==="" ? NaN : Number(input.value), good=Number.isFinite(value)&&value>=0&&value<=1;
+      input.setAttribute("aria-invalid",String(!good));if(!good)valid=false;
+      draft[input.dataset.mixtureSite][input.dataset.mixtureSpecies]=value;
+      input.setAttribute("aria-label",input.dataset.mixtureSite.toUpperCase()+" "+input.dataset.mixtureSpecies+" "+text("fraction"));
+    });
+    for (const site of Object.keys(draft)) {
+      const sum=Object.values(draft[site]).reduce((a,b)=>a+b,0), good=Number.isFinite(sum)&&Math.abs(sum-1)<=1e-8;
+      byId("mix-total-"+site).textContent=text("siteTotal")+": "+(Number.isFinite(sum)?model.fractionText(sum):"—")+" / 1";
+      byId("mix-total-"+site).dataset.error=String(!good);if(!good)valid=false;
+    }
+    byId("mixture-apply").disabled=!valid;
+    byId("mixture-validation").textContent=text(valid?"validComposition":"invalidComposition");byId("mixture-validation").dataset.error=String(!valid);
+    byId("mixture-formula").textContent=valid?text("draftFormula")+model.formula({composition:model.normalizeComposition(draft)}):"";
+    updateExportAvailability();return valid?draft:null;
+  }
+  function applyMixture() {
+    const draft=validateMixtureDraft();if(!draft)return;
+    mixturePending=false;
+    change({composition:draft,occupancyMode:byId("occupancy-mode").value,speciesStyle:true});
+    byId("composition-pending").hidden=true;status("ready");updateExportAvailability();
   }
   function setLanguage(next) {
     lang = next;
@@ -114,7 +170,8 @@
     byId("home-link").href = byId("drawing-brand").href = home;
     byId("tools-link").href = home + "#solar-cell-tools";
     try { const url = new URL(location.href); url.searchParams.set("lang", lang); history.replaceState(null, "", url); } catch { /* File previews can restrict history. */ }
-    status(exportBusy ? "exporting" : "ready");
+    if (mixtureInitialized) validateMixtureDraft();
+    status(mixturePending ? "pendingComposition" : exportBusy ? "exporting" : "ready", mixturePending);
     render();
     window.dispatchEvent(new CustomEvent("drawing-language", { detail: { lang } }));
   }
@@ -123,15 +180,33 @@
     const input = event.target, key = input.dataset.param;
     if (!key) return;
     const value = input.type === "checkbox" ? input.checked : input.type === "range" || key === "cells" ? Number(input.value) : input.value;
-    change({ [key]: value }, /^r[xyz]$/.test(key));
+    const next = { [key]: value };
+    if (["a","b","x"].includes(key)) { next.speciesStyle=true;next.composition=null; }
+    if (["aColor","bColor","xColor"].includes(key)) next.speciesStyle=false;
+    change(next, /^r[xyz]$/.test(key));
     if (/Color$|background|faceOpacity/.test(key)) byId("drawing-style").value = "";
   });
   byId("compound").addEventListener("change", event => {
     if (!event.target.value) return;
-    const [a, b, x] = event.target.value.split("|");
-    change({ a, b, x });
+    if (event.target.value === "mixed") {
+      mixtureMode=true;
+      if (!mixtureInitialized) {
+        const current=model.compositionOf(params), compatible=Object.entries(current).every(([site,values])=>Object.keys(values).every(species=>model.mixtureSites[site].includes(species)));
+        setMixtureFields(compatible?current:{a:{Cs:1},b:{Pb:1},x:{I:1}});
+      }
+      mixturePending=true;byId("mixture-panel").hidden=false;byId("pure-sites").hidden=true;
+      applyMixture();schedule();return;
+    }
+    mixtureMode=false;mixturePending=false;
+    const [a,b,x]=event.target.value.split("|");change({a,b,x,composition:null,speciesStyle:true});
   });
-  byId("drawing-style").addEventListener("change", event => { if (model.styles[event.target.value]) change(model.styles[event.target.value]); });
+  byId("mixture-fields").addEventListener("input",()=>{mixturePending=true;validateMixtureDraft();byId("composition-pending").hidden=false;status("pendingComposition",true);});
+  byId("occupancy-mode").addEventListener("change",()=>{mixturePending=true;validateMixtureDraft();byId("composition-pending").hidden=false;status("pendingComposition",true);});
+  byId("mixture-apply").addEventListener("click",applyMixture);
+  byId("mixture-example").addEventListener("click",()=>{setMixtureFields({a:{Cs:0.05,MA:0.05,FA:0.9},b:{Pb:1},x:{}},["mix-x-I","mix-x-Cl"]);mixturePending=true;validateMixtureDraft();byId("composition-pending").hidden=false;status("pendingComposition",true);});
+  byId("mixture-shuffle").addEventListener("click",()=>change({seed:((params.seed??1)+1)%1000001}));
+  for(const id of ["drawing-mode-crystal","drawing-mode-device"])byId(id).addEventListener("click",()=>requestAnimationFrame(updateExportAvailability));
+  byId("drawing-style").addEventListener("change", event => { if (model.styles[event.target.value]) change({...model.styles[event.target.value],speciesStyle:false}); });
   const views = { a: { rx: 0, ry: 90, rz: 0 }, b: { rx: 90, ry: 0, rz: 0 }, c: { rx: 0, ry: 0, rz: 0 }, iso: { rx: 35.264, ry: -45, rz: 0 } };
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
     change({ ...views[button.dataset.view], zoom: 1 });
@@ -180,7 +255,8 @@
   function snapshot() {
     const transparent = byId("export-transparent").checked;
     if (window.LayeredDeviceUI?.isActive()) return window.LayeredDeviceUI.snapshot(transparent);
-    const name = `${params.a}${params.b}${params.x}3-${params.cells}x${params.cells}x${params.cells}${transparent ? "-transparent" : ""}`;
+    if (mixturePending) throw new Error("Apply composition before exporting");
+    const name = `${model.formula(params,true)}-${params.cells}x${params.cells}x${params.cells}${params.composition?"-"+params.occupancyMode+(params.occupancyMode==="discrete"?"-s"+params.seed:""):""}${transparent ? "-transparent" : ""}`;
     return { svg: model.renderSVG(params, { transparent }), name };
   }
   byId("export-svg").addEventListener("click", () => {
@@ -224,7 +300,7 @@
       if (image) { image.onload = null; image.onerror = null; }
       if (objectURL) URL.revokeObjectURL(objectURL);
       exportBusy = false;
-      byId("export-png").disabled = byId("export-svg").disabled = false;
+      updateExportAvailability();
     }
   });
   let initialTheme;
@@ -240,5 +316,6 @@
     setTheme(theme);
     try { localStorage.setItem("weiwei-research-theme", theme); } catch { /* Drawing remains available without storage. */ }
   });
+  buildMixtureControls();
   setLanguage(lang);
 })();

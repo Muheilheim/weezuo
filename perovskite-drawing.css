@@ -115,3 +115,21 @@
  #drawing-viewport,.device-viewport{flex:1 1 0;min-height:140px}
  #drawing-canvas,.device-canvas{height:100%;aspect-ratio:auto}
 }
+
+/* Editable site fractions remain readable on the existing narrow sidebar. */
+.mixture-panel{display:grid;gap:12px;min-width:0}
+.mixture-panel[hidden]{display:none}
+.mixture-site{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0 0 10px;min-width:0}
+.mixture-site legend{font-weight:600;color:var(--teal);padding-inline:5px}
+.mixture-site label{display:grid;grid-template-columns:10px minmax(36px,1fr) minmax(82px,110px);gap:9px;align-items:center;font-size:12px}
+.mixture-site i{width:9px;height:9px;border-radius:50%}
+.mixture-site input{width:100%;min-width:0;min-height:44px;padding:6px 9px;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.mixture-site input[aria-invalid="true"]{border-color:#b65a60}
+.mixture-panel [data-error="true"]{color:var(--burgundy,#a94f59)}
+.mixture-panel button:disabled{cursor:not-allowed}
+.mixture-panel #occupancy-mode{max-width:70%;white-space:normal}
+.composition-pending{background:var(--soft);border-bottom:1px solid var(--line);margin:0;padding:10px 20px;font-size:11px;line-height:1.6;flex-shrink:0}
+.composition-pending[hidden]{display:none}
+.composition-summary:empty{display:none}
+#drawing-formula,#mixture-formula{overflow-wrap:anywhere}
+#drawing-formula{font-size:clamp(16px,2.2vw,25px)}
