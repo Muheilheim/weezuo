@@ -43,26 +43,20 @@
     $("#theme-button").setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
     $('meta[name="theme-color"]').content = theme === "dark" ? "#011923" : "#011f34";
   }
-  function closeMenu() {
-    $("#navigation").classList.remove("open");
-    $("#menu-button").setAttribute("aria-expanded", "false");
-    $("#menu-button").setAttribute("aria-label", "Open navigation");
+  if (typeof ResizeObserver === "function") {
+    const header = $(".header");
+    new ResizeObserver(() => {
+      const padding = Math.max(110, header.offsetHeight + 12);
+      document.documentElement.style.setProperty("--homepage-scroll-padding", padding + "px");
+    }).observe(header);
   }
   $("#theme-button").addEventListener("click", () => {
     theme = theme === "light" ? "dark" : "light";
     try { localStorage.setItem("weiwei-research-theme", theme); } catch { /* Storage is optional. */ }
     applyTheme();
   });
-  $("#menu-button").addEventListener("click", () => {
-    const open = $("#navigation").classList.toggle("open");
-    $("#menu-button").setAttribute("aria-expanded", String(open));
-    $("#menu-button").setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-  });
-  $("#navigation").addEventListener("click", (event) => { if (event.target.closest("a")) closeMenu(); });
-  document.addEventListener("click", (event) => { if (!event.target.closest(".header")) closeMenu(); });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    closeMenu();
     if (dialog.open) { event.preventDefault(); dialog.close(); }
   });
   $("#close-dialog").addEventListener("click", () => dialog.close());
