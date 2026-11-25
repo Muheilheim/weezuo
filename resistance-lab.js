@@ -3,7 +3,7 @@
   const root = document.getElementById("resistance-calculator");
   if (!root || !window.SolarResistance) return;
   const lang = document.documentElement.lang, T = (en, de, zh) => lang === "de" ? de : lang.startsWith("zh") ? zh : en;
-  let measurement = null;
+  let measurement = null, fittedIdeality = null, sunsIdeality = null;
   const electricalSnapshots = {eis:null,sclc:null};
   const defaults = {voc: 1.2, jph: 25, n: 1.5, temperature: 300, rs: 2, rsh: 2000, pin: 100};
   const highFF = {voc: 1.2, jph: 25, n: 1, temperature: 300, rs: 0.1, rsh: 100000, pin: 100};
@@ -14,6 +14,9 @@
   const $ = selector => root.querySelector(selector);
   const $$ = selector => [...root.querySelectorAll(selector)];
   const fmt = (v, digits = 2) => Number(v).toFixed(digits);
+  const idealityMode = () => $("#rl-ideality-mode").value;
+  const boundsFor = key => key === "n" ? SolarResistance.idealityRange(idealityMode()) : SolarResistance.limits[key];
+  const inRange = (value, [min, max]) => Number.isFinite(value) && value >= min && value <= max;
   const deviceFmt = v => v === Infinity ? "∞" : v !== 0 && (Math.abs(v) < 0.01 || Math.abs(v) >= 1e5) ? v.toExponential(2) : fmt(v);
   const areaText = () => String(Number(area.toPrecision(8)));
   const displayScale = () => quantity === "total" ? area : 1;
@@ -36,15 +39,26 @@
       referenceField("voc", "Reference open-circuit voltage Vₒ꜀,₀", "V", "0.001") +
       referenceField("jph", "Reference short-circuit density Jₛ꜀,₀", "mA/cm²", "0.1") +
       '<div class="rl-field rl-area-field"><label for="rl-area">Active area A</label><div class="rl-input-row"><input type="number" id="rl-area" min="0.000001" max="10000" step="any" value="1" aria-describedby="rl-error rl-area-note"><span class="rl-unit">cm²</span></div><p class="rl-small rl-control-hint" id="rl-area-note">Use the illuminated active area, excluding inactive borders. 1 cm² = 100 mm².</p></div>' +
-      numberField("n", "Model ideality factor n", "—", "0.01") +
+      '<div class="rl-field" data-literal><label for="rl-ideality-mode">' + T("Diode model range", "Bereich des Diodenmodells", "二极管模型范围") + '</label><select id="rl-ideality-mode"><option value="classic">' +
+        T("Classic (1–2)", "Klassisch (1–2)", "经典（1–2）") + '</option><option value="extended">' + T("Extended (0.5–5)", "Erweitert (0,5–5)", "扩展（0.5–5）") + '</option></select></div>' +
+      numberField("n", "Model ideality factor n", "—", "0.001") +
+      '<p class="rl-small rl-n-warning" id="rl-n-warning" role="status" hidden data-literal>' +
+        T("Outside 1–2, interpret model n as an effective parameter. Consider transport, leakage and measurement conditions.",
+          "Außerhalb von 1–2 ist Modell-n als effektiver Parameter zu deuten. Transport, Leckströme und Messbedingungen berücksichtigen.",
+          "模型 n 超出 1–2 时，请将其视为有效参数，并结合输运、漏电与测量条件解读。") + '</p>' +
       numberField("temperature", "Cell temperature T", "K", "0.01") +
-      '<p class="rl-small rl-n-note">n is constant along each model curve. A measured light-intensity ideality factor may differ.</p>' +
       '<fieldset class="rl-field" id="rl-series-controls"><legend>Series resistance Rₛ</legend><div class="rl-input-row"><label class="sr-only" for="rl-rs">Series resistance (Ω·cm²)</label><input id="rl-rs" type="number" data-param="rs" min="0" max="50" step="0.01" value="2" aria-describedby="rl-error"><span class="rl-unit">Ω·cm²</span></div><label class="sr-only" for="rl-rs-slider">Adjust series resistance</label><input type="range" id="rl-rs-slider" min="0" max="50" step="0.01" value="2"><div class="rl-range-labels"><span>0 · ideal</span><span>50</span></div><p class="rl-small rl-control-hint">Use the number field for small Rₛ values (0.01 steps).</p></fieldset>' +
       '<fieldset class="rl-field" id="rl-shunt-controls"><legend>Shunt resistance Rₛₕ</legend><div class="rl-input-row"><label class="sr-only" for="rl-rsh">Shunt resistance (Ω·cm²)</label><input id="rl-rsh" type="number" data-param="rsh" min="10" max="1000000" step="any" value="2000" aria-describedby="rl-error"><span class="rl-unit">Ω·cm²</span></div><label class="sr-only" for="rl-rsh-slider">Adjust shunt resistance (logarithmic scale)</label><input type="range" id="rl-rsh-slider" min="1" max="6" step="0.01" value="3.30103"><div class="rl-range-labels"><span>10</span><span>10⁶ · log scale</span></div><label class="rl-check"><input id="rl-infinite" type="checkbox">Infinite Rₛₕ (no leakage)</label></fieldset>' +
-      '<details class="rl-advanced"><summary>Estimate n from a Vₒ꜀–light slope</summary><p class="rl-small">Enter a fitted slope from stabilized Vₒ꜀ versus light intensity at the cell temperature above.</p>' +
+      '<details class="rl-advanced" id="rl-suns-voc"><summary data-literal>' + T("Suns–Vₒ꜀ ideality factor", "Suns–Vₒ꜀-Idealitätsfaktor", "Suns–Vₒ꜀ 理想因子") + '</summary>' +
+      '<div class="rl-field" data-literal><label for="rl-suns-data">' + T("Measured intensity (suns) and Vₒ꜀ (V)", "Gemessene Intensität (suns) und Vₒ꜀ (V)", "实测光强（suns）和 Vₒ꜀（V）") +
+        '</label><textarea id="rl-suns-data" rows="3" spellcheck="false" aria-describedby="rl-suns-help rl-n-estimate"></textarea><p class="rl-small rl-control-hint" id="rl-suns-help">' +
+        T("Paste two columns or enter a slope below.", "Zwei Spalten einfügen oder unten eine Steigung eingeben.", "粘贴两列数据，或在下方输入已拟合的斜率。") + '</p></div>' +
+      '<div class="rl-field" data-literal><label for="rl-suns-temperature">' + T("Temperature during Suns–Vₒ꜀ measurement", "Temperatur bei der Suns–Vₒ꜀-Messung", "Suns–Vₒ꜀ 测量温度") +
+        '</label><div class="rl-input-row"><input id="rl-suns-temperature" type="number" min="200" max="400" step="0.01" value="300"><span class="rl-unit">K</span></div></div>' +
       '<div class="rl-field"><label for="rl-log-base">Light-intensity axis</label><select id="rl-log-base"><option value="log10">log₁₀(intensity) · per decade</option><option value="ln">ln(intensity) · natural log</option></select></div>' +
-      '<div class="rl-field"><label for="rl-slope">Vₒ꜀ slope</label><div class="rl-input-row"><input id="rl-slope" type="number" min="0" step="any" value="89.3" aria-describedby="rl-n-estimate"><span class="rl-unit" id="rl-slope-unit">mV/decade</span></div></div>' +
-      '<p class="rl-small" id="rl-n-estimate" role="status"></p><button class="rl-action" type="button" id="rl-use-n">Use estimate as model n</button><p class="rl-small rl-control-hint">Applying this value is a modeling assumption. Use a consistent preconditioning and settling protocol; report the fitted light range. Local slopes can vary with intensity. n alone does not identify a recombination mechanism.</p></details>' +
+      '<div class="rl-field"><label for="rl-slope">Vₒ꜀ slope</label><div class="rl-input-row"><input id="rl-slope" type="number" min="0" step="any" aria-describedby="rl-n-estimate"><span class="rl-unit" id="rl-slope-unit">mV/decade</span></div></div>' +
+      '<p class="rl-small" id="rl-n-estimate" role="status" data-literal></p><button class="rl-action" type="button" id="rl-use-n" data-literal>' +
+        T("Use Suns–Vₒ꜀ n in the J–V model", "Suns–Vₒ꜀-n im J–V-Modell verwenden", "将 Suns–Vₒ꜀ 的 n 用于 J–V 模型") + '</button></details>' +
       '<details class="rl-advanced"><summary>Illumination &amp; reference settings</summary><p class="rl-small">The visible voltage and short-circuit density define the reference cell (Rₛ = 0, Rₛₕ = ∞). Jₗ = Jₛ꜀,₀; J₀ is recalculated at the selected n and T.</p>' +
       numberField("pin", "Incident power density Pᵢₙ", "mW/cm²", "0.1") +
       '<p class="rl-small">Pᵢₙ sets the efficiency denominator only. Set Jₗ separately for the chosen illumination. Changing T keeps the entered reference voltage fixed; it does not forecast thermal degradation.</p></details>' +
@@ -78,10 +92,10 @@
       '<p>The reference short-circuit density Jₛ꜀,₀ equals the photocurrent density Jₗ. It is independently adjustable together with reference Vₒ꜀,₀; the calculated Vₒ꜀ and Jₛ꜀ include resistance losses. Internally J is in A/cm² and Rₛ, Rₛₕ are in Ω·cm², so J × R is in volts. For cell area A in cm²: R (Ω) = R (Ω·cm²) / A and I (mA) = J (mA/cm²) × A. The ideal reference means Rₛ = 0 and Rₛₕ = ∞; diode recombination remains present.</p>' +
       '<p>Active area A is entered in cm² (0.000001–10000); 1 cm² = 100 mm². Total device power equals power density × A, and total incident power equals incident power density × A. Both resistance inputs remain area-normalized in Ω·cm²; their device values and target bounds in Ω are divided by A. Keep the same illuminated area for current density and incident power. The model describes one uniformly illuminated cell, not a series-connected module or a geometry-dependent loss model.</p>' +
       '<p>J₀ = Jₗ / [exp(Vₒ꜀,₀ / (n kT/q)) − 1]. FF = Pₘₐₓ / (Vₒ꜀ Jₛ꜀) for densities, or Pₘₐₓ / (Vₒ꜀ Iₛ꜀) for device totals. Power loss = 100 × (1 − Pₘₐₓ/Pₘₐₓ,₀). Efficiency = 100 × output power / incident power, using densities or totals consistently. Power loss is evaluated from the solved curve, not an approximate fill-factor formula.</p>' +
-      '<p>FF₀ is solved numerically with Rₛ = 0 and Rₛₕ = ∞ at the selected Vₒ꜀,₀, n and T. The target check uses this same model. Resistance bounds use FF = Pₘₐₓ/(Vₒ꜀ Jₛ꜀) with the recalculated terminal Vₒ꜀ and Jₛ꜀, and search Rₛ = 0–50 or Rₛₕ = 10–10⁶ Ω·cm² plus the no-leakage limit. They are approximate conditional thresholds, not extraction from measured data. The displayed n ceiling assumes zero resistance losses and searches n = 1–2.</p>' +
+      '<p>FF₀ is solved numerically with Rₛ = 0 and Rₛₕ = ∞ at the selected Vₒ꜀,₀, n and T. The target check uses this same model. Resistance bounds use FF = Pₘₐₓ/(Vₒ꜀ Jₛ꜀) with the recalculated terminal Vₒ꜀ and Jₛ꜀, and search Rₛ = 0–50 or Rₛₕ = 10–10⁶ Ω·cm² plus the no-leakage limit. They are approximate conditional thresholds, not extraction from measured data. The displayed n ceiling assumes zero resistance losses and searches the selected n range.</p>' +
       '<p>For S = dVₒ꜀/dln(Φ), n = S/(kT/q); for S = dVₒ꜀/dlog₁₀(Φ), n = S/[ln(10) kT/q]. Slopes entered in mV are converted to V. At 300 K, the denominators are 25.852 mV per unit ln(Φ) and 59.526 mV per decade. A light-intensity fit is an effective ideality factor over its measured range; it need not equal the constant n that describes an operating J–V curve. Values near 1 do not by themselves establish radiative recombination. This tool does not infer recombination fractions.</p>' +
       '<p>A measured Suns–Vₒ꜀ curve can support a pseudo-J–V analysis when photocurrent scales with intensity and collection is sufficiently voltage independent. Its difference from measured FF can help assess transport-related losses, subject to those assumptions and consistent stabilization. The resistance-free curve here is a simulation, not a Suns–Vₒ꜀ measurement.</p>' +
-      '<p>Single-cell, uniform-illumination model with constant resistances. It does not include hysteresis, ion migration, breakdown, a second diode, or parameter fitting to measured data. Example presets are not fitted experimental devices. CSV includes all four signed J–V and P–V curves, including points beyond each model’s open-circuit voltage, plus parameters and maximum-power coordinates.</p>' +
+      '<p>Single-cell, uniform-illumination model with constant resistances. The steady-state J–V fit matches the measured endpoints and varies n at fixed Rₛ, Rₛₕ and T. Presets are illustrative. CSV includes all four signed J–V and P–V curves, including points beyond each model’s open-circuit voltage, plus parameters and maximum-power coordinates.</p>' +
       '<p data-literal>' + T("Paper sources:", "Fachliteratur:", "论文来源：") + '</p><div class="rl-source-links">' +
       '<a href="https://doi.org/10.1016/0038-1101(81)90062-9" target="_blank" rel="noopener noreferrer">Green · Solid-State Electronics (1981) ↗</a>' +
       '<a href="https://doi.org/10.1002/pssa.201800448" target="_blank" rel="noopener noreferrer">Tada · Phys. Status Solidi A (2018) ↗</a>' +
@@ -94,6 +108,12 @@
   measuredSection.setAttribute("aria-labelledby", "rl-measured-title");
   measuredSection.innerHTML = '<h3 id="rl-measured-title">' + T("Measured curve comparison", "Vergleich mit Messkurve", "实测曲线对照") + '</h3><p id="rl-measured-source" class="rl-small"></p>' +
     '<div class="rl-table-wrap"><table class="rl-table"><thead><tr><th scope="col">' + T("Quantity", "Größe", "参数") + '</th><th scope="col">' + measuredLabel + '</th><th scope="col">' + T("Current model", "Aktuelles Modell", "当前模型") + '</th></tr></thead><tbody id="rl-measured-table"></tbody></table></div>' +
+    '<p class="rl-target-status" id="rl-measured-ff-check" role="status" hidden></p>' +
+    '<p class="rl-small" id="rl-fit-help">' + T("Fit n over the measured power-generating region at the current Rₛ, Rₛₕ and T. The fit recalculates reference Vₒ꜀,₀ and Jₚₕ from measured endpoints.",
+      "n im Leistungsbereich bei aktuellem Rₛ, Rₛₕ und T anpassen. Referenz-Vₒ꜀,₀ und Jₚₕ folgen aus den gemessenen Endpunkten.",
+      "在当前 Rₛ、Rₛₕ 和 T 下，用实测发电区间拟合 n，并从实测端点换算参考 Vₒ꜀,₀ 和 Jₚₕ。") + '</p>' +
+    '<button type="button" class="rl-action" id="rl-fit-n" aria-describedby="rl-fit-help">' +
+      T("Fit n and update model", "n fitten und Modell aktualisieren", "拟合 n 并更新模型") + '</button><p class="rl-small rl-fit-status" id="rl-fit-status" role="status"></p>' +
     '<p class="rl-small" id="rl-measured-slopes"></p><p class="rl-small">' + T("Rs,app and Rsh,app are local slope estimates. Applying them assumes they are circuit resistances; this is a starting model, not a unique fit. Your current n and T are retained. Reference Jph and Voc,0 are calculated to match measured Jsc and Voc. FF and PCE remain independent comparisons.", "Rs,app und Rsh,app sind lokale Steigungsschätzungen. Ihre Verwendung als Schaltungswiderstände ist eine Annahme: ein Startmodell, kein eindeutiger Fit. Aktuelle n und T bleiben erhalten. Jph und Voc,0 werden an gemessene Jsc und Voc angepasst. FF und PCE bleiben unabhängige Vergleichswerte.", "Rs,app、Rsh,app 是局部斜率估算。将其用作等效电路电阻属于建模假设，只建立起始模型，不是唯一拟合。沿用当前 n、T，换算参考 Jph、Voc,0，使模型经过实测 Jsc、Voc；FF、PCE 保留为独立对照。") + '</p>' +
     '<div class="rl-actions"><button type="button" class="rl-action" id="rl-use-measured">' + T("Build starting model from apparent values", "Startmodell aus scheinbaren Werten", "用表观参数建立起始模型") + '</button><button type="button" class="rl-action" id="rl-back-jv">' + T("Back to module 06", "Zurück zu Modul 06", "返回模块 06") + '</button></div><p id="rl-measured-status" class="sp-message" role="status"></p>' +
     '<details><summary>' + T("Assumptions & paper sources", "Annahmen und Fachliteratur", "假设与论文依据") + '</summary><p class="rl-small">' + T("This is a saved snapshot of the selected scan. Send it again after editing module 06; Reset example clears it. Density comparisons use mA/cm². Whole-device overlays need a known measured active area; model and measured illumination are listed separately. The endpoint conversion is an algebraic rearrangement of the single-diode equation, not a published parameter-fitting method.", "Gespeicherter Stand des gewählten Scans. Nach Änderungen in Modul 06 erneut senden; Beispiel zurücksetzen löscht ihn. Dichtevergleich in mA/cm². Gerätekurven benötigen eine bekannte Messfläche; Beleuchtungen sind separat angegeben. Die Endpunktumrechnung ist eine algebraische Umstellung der Ein-Dioden-Gleichung, kein publiziertes Fitverfahren.", "对照保存当前扫描的快照；修改模块 06 后需重新发送，重置示例会清除快照。电流密度按 mA/cm² 对照；器件总量叠图需要已知实测面积，实测与模型的光强分别列出。端点换算由单二极管方程代数推导，不声称是论文提出的参数拟合方法。") + '</p><div class="rl-source-links"><a href="https://doi.org/10.1016/0038-1101(81)90062-9" target="_blank" rel="noopener noreferrer">Green · Solid-State Electronics (1981) ↗</a><a href="https://doi.org/10.1002/pssa.201800448" target="_blank" rel="noopener noreferrer">Tada · Phys. Status Solidi A (2018) ↗</a></div></details>';
@@ -115,9 +135,44 @@
   function measuredScale() {
     return !measurement ? null : quantity === "density" ? 1 : measurement.parameters.area > 0 ? measurement.parameters.area : null;
   }
+  function measuredFFCeiling(measured, parameters) {
+    if (!parameters || !inRange(measured.voc, SolarResistance.limits.voc)) return null;
+    const reference = {...parameters, voc: measured.voc, rs: 0, rsh: Infinity};
+    return 100 * SolarResistance.model(reference, {sampleCurve: false}).ff;
+  }
   function updateMeasurement() {
     if (!measurement) return;
     const m = measurement, active = valid ? results?.both : null;
+    const fitStatus = $("#rl-fit-status");
+    $("#rl-fit-n").disabled = !active;
+    if (active && fittedIdeality &&
+      ["idealityMode", "rs", "rsh", "temperature"].some(key => active.parameters[key] !== fittedIdeality.parameters[key])) {
+      fittedIdeality = null;
+    }
+    fitStatus.textContent = "";
+    if (active && fittedIdeality) {
+      const n = fmt(fittedIdeality.parameters.n, 3);
+      const rmse = fmt(fittedIdeality.rmse, 4);
+      fitStatus.textContent = T("Fitted n = ", "Gefittetes n = ", "拟合 n = ") + n +
+        " · RMSE = " + rmse + " mA/cm² · N = " + fittedIdeality.count +
+        (fittedIdeality.atLimit ? T(" · Range limit reached", " · Bereichsgrenze erreicht", " · 达到范围边界") : "");
+    }
+    const ceiling = measuredFFCeiling(m, active?.parameters);
+    const check = $("#rl-measured-ff-check");
+    check.hidden = !active;
+    check.dataset.state = "within";
+    if (ceiling === null && active) {
+      check.textContent = T("FF₀ comparison needs a measured Vₒ꜀ from 0.2 to 2 V.",
+        "Der FF₀-Vergleich benötigt ein gemessenes Vₒ꜀ von 0,2 bis 2 V.", "FF₀ 对照需要 0.2–2 V 范围内的实测 Vₒ꜀。");
+    }
+    if (ceiling !== null) {
+      const exceeds = m.ff > ceiling + 1e-8;
+      check.dataset.state = exceeds ? "unreachable" : "within";
+      check.textContent = T("FF₀ at measured Vₒ꜀ = ", "FF₀ bei gemessenem Vₒ꜀ = ", "按实测 Vₒ꜀ 计算的 FF₀ = ") + fmt(ceiling) + "%. " +
+        (exceeds
+          ? T("Measured FF exceeds this ceiling for the selected n and T.", "Der gemessene FF liegt über dieser Grenze für gewähltes n und T.", "实测 FF 超过当前 n 和 T 对应的模型上限。")
+          : T("Measured FF is within this ceiling for the selected n and T.", "Der gemessene FF liegt innerhalb dieser Grenze für gewähltes n und T.", "实测 FF 在当前 n 和 T 对应的模型上限内。"));
+    }
     $("#rl-measured-source").textContent = m.source + " · " + T("Scan ", "Scan ", "扫描 ") + m.index + (m.direction > 0 ? " · V ↑" : " · V ↓") + " · " + T("Snapshot", "Gespeicherter Stand", "快照") + (m.voltagePolarity < 0 ? " · " + T("Original Voc = ", "Original-Voc = ", "原始 Voc = ") + fmt(m.signedVoc, 4) + " V · " + T("comparison uses positive generating voltage", "Vergleich mit positiver Generatorspannung", "对照使用归一后的正向发电电压") : "");
     $("#rl-measured-slopes").textContent = "Rs,app = " + (m.rs.resistance == null ? "—" : deviceFmt(m.rs.resistance)) + " · Rsh,app = " + (m.rsh.resistance == null ? "—" : deviceFmt(m.rsh.resistance)) + " Ω·cm² · " + T("fit half-width: ", "Fit-Halbbreite: ", "拟合半宽：") + m.parameters.fitPercent + "% Voc" +
       (quantity === "total" && measuredScale() === null ? " · " + T("Use Per cm² to view the measured curve: its active area is unknown.", "Für die Messkurve Per cm² wählen: Messfläche unbekannt.", "实测面积未知，请切换“每 cm²”查看实测曲线。") : "");
@@ -137,7 +192,7 @@
   const darkSection=document.createElement('section');darkSection.className='char-comparison rl-dark';darkSection.hidden=true;darkSection.setAttribute('data-literal','');
   darkSection.innerHTML='<h3>'+T('Dark J–V snapshot · 06','Dunkel-J–V-Schnappschuss · 06','暗态 J–V 快照 · 06')+'</h3><p id="rl-dark-source" class="rl-small"></p><div class="rl-table-wrap"><table class="rl-table"><tbody id="rl-dark-table"></tbody></table></div><p class="rl-small">'+T('Rdiff,0 may initialize Rsh only as an approximation; napp and T are separate starting assumptions. Check diode/contact/series contributions. Illuminated reference Jph and Voc stay as entered; the model recalibrates its own J0. Dark J0,app is only a comparison quantity. Snapshot stays until resent or reset.','Rdiff,0 nähert Rsh nur als Startannahme an; napp und T sind eigene Startannahmen. Dioden-/Kontakt-/Serienbeiträge prüfen. Beleuchtete Referenzen Jph und Voc bleiben; das Modell kalibriert sein eigenes J0. Dunkel-J0,app dient nur zum Vergleich. Schnappschuss bleibt bis erneut gesendet/zurückgesetzt.','Rdiff,0 仅可近似用作 Rsh 起始假设；napp 与温度是独立起始假设，需核对二极管、接触及串联贡献。光照参考 Jph、Voc 保持输入值，模型会重新标定自身 J0；暗态 J0,app 仅作对照。快照保留至重新发送或重置。')+'</p><div class="sp-row"><button type="button" class="rl-action" id="rl-dark-rsh">'+T('Use Rdiff,0 as Rsh start','Rdiff,0 als Rsh-Start','用 Rdiff,0 作为 Rsh 起始值')+'</button><button type="button" class="rl-action" id="rl-dark-n">'+T('Use napp + T as start','napp + T als Start','用 napp 与温度作为起始值')+'</button></div><p id="rl-dark-status" class="sp-message" role="status"></p>';
   $('.rl-metrics').after(darkSection);
-  const darkInRange=(key,value)=>Number.isFinite(value)&&value>=SolarResistance.limits[key][0]&&value<=SolarResistance.limits[key][1];
+  const darkInRange = (key, value) => inRange(value, boundsFor(key));
   function updateDark(){
     const d=darkMeasurement;darkSection.hidden=!d;if(!d)return;
     $('#rl-dark-source').textContent=d.parameters.sampleId+' · '+d.source+' · scan '+d.index+' · '+d.parameters.conditions;
@@ -148,8 +203,9 @@
   window.ResistanceLab = {compareMeasurement(scan, source) {
     if (!scan || !Array.isArray(scan.points) || scan.points.length > 20000 || !scan.points.every(p => p.length === 2 && p.every(Number.isFinite))) return false;
     measurement = {...scan, source: String(source), points: scan.points.map(p => [...p]), parameters: {...scan.parameters}, rs: {...scan.rs}, rsh: {...scan.rsh}, warnings: [...scan.warnings]};
+    fittedIdeality = null;
     measuredSection.hidden = false; $(".rl-metrics").after(measuredSection);
-    $("#rl-measured-status").textContent = T("Comparison loaded. Model inputs are unchanged.", "Vergleich geladen. Modelleingaben sind unverändert.", "已载入对照，尚未修改模型输入。");
+    $("#rl-measured-status").textContent = T("Measured scan loaded for comparison.", "Messscan zum Vergleich geladen.", "已载入实测扫描用于对照。");
     updateMeasurement(); drawChart(); return true;
   },compareElectrical(kind,r,source){
     if(!['eis','sclc'].includes(kind)||!r?.parameters||typeof source!=='string'||source.length>2000)return false;
@@ -184,12 +240,29 @@
     try {
       const nextArea = measurement.parameters.area > 0 ? measurement.parameters.area : $("#rl-area").valueAsNumber;
       if (!Number.isFinite(nextArea) || nextArea < SolarResistance.areaLimits[0] || nextArea > SolarResistance.areaLimits[1]) throw new RangeError("Invalid area");
-      const next = SolarResistance.fromMeasured(measurement, {n: $("#rl-n").valueAsNumber, temperature: $("#rl-temperature").valueAsNumber, rs: measurement.rs.resistance, rsh: measurement.rsh.resistance, pin: measurement.parameters.pin});
+      const next = SolarResistance.fromMeasured(measurement, {n: $("#rl-n").valueAsNumber, temperature: $("#rl-temperature").valueAsNumber, rs: measurement.rs.resistance, rsh: measurement.rsh.resistance, pin: measurement.parameters.pin, idealityMode: idealityMode()});
       $("#rl-area").value = nextArea; $("#rl-preset").value = "custom"; setControls(next);
       measurement.initialization = {...next, area: nextArea};
       $("#rl-measured-status").textContent = T("Starting model applied using apparent resistances. FF/PCE differences show the remaining curve mismatch; adjust the model as needed.", "Startmodell mit scheinbaren Widerständen angewendet. FF/PCE-Abweichungen zeigen verbleibende Kurvenunterschiede; Modell bei Bedarf anpassen.", "已按表观电阻建立起始模型。FF／PCE 差异反映剩余曲线偏差，可继续调整模型。");
     } catch {
-      $("#rl-measured-status").textContent = T("Cannot initialize: slopes must be available and compatible with positive J0. Model ranges: Rs 0–50, Rsh 10–10⁶ or ∞ Ω·cm²; reference Voc 0.2–2 V, Jph 1–60 mA/cm²; n 1–2, T 200–400 K, Pin 10–200 mW/cm²; area 10⁻⁶–10⁴ cm². Inputs were not changed.", "Initialisierung nicht möglich: Steigungen müssen verfügbar und mit positivem J0 vereinbar sein. Modellbereiche: Rs 0–50, Rsh 10–10⁶ oder ∞ Ω·cm²; Referenz-Voc 0,2–2 V, Jph 1–60 mA/cm²; n 1–2, T 200–400 K, Pin 10–200 mW/cm²; Fläche 10⁻⁶–10⁴ cm². Eingaben bleiben unverändert.", "无法建立模型：需有可用斜率，并满足 J0 为正的端点条件。模型范围：Rs 0–50、Rsh 10–10⁶ 或 ∞ Ω·cm²；参考 Voc 0.2–2 V、Jph 1–60 mA/cm²；n 1–2、T 200–400 K、Pin 10–200 mW/cm²；面积 10⁻⁶–10⁴ cm²。输入未被修改。");
+      $("#rl-measured-status").textContent = T("Cannot initialize. Check the apparent resistances, measured endpoints and model input ranges.",
+        "Initialisierung nicht möglich. Scheinbare Widerstände, Messendpunkte und Modellbereiche prüfen.",
+        "无法建立起始模型。请检查表观电阻、实测端点及模型输入范围。");
+    }
+  });
+  $("#rl-fit-n").addEventListener("click", () => {
+    if (!measurement || !valid) return;
+    try {
+      fittedIdeality = SolarResistance.fitMeasuredIdeality(measurement, results.both.parameters);
+      $("#rl-preset").value = "custom";
+      setControls(fittedIdeality.parameters);
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error;
+      fittedIdeality = null;
+      $("#rl-fit-status").textContent = T(
+        "Cannot fit n. Check the scan coverage and whether the selected resistances are compatible with its endpoints.",
+        "n konnte nicht angepasst werden. Messbereich prüfen und Widerstände mit den Messendpunkten abgleichen.",
+        "无法拟合 n。请检查扫描覆盖范围，以及所选电阻能否与实测端点相容。");
     }
   });
   $("#rl-back-jv").addEventListener("click", () => {document.getElementById("pv-tab-jv").click(); document.getElementById("jv-analysis").scrollIntoView({behavior: "smooth", block: "start"});});
@@ -212,7 +285,7 @@
     $("#rl-rsh-slider").setAttribute("aria-valuetext", Math.round(rsh) + " ohm square centimeters");
   }
   function readInputs() {
-    const next = {...parameters}, errors = [];
+    const next = {...parameters, idealityMode: idealityMode()}, errors = [];
     const nextArea = $("#rl-area").valueAsNumber;
     const badArea = !Number.isFinite(nextArea) || nextArea < SolarResistance.areaLimits[0] || nextArea > SolarResistance.areaLimits[1];
     $("#rl-area").setAttribute("aria-invalid", String(badArea));
@@ -221,36 +294,76 @@
       const key = input.dataset.param;
       const ignored = key === "rsh" && $("#rl-infinite").checked;
       if (ignored) {input.removeAttribute("aria-invalid"); return;}
-      const bounds = SolarResistance.limits[key], value = input.valueAsNumber;
-      const bad = !Number.isFinite(value) || value < bounds[0] || value > bounds[1];
+      const bounds = boundsFor(key), value = input.valueAsNumber;
+      const bad = !inRange(value, bounds);
       input.setAttribute("aria-invalid", String(bad));
       if (bad) {
         const label = key === "rs" ? "Series resistance" : key === "rsh" ? "Shunt resistance" : input.closest(".rl-field").querySelector("label").textContent;
-        errors.push(label + ": enter " + bounds[0] + "–" + bounds[1] + ".");
+        const rangeText = bounds.join("–");
+        errors.push(key === "n"
+          ? T("Enter model n within " + rangeText + ".", "Modell-n im Bereich " + rangeText + " eingeben.", "模型 n 的输入范围为 " + rangeText + "。")
+          : label + ": enter " + rangeText + ".");
       } else next[key] = value;
     });
     valid = errors.length === 0;
     $("#rl-error").hidden = valid;
-    $("#rl-error").textContent = errors.join(" ") + (valid ? "" : " Results show the last valid inputs.");
+    $("#rl-error").textContent = errors.join(" ") + (valid ? "" : T(
+      " Results show the last valid inputs.", " Die Ergebnisse zeigen die letzten gültigen Eingaben.", " 结果显示最近一次有效输入。"));
     $("#rl-export").disabled = !valid;
     if (valid) {parameters = next; area = nextArea; syncSliders();}
     return valid;
   }
   function updateEstimate() {
-    const base = $("#rl-log-base").value;
-    $("#rl-slope-unit").textContent = base === "log10" ? "mV/decade" : "mV / unit ln(Φ)";
-    $("#rl-use-n").disabled = true;
+    const dataInput = $("#rl-suns-data"), temperatureInput = $("#rl-suns-temperature");
+    const slopeInput = $("#rl-slope"), logBase = $("#rl-log-base");
+    const data = dataInput.value.trim(), temperature = temperatureInput.valueAsNumber;
+    const hasData = data.length > 0, base = hasData ? "ln" : logBase.value;
+    const status = $("#rl-n-estimate"), use = $("#rl-use-n");
+    logBase.disabled = slopeInput.disabled = hasData;
+    $("#rl-slope-unit").textContent = logBase.value === "log10" ? "mV/decade" : "mV / unit ln(Φ)";
+    use.disabled = true;
+    sunsIdeality = null;
+    dataInput.removeAttribute("aria-invalid");
+    slopeInput.removeAttribute("aria-invalid");
+    const validTemperature = inRange(temperature, SolarResistance.limits.temperature);
+    temperatureInput.setAttribute("aria-invalid", String(!validTemperature));
+    if (!validTemperature) {
+      status.textContent = T("Enter a measurement temperature of 200–400 K.",
+        "Eine Messtemperatur von 200–400 K eingeben.", "请输入 200–400 K 范围内的测量温度。");
+      return;
+    }
+    if (!hasData && !slopeInput.value && !slopeInput.validity.badInput) {
+      status.textContent = "";
+      return;
+    }
     try {
-      const n = SolarResistance.idealityFromSlope($("#rl-slope").valueAsNumber, $("#rl-temperature").valueAsNumber, base);
-      const inRange = n >= 1 && n <= 2;
-      $("#rl-slope").removeAttribute("aria-invalid");
-      $("#rl-n-estimate").textContent = "Effective n ≈ " + fmt(n, 3) + " at " + fmt($("#rl-temperature").valueAsNumber, 2) + " K." + (inRange ? "" : " Outside this calculator’s model range (1–2); the estimate is not clipped.");
-      $("#rl-use-n").disabled = !inRange;
-      return inRange ? n : null;
-    } catch {
-      $("#rl-slope").setAttribute("aria-invalid", String(!Number.isFinite($("#rl-slope").valueAsNumber) || $("#rl-slope").valueAsNumber <= 0));
-      $("#rl-n-estimate").textContent = "Enter a positive slope and a cell temperature of 200–400 K.";
-      return null;
+      const slopeMv = slopeInput.valueAsNumber;
+      const estimate = hasData ? SolarResistance.fitSunsVoc(data, temperature)
+        : {n: SolarResistance.idealityFromSlope(slopeMv, temperature, base), slopeMv};
+      sunsIdeality = {...estimate, base, temperature};
+      const n = estimate.n, applicable = inRange(n, boundsFor("n"));
+      use.disabled = !applicable;
+      let text = T("Apparent Suns–Vₒ꜀ n = ", "Scheinbares Suns–Vₒ꜀-n = ", "Suns–Vₒ꜀ 表观 n = ") + fmt(n, 3) +
+        " · " + fmt(temperature, 2) + " K";
+      if (hasData) {
+        text += " · " + fmt(estimate.slopeMv, 2) + " mV/ln(Φ) · R² = " + fmt(estimate.r2, 3) + " · N = " + estimate.count;
+        if (estimate.nonmonotonic) text += T(". Vₒ꜀ decreases between some successive intensities.",
+          ". Vₒ꜀ sinkt zwischen einigen aufeinanderfolgenden Intensitäten.", "。部分相邻光强下 Vₒ꜀ 随光强增大而下降。");
+      }
+      if (!applicable) {
+        text += inRange(n, SolarResistance.idealityRange("extended"))
+          ? T(" Select Extended to apply this value.", "Zum Übernehmen den erweiterten Bereich wählen.", " 选择扩展模式后可应用该值。")
+          : T(" Model input range is 0.5–5.", " Der Modelleingabebereich ist 0,5–5.", " 模型输入范围为 0.5–5。");
+      }
+      status.textContent = text;
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error;
+      (hasData ? dataInput : slopeInput).setAttribute("aria-invalid", "true");
+      status.textContent = hasData
+        ? T("Enter positive intensity and Vₒ꜀ in two columns. The fit needs distinct intensities and a positive slope.",
+          "Positive Intensitäten und Vₒ꜀ in zwei Spalten eingeben. Der Fit braucht unterschiedliche Intensitäten und eine positive Steigung.",
+          "请在两列中输入正的光强和 Vₒ꜀。拟合需要至少两个不同光强与正斜率。")
+        : T("Enter a positive slope.", "Eine positive Steigung eingeben.", "请输入正的斜率。");
     }
   }
   function updateTarget() {
@@ -277,11 +390,13 @@
     targetResult = SolarResistance.targetFF(active.parameters, target);
     const margin = ideal.ff * 100 - target;
     $("#rl-target-margin").textContent = (margin >= 0 ? "+" : "−") + fmt(Math.abs(margin)) + " pp";
-    const bound = targetResult.maxN;
+    const bound = targetResult.maxN, rangeText = SolarResistance.idealityRange(active.parameters.idealityMode).join("–");
     $("#rl-n-bound").textContent = bound.status === "below_range"
-      ? "Even n = 1 cannot reach this target at the selected reference voltage and temperature."
+      ? T("The target exceeds the ideal FF even at n = " + bound.value + ".",
+        "Das Ziel überschreitet den idealen FF selbst bei n = " + bound.value + ".", "即使 n = " + bound.value + "，理想 FF 也达不到目标。")
       : bound.status === "at_least"
-        ? "With zero resistance losses, all n values in the model range (1–2) can reach this target."
+        ? T("The resistance-free model reaches the target throughout n = " + rangeText + ".",
+          "Das widerstandsfreie Modell erreicht das Ziel für n = " + rangeText + ".", "无电阻损失时，n = " + rangeText + " 范围内均可达到目标。")
         : "For this target, the resistance-free model requires n ≲ " + fmt(bound.value, 3) + ". Resistance losses leave less room.";
     if (targetResult.status === "above_ideal") {
       $(".rl-target").dataset.state = "unreachable";
@@ -309,12 +424,14 @@
   function update() {
     $("#rl-rsh").disabled = $("#rl-infinite").checked;
     $("#rl-rsh-slider").disabled = $("#rl-infinite").checked;
-    updateEstimate();
+    const nInput = $("#rl-n"), n = nInput.valueAsNumber;
+    [nInput.min, nInput.max] = boundsFor("n");
+    $("#rl-n-warning").hidden = !inRange(n, boundsFor("n")) || inRange(n, SolarResistance.limits.n);
     if (!readInputs()) {updateTarget(); updateMeasurement(); updateElectrical(); updateDark(); return;}
     const p = {...parameters, rsh: $("#rl-infinite").checked ? Infinity : parameters.rsh};
     results = SolarResistance.compare(p);
     const active = results[mode], ideal = results.ideal, device = SolarResistance.deviceValues(active, area), scale = displayScale();
-    $("#rl-context").textContent = names[mode] + " · " + fmt(p.temperature, 2) + " K · n = " + fmt(p.n) + " · A = " + areaText() + " cm²";
+    $("#rl-context").textContent = names[mode] + " · " + fmt(p.temperature, 2) + " K · n = " + fmt(p.n, 3) + " · A = " + areaText() + " cm²";
     $("#rl-device-title").textContent = "Device at " + areaText() + " cm²";
     $("#rl-device-isc").textContent = deviceFmt(device.isc * 1000) + " mA";
     $("#rl-device-pmax").textContent = deviceFmt(device.pmax * 1000) + " mW";
@@ -421,19 +538,24 @@
   $("#rl-probe").addEventListener("input", () => updateProbe());
   $("#rl-preset").addEventListener("change", event => {setControls(event.target.value === "silicon" ? silicon : event.target.value === "highff" ? highFF : defaults);});
   $("#rl-target-ff").addEventListener("input", updateTarget);
+  $("#rl-ideality-mode").addEventListener("change", () => {updateEstimate(); update();});
   $("#rl-log-base").addEventListener("change", updateEstimate);
-  $("#rl-slope").addEventListener("input", updateEstimate);
+  for (const id of ["#rl-slope", "#rl-suns-data", "#rl-suns-temperature"]) {
+    $(id).addEventListener("input", updateEstimate);
+  }
   $("#rl-use-n").addEventListener("click", () => {
-    const n = updateEstimate();
-    if (n === null) return;
-    $("#rl-n").value = fmt(n, 3); $("#rl-preset").value = "custom"; update();
+    if (!sunsIdeality || $("#rl-use-n").disabled) return;
+    $("#rl-n").value = fmt(sunsIdeality.n, 3); $("#rl-preset").value = "custom"; update();
   });
   $("#rl-reset").addEventListener("click", () => {
     measurement = null; measuredSection.hidden = true; darkMeasurement=null; darkSection.hidden=true; electricalSnapshots.eis=null; electricalSnapshots.sclc=null; electricalSection.hidden=true;
     $("#rl-preset").value = "perovskite"; $("#rl-target-ff").value = 89;
-    $("#rl-log-base").value = "log10"; $("#rl-slope").value = 89.3;
+    fittedIdeality = null;
+    $("#rl-ideality-mode").value = "classic";
+    $("#rl-log-base").value = "log10"; $("#rl-slope").value = "";
+    $("#rl-suns-data").value = ""; $("#rl-suns-temperature").value = 300;
     $("#rl-area").value = 1; quantity = "density";
-    setControls(defaults);
+    updateEstimate(); setControls(defaults);
   });
   $("#rl-export").addEventListener("click", () => {
     if (!valid || !results) return;
@@ -441,7 +563,7 @@
     const rows = [
       ["Solar cell resistance lab", "Steady-state single-diode model"],
       ["selected_model", mode], ["reference_Voc_V", p.voc], ["photocurrent_mA_cm2", p.jph],
-      ["n", p.n], ["temperature_K", p.temperature], ["series_ohm_cm2", p.rs], ["shunt_ohm_cm2", p.rsh === Infinity ? "Infinity" : p.rsh],
+      ["n", p.n], ["ideality_mode", p.idealityMode], ["temperature_K", p.temperature], ["series_ohm_cm2", p.rs], ["shunt_ohm_cm2", p.rsh === Infinity ? "Infinity" : p.rsh],
       ["incident_power_mW_cm2", p.pin], ["J0_A_cm2", results.ideal.j0],
       ["active_area_cm2", area], ["display_quantity", quantity],
       ["series_device_ohm", p.rs / area], ["shunt_device_ohm", p.rsh === Infinity ? "Infinity" : p.rsh / area],
@@ -462,13 +584,27 @@
       const currents = Object.keys(names).map(key => results[key].currentAt(v) * 1000);
       rows.push([v, ...currents, ...currents.map(j => v * j), ...currents.map(j => j * area), ...currents.map(j => v * j * area)]);
     }
+    if (sunsIdeality) {
+      const s = sunsIdeality;
+      rows.push([], ["suns_voc_n_apparent", s.n], ["suns_voc_temperature_K", s.temperature],
+        ["suns_voc_slope_mV", s.slopeMv], ["suns_voc_log_base", s.base],
+        ["suns_voc_points", s.count ?? ""], ["suns_voc_R2", s.r2 ?? ""],
+        ["suns_voc_nonmonotonic", s.nonmonotonic ?? ""]);
+    }
     if (measurement) {
+      const ffCeiling = measuredFFCeiling(measurement, p);
       const m = measurement, safe = value => /^[=+@-]/.test(String(value).trimStart()) ? "'" + value : value;
       rows.push([], ["measurement_snapshot_source", safe(m.source)], ["measurement_scan", m.index, m.direction > 0 ? "increasing_V" : "decreasing_V"],
         ["measurement_Pin_mW_cm2", m.parameters.pin], ["measurement_area_cm2", m.parameters.area || "unknown"],
         ["measurement_Voc_V", m.voc], ["measurement_original_Voc_V", m.signedVoc ?? m.voc], ["measurement_voltage_polarity", m.voltagePolarity ?? 1], ["measurement_near_zero_threshold_mA_cm2", m.noiseTolerance ?? ""], ["measurement_Jsc_mA_cm2", m.jsc], ["measurement_FF_percent", m.ff], ["measurement_PCE_percent", m.pce],
         ["measurement_Rs_apparent_ohm_cm2", m.rs.resistance ?? ""], ["measurement_Rsh_apparent_ohm_cm2", m.rsh.resistance ?? ""],
         ["measurement_fit_half_width_percent_Voc", m.parameters.fitPercent], ["measurement_warnings", m.warnings.join(";")],
+        ["measurement_ideal_FF0_at_measured_Voc_percent", ffCeiling ?? ""],
+        ["measurement_FF_exceeds_ideal", ffCeiling === null ? "" : m.ff > ffCeiling + 1e-8],
+        ["measurement_fitted_n", fittedIdeality?.parameters.n ?? ""],
+        ["measurement_fit_rmse_mA_cm2", fittedIdeality?.rmse ?? ""],
+        ["measurement_fit_points", fittedIdeality?.count ?? ""],
+        ["measurement_fit_at_n_limit", fittedIdeality?.atLimit ?? ""],
         ["measurement_note", "Snapshot; apparent slopes are not unique circuit parameters. Initialization assumes Rs/Rsh and retains n/T, solving reference Jph and Voc from measured endpoints; FF and PCE are independent comparisons."],
         ["measurement_initialization", m.initialization ? JSON.stringify(m.initialization, (key, value) => value === Infinity ? "Infinity" : value) : "not applied"],
         ["single_diode_reference_DOI", "10.1016/0038-1101(81)90062-9"], ["apparent_resistance_reference_DOI", "10.1002/pssa.201800448"]);
@@ -482,5 +618,6 @@
     if(darkMeasurement){const d=darkMeasurement,safe=v=>typeof v==='string'&&/^[=+@-]/.test(v.trimStart())?"'"+v:v;rows.push([],['dark_snapshot_source',safe(d.source)],['dark_sample_id',safe(d.parameters.sampleId)],['dark_conditions',safe(d.parameters.conditions)],['dark_scan',d.index],['dark_reverse_V',d.reverseV],['dark_reverse_J_A_cm-2',d.reverseJ??''],['dark_Rdiff0_ohm_cm2',d.zero.resistance??''],['dark_n_apparent',d.diode.n??''],['dark_J0_apparent_A_cm-2',d.diode.j0??''],['dark_temperature_K',d.parameters.temperature],['dark_near_zero_fit',JSON.stringify(d.zero)],['dark_forward_fit',JSON.stringify(d.diode)],['dark_warnings',d.warnings.join(';')],['dark_applied_assumptions',JSON.stringify(d.applied)],['dark_note','Only explicit qualified Rdiff0/Rsh or n/T starting assumptions; illuminated Jph/Voc retained; dark J0 is not assigned.'],[],['dark_original_V','dark_signed_J_A_cm-2'],...d.points);}
     window.CSVExport.save("solar-cell-resistance-" + mode + ".csv", rows);
   });
+  updateEstimate();
   setControls(defaults);
 })();

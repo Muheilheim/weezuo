@@ -6,9 +6,16 @@
   "use strict";
   const KB = 1.380649e-23, Q = 1.602176634e-19;
   const limits = {voc: [0.2, 2], jph: [1, 60], n: [1, 2], temperature: [200, 400], rs: [0, 50], rsh: [10, 1e6], pin: [10, 200]};
+  const extendedIdealityRange = [0.5, 5];
+  function idealityRange(mode = "classic") {
+    if (mode === "classic") return limits.n;
+    if (mode === "extended") return extendedIdealityRange;
+    throw new RangeError("Invalid ideality mode");
+  }
   function validate(p) {
+    const nRange = idealityRange(p.idealityMode);
     for (const key of Object.keys(limits)) {
-      const value = p[key], bounds = limits[key];
+      const value = p[key], bounds = key === "n" ? nRange : limits[key];
       if (key === "rsh" && value === Infinity) continue;
       if (!Number.isFinite(value) || value < bounds[0] || value > bounds[1]) throw new RangeError("Invalid " + key);
     }
@@ -62,8 +69,10 @@
     const both = model(p);
     return {ideal, series, shunt, both};
   }
-  function fromMeasured(measured, {n, temperature, rs, rsh, pin}) {
-    validate({voc: measured.voc, jph: measured.jsc, n, temperature, rs, rsh, pin});
+  function fromMeasured(measured, {n, temperature, rs, rsh, pin, idealityMode}) {
+    const assumptions = {n, temperature, rs, rsh, pin};
+    if (idealityMode !== undefined) assumptions.idealityMode = idealityMode;
+    validate({voc: measured.voc, jph: measured.jsc, ...assumptions});
     const a = n * KB * temperature / Q, s = measured.jsc / 1000, v = measured.voc;
     const u = s * rs, g = rsh === Infinity ? 0 : 1 / rsh;
     const numerator = s + (u - v) * g;
@@ -72,13 +81,86 @@
     const j0 = numerator / (Math.exp(u / a) * Math.expm1((v - u) / a));
     const jph = j0 * Math.expm1(v / a) + v * g;
     if (!Number.isFinite(j0) || j0 <= 0) throw new RangeError("Invalid endpoint calibration");
-    return validate({voc: a * Math.log1p(jph / j0), jph: jph * 1000, n, temperature, rs, rsh, pin});
+    return validate({voc: a * Math.log1p(jph / j0), jph: jph * 1000, ...assumptions});
   }
   function idealityFromSlope(slopeMv, temperature, base = "log10") {
     if (!Number.isFinite(slopeMv) || slopeMv <= 0) throw new RangeError("Slope must be positive");
     if (!Number.isFinite(temperature) || temperature < 200 || temperature > 400) throw new RangeError("Invalid temperature");
     if (!["ln", "log10"].includes(base)) throw new RangeError("Invalid logarithm base");
     return slopeMv / (1000 * KB * temperature / Q * (base === "log10" ? Math.LN10 : 1));
+  }
+  function fitSunsVoc(text, temperature) {
+    if (typeof text !== "string" || text.length > 2e6) throw new RangeError("Invalid Suns–Voc data");
+    const lines = text.trim().split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    if (/^(sun[s]?|intensity|lichtintensität|光强)[ \t,;]+v_?oc(?:\s*\(v\))?$/i.test(lines[0])) lines.shift();
+    if (lines.length < 2 || lines.length > 20000) throw new RangeError("Invalid Suns–Voc point count");
+    const numeric = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+    const points = lines.map(line => {
+      const cells = (/[,\t;]/.test(line) ? line.split(/[,\t;]/) : line.split(/\s+/)).map(cell => cell.trim());
+      if (cells.length !== 2 || !cells.every(cell => numeric.test(cell))) throw new RangeError("Invalid Suns–Voc columns");
+      const [intensity, voc] = cells.map(Number);
+      if (!Number.isFinite(intensity) || intensity <= 0 || !Number.isFinite(voc) || voc <= 0) {
+        throw new RangeError("Intensity and Voc must be positive");
+      }
+      return [Math.log(intensity), voc];
+    }).sort((a, b) => a[0] - b[0]);
+    const count = points.length;
+    const meanX = points.reduce((sum, [x]) => sum + x, 0) / count;
+    const meanV = points.reduce((sum, [, v]) => sum + v, 0) / count;
+    let xx = 0, xv = 0, vv = 0;
+    for (const [x, v] of points) {
+      xx += (x - meanX) ** 2;
+      xv += (x - meanX) * (v - meanV);
+      vv += (v - meanV) ** 2;
+    }
+    const slopeMv = 1000 * xv / xx;
+    const n = idealityFromSlope(slopeMv, temperature, "ln");
+    const r2 = Math.min(1, (xv / xx) * (xv / vv));
+    const nonmonotonic = points.some(([x, v], i) => i > 0 && x > points[i - 1][0] && v < points[i - 1][1]);
+    return {n, slopeMv, r2, count, nonmonotonic};
+  }
+  function fitMeasuredIdeality(measured, {temperature, rs, rsh, pin, idealityMode = "classic"}) {
+    const stepsPerUnit = 1000;
+    const [lowerStep, upperStep] = idealityRange(idealityMode).map(n => Math.round(n * stepsPerUnit));
+    const points = measured.points.filter(([voltage]) => voltage > 0 && voltage < measured.voc);
+    if (points.length < 3) throw new RangeError("The scan needs at least three interior J–V points");
+
+    // Match the measured endpoints at each trial n and minimize current-density
+    // residuals over the measured power-generating region at fixed Rs, Rsh and T.
+    let best;
+    function score(step) {
+      const n = step / stepsPerUnit;
+      let parameters;
+      try {
+        parameters = fromMeasured(measured, {n, temperature, rs, rsh, pin, idealityMode});
+      } catch (error) {
+        if (error instanceof RangeError) return Infinity;
+        throw error;
+      }
+      const {currentAt} = model(parameters, {sampleCurve: false});
+      const squaredError = points.reduce((sum, [v, j]) => sum + (1000 * currentAt(v) - j) ** 2, 0);
+      if (Number.isFinite(squaredError) && (!best || squaredError < best.squaredError)) {
+        best = {parameters, squaredError, step};
+      }
+      return squaredError;
+    }
+    // Search at the same 0.001 resolution used by the model n input.
+    const coarseStep = Math.ceil((upperStep - lowerStep) / 20);
+    for (let step = lowerStep; step < upperStep; step += coarseStep) score(step);
+    score(upperStep);
+    if (!best) throw new RangeError("No model in the selected n range fits the measured endpoints");
+
+    let lo = Math.max(lowerStep, best.step - coarseStep);
+    let hi = Math.min(upperStep, best.step + coarseStep);
+    while (hi - lo > 4) {
+      const offset = Math.floor((hi - lo) / 3);
+      if (score(lo + offset) <= score(hi - offset)) hi -= offset;
+      else lo += offset;
+    }
+    for (let step = lo; step <= hi; step++) score(step);
+    const {parameters, squaredError, step} = best;
+    return {parameters, rmse: Math.sqrt(squaredError / points.length), count: points.length,
+      atLimit: step === lowerStep || step === upperStep};
   }
   function targetFF(p, targetPercent) {
     validate(p);
@@ -95,10 +177,11 @@
     };
     // These are conditional model bounds, not a fit or a unique resistance pair.
     const idealAtN = n => ffAt({n, rs: 0, rsh: Infinity});
+    const [lowerN, upperN] = idealityRange(p.idealityMode);
     let maxN;
-    if (idealAtN(1) < target) maxN = {status: "below_range", value: 1};
-    else if (idealAtN(2) >= target) maxN = {status: "at_least", value: 2};
-    else maxN = {status: "bound", value: bisect(1, 2, n => idealAtN(n) >= target)};
+    if (idealAtN(lowerN) < target) maxN = {status: "below_range", value: lowerN};
+    else if (idealAtN(upperN) >= target) maxN = {status: "at_least", value: upperN};
+    else maxN = {status: "bound", value: bisect(lowerN, upperN, n => idealAtN(n) >= target)};
     if (target > idealFF + 1e-12) return {targetPercent, idealFF, status: "above_ideal", maxN, maxRs: null, minRsh: null};
     let maxRs, minRsh;
     if (ffAt({rs: 0}) < target - 1e-12) maxRs = {status: "blocked_by_shunt"};
@@ -120,7 +203,8 @@
     return {area, isc: result.jsc * area, imp: result.jmp * area, pmax: result.pmax * area,
       incidentPower: p.pin * area / 1000, rs: p.rs / area, rsh: p.rsh / area};
   }
-  const api = {model, compare, fromMeasured, validate, limits, idealityFromSlope, targetFF, areaLimits, deviceValues};
+  const api = {model, compare, fromMeasured, validate, limits, idealityRange, idealityFromSlope,
+    fitSunsVoc, fitMeasuredIdeality, targetFF, areaLimits, deviceValues};
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.SolarResistance = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

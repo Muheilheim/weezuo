@@ -16,7 +16,12 @@
 .rl-unit{white-space:nowrap;font-size:11px;color:var(--muted)}
 .rl-range-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
 .rl-field:disabled{opacity:.52}
-.rl-field input[aria-invalid="true"]{border-color:var(--orange);outline:1px solid var(--orange)}
+.rl-field textarea{width:100%;min-height:76px;padding:8px 10px;border:1px solid var(--control);border-radius:6px;background:var(--surface);color:var(--ink);font:12px/1.5 Consolas,monospace;resize:vertical}
+.rl-field :is(input,textarea)[aria-invalid="true"]{border-color:var(--orange);outline:1px solid var(--orange)}
+.rl-n-warning{padding-left:9px;border-left:3px solid var(--orange)}
+.rl-fit-status{margin-top:8px}
+.rl-fit-status:empty,#rl-n-estimate:empty{display:none}
+#rl-measured-ff-check[data-state="unreachable"]{border-color:var(--orange)}
 .rl-check{display:flex;align-items:center;gap:8px;font-size:11px;margin-top:9px}
 .rl-check input{accent-color:var(--teal);width:15px;height:15px}
 .rl-advanced{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
