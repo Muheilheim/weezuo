@@ -3,13 +3,16 @@
 .drawing-header{border-bottom:1px solid var(--line);background:var(--surface)}
 .drawing-header-inner{min-height:84px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .drawing-brand{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:600;letter-spacing:.04em}
+/* Recolor the two original strokes while keeping the PNG's transparency. */
 .drawing-brand-mark {
+  display: block;
   flex: none;
-  width: 104px;
-  aspect-ratio: 1846 / 852;
-  background-color: var(--teal);
-  -webkit-mask: url("./assets/weiwei-zuo-logo.png") center / contain no-repeat;
-  mask: url("./assets/weiwei-zuo-logo.png") center / contain no-repeat;
+  width: 118px;
+  height: auto;
+  filter: invert(.88) hue-rotate(141deg) saturate(.86) brightness(.85);
+}
+:root[data-theme="dark"] .drawing-brand-mark {
+  filter: hue-rotate(-32deg) saturate(.66) brightness(1.18);
 }
 .drawing-brand-title{border-left:1px solid var(--line);padding-left:18px}
 .drawing-nav,.drawing-languages{display:flex;align-items:center;gap:16px}
@@ -82,7 +85,7 @@
 
 @media(max-width:1000px){.drawing-workspace{grid-template-columns:296px minmax(0,1fr);gap:18px}.drawing-wrap{width:calc(100% - 40px)}.drawing-toolbar{padding-inline:16px}.drawing-stage-heading{padding-inline:16px}.drawing-intro>p{max-width:310px}}
 @media(max-width:900px){.drawing-workspace{display:flex;flex-direction:column;gap:18px}.drawing-stage{order:-1;position:static;width:100%}.drawing-settings{width:100%;display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:12px}.drawing-settings details{margin:0}.drawing-intro{margin-top:30px;gap:18px}.drawing-intro>p{max-width:300px}#drawing-status{grid-column:1/-1}.drawing-stage-heading{padding-top:18px}}
-@media(max-width:560px){.drawing-wrap{width:calc(100% - 28px)}.drawing-header-inner{min-height:74px;gap:10px}.drawing-brand{gap:0}.drawing-brand-mark{width:77px}.drawing-brand-title{display:none}.drawing-nav{gap:8px}.drawing-nav a{font-size:11px}.drawing-languages{gap:3px}.drawing-intro{display:block;margin-block:25px 20px}.drawing-intro h1{font-size:26px}.drawing-intro>p{max-width:none;margin-top:12px;font-size:12px}.drawing-settings{grid-template-columns:1fr}.drawing-stage-heading h2{font-size:24px}.drawing-toolbar{gap:6px;padding-inline:12px}.drawing-toolbar button{padding-inline:9px}.drawing-legend{gap:18px;font-size:11px}.drawing-caption{padding:13px 16px}.drawing-help{margin-inline:14px}.drawing-footer{flex-direction:column;gap:8px}.drawing-brand span{border:0;padding:0}}
+@media(max-width:560px){.drawing-wrap{width:calc(100% - 28px)}.drawing-header-inner{min-height:74px;gap:10px}.drawing-brand{gap:0}.drawing-brand-mark{width:clamp(80px,22vw,94px)}.drawing-brand-title{display:none}.drawing-nav{gap:8px}.drawing-nav a{font-size:11px}.drawing-languages{gap:3px}.drawing-intro{display:block;margin-block:25px 20px}.drawing-intro h1{font-size:26px}.drawing-intro>p{max-width:none;margin-top:12px;font-size:12px}.drawing-settings{grid-template-columns:1fr}.drawing-stage-heading h2{font-size:24px}.drawing-toolbar{gap:6px;padding-inline:12px}.drawing-toolbar button{padding-inline:9px}.drawing-legend{gap:18px;font-size:11px}.drawing-caption{padding:13px 16px}.drawing-help{margin-inline:14px}.drawing-footer{flex-direction:column;gap:8px}.drawing-brand span{border:0;padding:0}}
 .drawing-science{border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
 .drawing-science summary{padding:14px 24px;cursor:pointer;color:var(--ink);min-height:44px}
 .drawing-science>div{padding:0 24px 16px}
