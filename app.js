@@ -169,7 +169,7 @@
     return detail + " (" + paper.year + ").";
   }
   function bibtex(paper) {
-    const escape = (value) => String(value).replace(/[{}]/g, "").replace(/&/g, "\\&");
+    const escape = (value) => String(value).replace(/[{}&]/g, char => "\\" + char);
     const fields = [
       "title = {{" + escape(paper.title) + "}}",
       "author = {" + paper.authors.map(a => escape(a.family) + ", " + escape(a.given)).join(" and ") + "}",
@@ -180,8 +180,13 @@
     if (paper.issue) fields.push("number = {" + escape(paper.issue) + "}");
     if (paper.pages) fields.push("pages = {" + escape(paper.pages).replace(/[–-]/g, "--") + "}");
     fields.push("doi = {" + paper.doi + "}", "url = {" + paper.url + "}");
-    if (paper.correction) fields.push("note = {Correction: " + paper.correction.url + "}");
-    return "@article{Zuo" + paper.year + "_" + paper.scholarIndex + ",\n  " + fields.join(",\n  ") + "\n}";
+    const note = [paper.status, paper.correction && "Correction: " + paper.correction.url].filter(Boolean).join(". ");
+    if (note) fields.push("note = {" + escape(note) + "}");
+    return "@article{" + (paper.bibKey || "Zuo" + paper.year + "_" + paper.scholarIndex) + ",\n  " + fields.join(",\n  ") + "\n}";
+  }
+  function setPublicationVenue(element, paper) {
+    element.textContent = venue(paper);
+    if (paper.status) element.append(" ", node("span", "publication-status", paper.status));
   }
   function addPublicationLinks(parent, paper) {
     addLink(parent, "DOI ↗", paper.url);
@@ -193,7 +198,9 @@
     $("#citation-title").textContent = paper.title;
     const authors = authorText(paper, true);
     $("#citation-authors").replaceChildren(...authors.childNodes);
-    $("#citation-venue").textContent = venue(paper) + (paper.authorNameNote ? " " + paper.authorNameNote : "");
+    const citationVenue = $("#citation-venue");
+    setPublicationVenue(citationVenue, paper);
+    if (paper.authorNameNote) citationVenue.append(" " + paper.authorNameNote);
     $("#citation-links").replaceChildren();
     addPublicationLinks($("#citation-links"), paper);
     $("#bibtex-text").value = bibtex(paper);
@@ -206,7 +213,9 @@
     const main = node("div", "pub-main");
     const title = node("h3");
     addLink(title, paper.title, paper.url);
-    main.append(title, node("p", "pub-journal", paper.journal), authorText(paper), node("p", "pub-citation", venue(paper)));
+    const citation = node("p", "pub-citation");
+    setPublicationVenue(citation, paper);
+    main.append(title, node("p", "pub-journal", paper.journal), authorText(paper), citation);
     const links = node("div", "pub-links");
     addPublicationLinks(links, paper);
     const cite = node("button", "", "Cite");

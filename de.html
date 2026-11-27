@@ -24,10 +24,10 @@
   <link rel="alternate" hreflang="de" href="https://muheilheim.github.io/weezuo/de.html">
   <link rel="alternate" hreflang="zh-CN" href="https://muheilheim.github.io/weezuo/zh.html">
   <link rel="alternate" hreflang="x-default" href="https://muheilheim.github.io/weezuo/">
-  <script defer src="./i18n.js?v=171962b6bd81"></script>
+  <script defer src="./i18n.js?v=c0f5209e2efa"></script>
   <script defer src="./profile.js?v=97cbedcf37a3"></script>
-  <script defer src="./publications.js?v=69e78251b039"></script>
-  <script defer src="./app.js?v=f92eeeee4824"></script>
+  <script defer src="./publications.js?v=d4b25a7fa334"></script>
+  <script defer src="./app.js?v=a624c6fcf345"></script>
   <link rel="stylesheet" href="./resistance-lab.css?v=e8a22ecb0425">
   <script defer src="./csv-export.js?v=f957c0c2aa8f"></script>
   <script defer src="./resistance-model.js?v=f75575c6beba"></script>
@@ -124,7 +124,7 @@
       <div class="section-heading"><div><p class="section-kicker">INTERAKTIVE PHOTOVOLTAIK</p><h2 id="resistance-title">Solarzellen- <em>Rechner.</em></h2></div></div>
       <p class="resistance-intro">Analysieren Sie Solarzellengrenzen, Spektren, J–V-Kurven, Impedanz und raumladungsbegrenzten Strom.</p>
       <div class="pv-tabs" role="tablist" aria-label="Solarzellen-Rechner">
-        <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPEKTRALGRENZE</span>Bandlücke → Jsc und Voc</button>
+        <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPEKTRALGRENZE</span>Bandgap → Jsc &amp; Voc</button>
         <button id="pv-tab-eqe" type="button" role="tab" data-pv-tool="eqe-integration" aria-selected="false" aria-controls="eqe-integration" tabindex="-1"><span>02 / SPEKTRALE ANTWORT</span>EQE-Integration</button>
         <button id="pv-tab-resistance" type="button" role="tab" data-pv-tool="solar-cell-tools" aria-selected="true" aria-controls="resistance-panel"><span>03 / KOMBINIERT</span>Rechner für Serien- und Parallelwiderstand</button>
         <button id="pv-tab-pl" type="button" role="tab" data-pv-tool="pl-voltage" aria-selected="false" aria-controls="pl-voltage" tabindex="-1"><span>04 / LUMINESZENZ</span>PL → Interne Spannung</button>
@@ -166,10 +166,10 @@
       <details class="publication-tools">
         <summary>Alle Publikationen durchsuchen</summary>
       <div class="publication-controls" id="publication-controls" hidden>
-        <div class="publication-tabs" role="group" aria-label="Publikationsauswahl"><button type="button" data-scope="selected" aria-pressed="true">Auswahl<span id="selected-count">8</span></button><button type="button" data-scope="all" aria-pressed="false">Alle Publikationen<span id="all-count">44</span></button></div>
+        <div class="publication-tabs" role="group" aria-label="Publikationsauswahl"><button type="button" data-scope="selected" aria-pressed="true">Auswahl<span id="selected-count">8</span></button><button type="button" data-scope="all" aria-pressed="false">Alle Publikationen<span id="all-count">48</span></button></div>
         <div class="search-controls"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><label class="sr-only" for="publication-search">Publikationen suchen</label><input id="publication-search" type="search" placeholder="Titel, Autor oder Zeitschrift suchen…" autocomplete="off"><button type="button" id="clear-search" aria-label="Suche löschen" hidden>×</button></div><label class="sr-only" for="year-filter">Nach Jahr filtern</label><select id="year-filter"><option value="all">Alle Jahre</option></select></div>
       </div>
-      <a class="inline-link publication-download" href="./publications.bib" download="Weiwei-Zuo-publications.bib">Vollständiges BibTeX herunterladen<span aria-hidden="true">↓</span></a>
+      <a class="inline-link publication-download" href="./publications.bib?v=be436d37a46f" download="Weiwei-Zuo-publications.bib">Vollständiges BibTeX herunterladen<span aria-hidden="true">↓</span></a>
       </details>
       <div class="publication-summary"><p id="results-status" role="status" aria-live="polite">Ausgewählte Publikationen</p><span>Neueste zuerst</span></div>
       <div id="publication-list" class="publication-list">
@@ -177,8 +177,8 @@
         <article class="publication"><div class="pub-year">2025</div><div class="pub-main"><h3><a href="https://doi.org/10.1126/science.adz0091" target="_blank" rel="noopener noreferrer">Improved solvent systems for commercially viable perovskite photovoltaic modules</a></h3><p class="pub-journal">Science</p><p class="pub-authors">Yinke Wang, Ye Liu, Xin Luo, et al.</p><p class="pub-citation">Science 390(6777), 1021-1028 (2025).</p><div class="pub-links"><a href="https://doi.org/10.1126/science.adz0091" target="_blank" rel="noopener noreferrer">DOI ↗</a></div></div></article>
         <article class="publication"><div class="pub-year">2025</div><div class="pub-main"><h3><a href="https://doi.org/10.1038/s41578-025-00781-7" target="_blank" rel="noopener noreferrer">Resilience pathways for halide perovskite photovoltaics under temperature cycling</a></h3><p class="pub-journal">Nature Reviews Materials</p><p class="pub-authors">Luyan Wu, Shuaifeng Hu, Feng Yang, et al.</p><p class="pub-citation">Nature Reviews Materials 10(7), 536-549 (2025).</p><div class="pub-links"><a href="https://doi.org/10.1038/s41578-025-00781-7" target="_blank" rel="noopener noreferrer">DOI ↗</a></div></div></article>
       </div>
-      <div class="publication-bottom"><button id="load-more" class="button secondary" type="button" hidden>Weitere Publikationen anzeigen<span aria-hidden="true">↓</span></button><p class="source-note">Bibliografie geprüft am <time datetime="2026-08-31">31. August 2026</time>. Doppelte Scholar-Einträge wurden zusammengeführt; Korrekturen sind mit den Originalartikeln verknüpft. <a href="https://scholar.google.com/citations?user=ynl-iTQAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar ansehen ↗</a></p></div>
-      <noscript><p class="body-copy">Aktivieren Sie JavaScript für die durchsuchbare Liste mit 44 Publikationen oder laden Sie oben die vollständige BibTeX-Bibliografie herunter.</p></noscript>
+      <div class="publication-bottom"><button id="load-more" class="button secondary" type="button" hidden>Weitere Publikationen anzeigen<span aria-hidden="true">↓</span></button><p class="source-note">Bibliografie geprüft am <time datetime="2026-11-27">27. November 2026</time>. Doppelte Scholar-Einträge wurden zusammengeführt; Korrekturen sind mit den Originalartikeln verknüpft. <a href="https://scholar.google.com/citations?user=ynl-iTQAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar ansehen ↗</a></p></div>
+      <noscript><p class="body-copy">Aktivieren Sie JavaScript, um die Publikationsliste zu durchsuchen, oder laden Sie oben die vollständige BibTeX-Bibliografie herunter.</p></noscript>
     </section>
 
     <section id="about" class="section about-section wrap" aria-labelledby="about-title">
@@ -188,9 +188,9 @@
 
     <section id="metrics" class="metrics-section wrap" aria-labelledby="metrics-title">
       <div class="metrics-heading"><div><p class="section-kicker">GOOGLE SCHOLAR</p><h2 id="metrics-title">Forschung in Zahlen.</h2></div><div class="metrics-period" role="group" aria-label="Zeitraum der Zitationsstatistik"><button type="button" data-metrics-period="all" aria-pressed="true">Gesamt</button><button type="button" data-metrics-period="recent" aria-pressed="false">Seit 2021</button></div></div>
-      <dl class="metrics-grid" aria-live="polite" aria-atomic="true"><div><dt>Zitationen</dt><dd id="metric-citations">3,269</dd><span>Zitationen insgesamt</span></div><div><dt>h-index</dt><dd id="metric-h-index">27</dd><span>Publikationen und Zitationswirkung</span></div><div><dt>i10-index</dt><dd id="metric-i10-index">32</dd><span>Publikationen mit ≥10 Zitationen</span></div></dl>
-      <div class="metrics-footer"><p>Vollständiges Google-Scholar-Profil · <span id="metrics-period-label">Gesamt</span><br>Zuletzt geprüft <time id="metrics-checked" datetime="2026-09-29">29. September 2026</time></p><a class="inline-link" href="https://scholar.google.com/citations?user=ynl-iTQAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Zitationsprofil ansehen<span aria-hidden="true">↗</span></a></div>
-      <script type="application/json" id="metrics-fallback">{"schemaVersion":1,"authorId":"ynl-iTQAAAAJ","checkedAt":"2026-09-29","recentSince":2021,"all":{"citations":3269,"hIndex":27,"i10Index":32},"recent":{"citations":3147,"hIndex":25,"i10Index":31}}</script>
+      <dl class="metrics-grid" aria-live="polite" aria-atomic="true"><div><dt>Zitationen</dt><dd id="metric-citations">3,440</dd><span>Zitationen insgesamt</span></div><div><dt>h-index</dt><dd id="metric-h-index">27</dd><span>Publikationen und Zitationswirkung</span></div><div><dt>i10-index</dt><dd id="metric-i10-index">33</dd><span>Publikationen mit ≥10 Zitationen</span></div></dl>
+      <div class="metrics-footer"><p>Vollständiges Google-Scholar-Profil · <span id="metrics-period-label">Gesamt</span><br>Zuletzt geprüft <time id="metrics-checked" datetime="2026-11-27">27. November 2026</time></p><a class="inline-link" href="https://scholar.google.com/citations?user=ynl-iTQAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Zitationsprofil ansehen<span aria-hidden="true">↗</span></a></div>
+      <script type="application/json" id="metrics-fallback">{"schemaVersion":1,"authorId":"ynl-iTQAAAAJ","checkedAt":"2026-11-27","recentSince":2021,"all":{"citations":3440,"hIndex":27,"i10Index":33},"recent":{"citations":3318,"hIndex":25,"i10Index":32}}</script>
     </section>
 
     <section id="updates" class="section updates-section wrap" aria-labelledby="updates-title">

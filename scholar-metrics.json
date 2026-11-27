@@ -2,9 +2,17 @@
   "schemaVersion": 1,
   "authorId": "ynl-iTQAAAAJ",
   "source": "https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en",
-  "checkedAt": "2026-09-29",
-  "provider": "Google Scholar profile, browser verified",
+  "checkedAt": "2026-11-27",
+  "provider": "Google Scholar public profile",
   "recentSince": 2021,
-  "all": { "citations": 3269, "hIndex": 27, "i10Index": 32 },
-  "recent": { "citations": 3147, "hIndex": 25, "i10Index": 31 }
+  "all": {
+    "citations": 3440,
+    "hIndex": 27,
+    "i10Index": 33
+  },
+  "recent": {
+    "citations": 3318,
+    "hIndex": 25,
+    "i10Index": 32
+  }
 }

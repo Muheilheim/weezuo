@@ -1,8 +1,570 @@
 // Source-verified bibliography; see qa/sources for the research record.
 window.RESEARCH_PUBLICATIONS = {
-  "checked": "2026-08-31",
+  "checked": "2026-11-27",
   "scholar": "https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en",
   "publications": [
+    {
+      "id": "pub-sciadv-aej6035",
+      "bibKey": "Zuo2026_Wu_aej6035",
+      "title": "Hierarchical interfacial anchoring for durable perovskite solar cells",
+      "authors": [
+        {
+          "given": "Jiaxin",
+          "family": "Wu",
+          "name": "Jiaxin Wu"
+        },
+        {
+          "given": "Hongzhuo",
+          "family": "Wu",
+          "name": "Hongzhuo Wu"
+        },
+        {
+          "given": "Zuhong",
+          "family": "Zhang",
+          "name": "Zuhong Zhang"
+        },
+        {
+          "given": "Xiaoyu",
+          "family": "Guan",
+          "name": "Xiaoyu Guan"
+        },
+        {
+          "given": "Jinbo",
+          "family": "Zhao",
+          "name": "Jinbo Zhao"
+        },
+        {
+          "given": "Yuting",
+          "family": "Guo",
+          "name": "Yuting Guo"
+        },
+        {
+          "given": "Zhihao",
+          "family": "Li",
+          "name": "Zhihao Li"
+        },
+        {
+          "given": "Zirui",
+          "family": "Li",
+          "name": "Zirui Li"
+        },
+        {
+          "given": "Tengyu",
+          "family": "Ma",
+          "name": "Tengyu Ma"
+        },
+        {
+          "given": "Ying",
+          "family": "Tang",
+          "name": "Ying Tang"
+        },
+        {
+          "given": "Zhe",
+          "family": "Li",
+          "name": "Zhe Li"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Jorge",
+          "family": "Pascual",
+          "name": "Jorge Pascual"
+        },
+        {
+          "given": "Bo",
+          "family": "Hou",
+          "name": "Bo Hou"
+        },
+        {
+          "given": "Feng",
+          "family": "Yang",
+          "name": "Feng Yang"
+        },
+        {
+          "given": "Xiaoli",
+          "family": "Pan",
+          "name": "Xiaoli Pan"
+        },
+        {
+          "given": "Yu",
+          "family": "Wang",
+          "name": "Yu Wang"
+        },
+        {
+          "given": "Luyao",
+          "family": "Wang",
+          "name": "Luyao Wang"
+        },
+        {
+          "given": "Lin-Long",
+          "family": "Deng",
+          "name": "Lin-Long Deng"
+        },
+        {
+          "given": "Guixiang",
+          "family": "Li",
+          "name": "Guixiang Li"
+        },
+        {
+          "given": "Luca",
+          "family": "Sapienza",
+          "name": "Luca Sapienza"
+        },
+        {
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        }
+      ],
+      "journal": "Science Advances",
+      "year": 2026,
+      "volume": "12",
+      "issue": "47",
+      "pages": "eaej6035",
+      "doi": "10.1126/sciadv.aej6035",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:35N4QoGY0k4C",
+      "publishedOnline": [
+        2026,
+        11,
+        18
+      ],
+      "publishedPrint": [
+        2026,
+        11,
+        20
+      ],
+      "url": "https://doi.org/10.1126/sciadv.aej6035",
+      "selected": false,
+      "correction": null
+    },
+    {
+      "id": "pub-j-esci-2026-100666",
+      "bibKey": "Zuo2026_Sun_100666",
+      "title": "Buried-interface molecular regulation promotes tin–lead perovskite solar cells",
+      "authors": [
+        {
+          "given": "Xinru",
+          "family": "Sun",
+          "name": "Xinru Sun"
+        },
+        {
+          "given": "Zhihao",
+          "family": "Li",
+          "name": "Zhihao Li"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Yunshan",
+          "family": "Wang",
+          "name": "Yunshan Wang"
+        },
+        {
+          "given": "Hongzhuo",
+          "family": "Wu",
+          "name": "Hongzhuo Wu"
+        },
+        {
+          "given": "Jinbo",
+          "family": "Zhao",
+          "name": "Jinbo Zhao"
+        },
+        {
+          "given": "Yating",
+          "family": "Guo",
+          "name": "Yating Guo"
+        },
+        {
+          "given": "Feng",
+          "family": "Yang",
+          "name": "Feng Yang"
+        },
+        {
+          "given": "Chaozheng",
+          "family": "Li",
+          "name": "Chaozheng Li"
+        },
+        {
+          "given": "Rui",
+          "family": "Zhu",
+          "name": "Rui Zhu"
+        },
+        {
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
+        },
+        {
+          "given": "Xingyu",
+          "family": "Gao",
+          "name": "Xingyu Gao"
+        },
+        {
+          "given": "Jorge",
+          "family": "Pascual",
+          "name": "Jorge Pascual"
+        },
+        {
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Mohammad Khaja",
+          "family": "Nazeeruddin",
+          "name": "Mohammad Khaja Nazeeruddin"
+        },
+        {
+          "given": "Haizhou",
+          "family": "Lu",
+          "name": "Haizhou Lu"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        }
+      ],
+      "journal": "eScience",
+      "year": 2026,
+      "volume": "",
+      "issue": "",
+      "pages": "100666",
+      "doi": "10.1016/j.esci.2026.100666",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:vV6vV6tmYwMC",
+      "publishedOnline": [
+        2026,
+        10,
+        28
+      ],
+      "publishedPrint": null,
+      "status": "Journal pre-proof",
+      "url": "https://doi.org/10.1016/j.esci.2026.100666",
+      "selected": false,
+      "correction": null
+    },
+    {
+      "id": "pub-jacs-6c10989",
+      "bibKey": "Zuo2026_Wang_6c10989",
+      "title": "Crystallographic Alignment of α-FAPbI3 {100} Facets at the Buried Interface for Efficient Perovskite Photovoltaics",
+      "authors": [
+        {
+          "given": "Kai-Li",
+          "family": "Wang",
+          "name": "Kai-Li Wang"
+        },
+        {
+          "given": "Dong",
+          "family": "Liu",
+          "name": "Dong Liu"
+        },
+        {
+          "given": "Wei-Wei",
+          "family": "Zuo",
+          "name": "Wei-Wei Zuo"
+        },
+        {
+          "given": "Caner",
+          "family": "Deger",
+          "name": "Caner Deger"
+        },
+        {
+          "given": "Yan-Hui",
+          "family": "Lou",
+          "name": "Yan-Hui Lou"
+        },
+        {
+          "given": "Bin",
+          "family": "Song",
+          "name": "Bin Song"
+        },
+        {
+          "given": "Jing",
+          "family": "Chen",
+          "name": "Jing Chen"
+        },
+        {
+          "given": "Chun-Hao",
+          "family": "Chen",
+          "name": "Chun-Hao Chen"
+        },
+        {
+          "given": "Yu",
+          "family": "Xia",
+          "name": "Yu Xia"
+        },
+        {
+          "given": "Xiao-Ying",
+          "family": "He",
+          "name": "Xiao-Ying He"
+        },
+        {
+          "given": "Lei",
+          "family": "Huang",
+          "name": "Lei Huang"
+        },
+        {
+          "given": "Zu-Hong",
+          "family": "Zhang",
+          "name": "Zu-Hong Zhang"
+        },
+        {
+          "given": "Zhong-Chen",
+          "family": "Wu",
+          "name": "Zhong-Chen Wu"
+        },
+        {
+          "given": "Ilhan",
+          "family": "Yavuz",
+          "name": "Ilhan Yavuz"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Zhao-Kui",
+          "family": "Wang",
+          "name": "Zhao-Kui Wang"
+        },
+        {
+          "given": "Liang-Sheng",
+          "family": "Liao",
+          "name": "Liang-Sheng Liao"
+        }
+      ],
+      "journal": "Journal of the American Chemical Society",
+      "year": 2026,
+      "volume": "148",
+      "issue": "39",
+      "pages": "42246-42255",
+      "doi": "10.1021/jacs.6c10989",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:J_g5lzvAfSwC",
+      "publishedOnline": [
+        2026,
+        9,
+        23
+      ],
+      "publishedPrint": [
+        2026,
+        10,
+        7
+      ],
+      "url": "https://doi.org/10.1021/jacs.6c10989",
+      "selected": false,
+      "correction": null
+    },
+    {
+      "id": "pub-44",
+      "scholarIndex": 44,
+      "title": "Interfacial Defect Passivation by Molecular Dipole‐Moment Engineering in Perovskite Solar Cells",
+      "authors": [
+        {
+          "given": "Jonathan L.",
+          "family": "Adamu",
+          "name": "Jonathan L. Adamu"
+        },
+        {
+          "given": "Somayeh",
+          "family": "Gholipour",
+          "name": "Somayeh Gholipour"
+        },
+        {
+          "given": "Mayank",
+          "family": "Kedia",
+          "name": "Mayank Kedia"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Asfaw",
+          "family": "Negash",
+          "name": "Asfaw Negash"
+        },
+        {
+          "given": "Goutam",
+          "family": "Paul",
+          "name": "Goutam Paul"
+        },
+        {
+          "given": "Seyma",
+          "family": "Topcu",
+          "name": "Seyma Topcu"
+        },
+        {
+          "given": "Jose J.",
+          "family": "Jeronimo‐Rendon",
+          "name": "Jose J. Jeronimo‐Rendon"
+        },
+        {
+          "given": "Yunshan",
+          "family": "Wang",
+          "name": "Yunshan Wang"
+        },
+        {
+          "given": "Roberto",
+          "family": "Félix",
+          "name": "Roberto Félix"
+        },
+        {
+          "given": "Chittaranjan",
+          "family": "Das",
+          "name": "Chittaranjan Das"
+        },
+        {
+          "given": "Stefan A. L.",
+          "family": "Weber",
+          "name": "Stefan A. L. Weber"
+        },
+        {
+          "given": "Bettina V.",
+          "family": "Lotsch",
+          "name": "Bettina V. Lotsch"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        }
+      ],
+      "journal": "Small Science",
+      "year": 2026,
+      "volume": "6",
+      "issue": "9",
+      "pages": "e70369",
+      "doi": "10.1002/smsc.70369",
+      "url": "https://doi.org/10.1002/smsc.70369",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:NaGl4SEjCO4C",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2026,
+        8,
+        26
+      ],
+      "publishedPrint": [
+        2026,
+        9
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-45",
+      "scholarIndex": 45,
+      "title": "Synergistic Interfacial Dangling‐Bond Passivation for Enhanced Moisture Resistance in Perovskite Photovoltaics",
+      "authors": [
+        {
+          "given": "Yasong",
+          "family": "Tan",
+          "name": "Yasong Tan"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Xinyao",
+          "family": "Chen",
+          "name": "Xinyao Chen"
+        },
+        {
+          "given": "Hongzhuo",
+          "family": "Wu",
+          "name": "Hongzhuo Wu"
+        },
+        {
+          "given": "Xiang",
+          "family": "Qiao",
+          "name": "Xiang Qiao"
+        },
+        {
+          "given": "Zuhong",
+          "family": "Zhang",
+          "name": "Zuhong Zhang"
+        },
+        {
+          "given": "Jinbo",
+          "family": "Zhao",
+          "name": "Jinbo Zhao"
+        },
+        {
+          "given": "Shuhong",
+          "family": "Ma",
+          "name": "Shuhong Ma"
+        },
+        {
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
+        },
+        {
+          "given": "Xinyu",
+          "family": "Gao",
+          "name": "Xinyu Gao"
+        },
+        {
+          "given": "Zhe",
+          "family": "Li",
+          "name": "Zhe Li"
+        },
+        {
+          "given": "Feng",
+          "family": "Yang",
+          "name": "Feng Yang"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        }
+      ],
+      "journal": "Advanced Materials",
+      "year": 2026,
+      "volume": "38",
+      "issue": "45",
+      "pages": "e73950",
+      "doi": "10.1002/adma.73950",
+      "url": "https://doi.org/10.1002/adma.73950",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:ns9cj8rnVeAC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2026,
+        7,
+        9
+      ],
+      "publishedPrint": [
+        2026,
+        8
+      ],
+      "authorNameNote": ""
+    },
     {
       "id": "pub-46",
       "scholarIndex": 46,
@@ -111,141 +673,34 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-44",
-      "scholarIndex": 44,
-      "title": "Interfacial Defect Passivation by Molecular Dipole‐Moment Engineering in Perovskite Solar Cells",
+      "id": "pub-34",
+      "scholarIndex": 34,
+      "title": "Stabilizing Grain Boundary Grooves in p‐i‐n Perovskite Solar Cells via Dual‐Site Locking Riveting",
       "authors": [
         {
-          "given": "Jonathan L.",
-          "family": "Adamu",
-          "name": "Jonathan L. Adamu"
+          "given": "Yifan",
+          "family": "Niu",
+          "name": "Yifan Niu"
         },
-        {
-          "given": "Somayeh",
-          "family": "Gholipour",
-          "name": "Somayeh Gholipour"
-        },
-        {
-          "given": "Mayank",
-          "family": "Kedia",
-          "name": "Mayank Kedia"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Asfaw",
-          "family": "Negash",
-          "name": "Asfaw Negash"
-        },
-        {
-          "given": "Goutam",
-          "family": "Paul",
-          "name": "Goutam Paul"
-        },
-        {
-          "given": "Seyma",
-          "family": "Topcu",
-          "name": "Seyma Topcu"
-        },
-        {
-          "given": "Jose J.",
-          "family": "Jeronimo‐Rendon",
-          "name": "Jose J. Jeronimo‐Rendon"
-        },
-        {
-          "given": "Yunshan",
-          "family": "Wang",
-          "name": "Yunshan Wang"
-        },
-        {
-          "given": "Roberto",
-          "family": "Félix",
-          "name": "Roberto Félix"
-        },
-        {
-          "given": "Chittaranjan",
-          "family": "Das",
-          "name": "Chittaranjan Das"
-        },
-        {
-          "given": "Stefan A. L.",
-          "family": "Weber",
-          "name": "Stefan A. L. Weber"
-        },
-        {
-          "given": "Bettina V.",
-          "family": "Lotsch",
-          "name": "Bettina V. Lotsch"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        }
-      ],
-      "journal": "Small Science",
-      "year": 2026,
-      "volume": "6",
-      "issue": "9",
-      "pages": "e70369",
-      "doi": "10.1002/smsc.70369",
-      "url": "https://doi.org/10.1002/smsc.70369",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:NaGl4SEjCO4C",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2026,
-        8,
-        26
-      ],
-      "publishedPrint": [
-        2026,
-        9
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-33",
-      "scholarIndex": 33,
-      "title": "Molecular Design of Oligomers for Codeposited Perovskite Solar Cells: Enabling Synergistic Control of Crystallization and Carrier Dynamics",
-      "authors": [
         {
           "given": "Zuhong",
           "family": "Zhang",
           "name": "Zuhong Zhang"
         },
         {
-          "given": "Kexin",
-          "family": "Zhao",
-          "name": "Kexin Zhao"
+          "given": "Congcong",
+          "family": "Zhang",
+          "name": "Congcong Zhang"
         },
         {
-          "given": "Bingchen",
-          "family": "He",
-          "name": "Bingchen He"
-        },
-        {
-          "given": "Zhenhuang",
-          "family": "Su",
-          "name": "Zhenhuang Su"
+          "given": "Jorge",
+          "family": "Pascual",
+          "name": "Jorge Pascual"
         },
         {
           "given": "Weiwei",
           "family": "Zuo",
           "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Bekele",
-          "family": "Hailegnaw",
-          "name": "Bekele Hailegnaw"
-        },
-        {
-          "given": "Yanru",
-          "family": "Xue",
-          "name": "Yanru Xue"
         },
         {
           "given": "Ying",
@@ -253,54 +708,49 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Ying Tang"
         },
         {
-          "given": "Xingyu",
-          "family": "Gao",
-          "name": "Xingyu Gao"
+          "given": "Hongzhuo",
+          "family": "Wu",
+          "name": "Hongzhuo Wu"
         },
         {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
         },
         {
-          "given": "Antonio",
-          "family": "Abate",
-          "name": "Antonio Abate"
+          "given": "Mahmoud Hussein",
+          "family": "Aldamasy",
+          "name": "Mahmoud Hussein Aldamasy"
+        },
+        {
+          "given": "Rui",
+          "family": "Zhu",
+          "name": "Rui Zhu"
         },
         {
           "given": "Meng",
           "family": "Li",
           "name": "Meng Li"
-        },
-        {
-          "given": "Jinsheng",
-          "family": "Song",
-          "name": "Jinsheng Song"
         }
       ],
-      "journal": "ACS Energy Letters",
+      "journal": "Advanced Functional Materials",
       "year": 2026,
-      "volume": "11",
-      "issue": "1",
-      "pages": "590-597",
-      "doi": "10.1021/acsenergylett.5c03201",
-      "url": "https://doi.org/10.1021/acsenergylett.5c03201",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:bEWYMUwI8FkC",
+      "volume": "36",
+      "issue": "42",
+      "pages": "e74964",
+      "doi": "10.1002/adfm.74964",
+      "url": "https://doi.org/10.1002/adfm.74964",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:M3NEmzRMIkIC",
       "selected": false,
-      "correction": {
-        "title": "Correction to “Molecular Design of Oligomers for Codeposited Perovskite Solar Cells: Enabling Synergistic Control of Crystallization and Carrier Dynamics”",
-        "doi": "10.1021/acsenergylett.5c04167",
-        "url": "https://doi.org/10.1021/acsenergylett.5c04167"
-      },
+      "correction": null,
       "publishedOnline": [
-        2025,
-        12,
-        12
+        2026,
+        3,
+        14
       ],
       "publishedPrint": [
         2026,
-        1,
-        9
+        5
       ],
       "authorNameNote": ""
     },
@@ -468,34 +918,93 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-34",
-      "scholarIndex": 34,
-      "title": "Stabilizing Grain Boundary Grooves in p‐i‐n Perovskite Solar Cells via Dual‐Site Locking Riveting",
+      "id": "pub-jiot-2026-3738694",
+      "bibKey": "Zuo2026_Tavakoli_3738694",
+      "title": "Real-Time Module-Level Monitoring of Photovoltaic Systems Using a Low-Cost and Secure Wireless Sensor Network",
       "authors": [
         {
-          "given": "Yifan",
-          "family": "Niu",
-          "name": "Yifan Niu"
+          "given": "Navid",
+          "family": "Tavakoli",
+          "name": "Navid Tavakoli"
         },
+        {
+          "given": "Pascal",
+          "family": "Koelblin",
+          "name": "Pascal Koelblin"
+        },
+        {
+          "given": "Ehsan Mirmahmoudzadeh",
+          "family": "Moshtaghin",
+          "name": "Ehsan Mirmahmoudzadeh Moshtaghin"
+        },
+        {
+          "given": "Rohan",
+          "family": "Khamkar",
+          "name": "Rohan Khamkar"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        }
+      ],
+      "journal": "IEEE Internet of Things Journal",
+      "year": 2026,
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "doi": "10.1109/jiot.2026.3738694",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:lSLTfruPkqcC",
+      "publishedOnline": null,
+      "publishedPrint": null,
+      "url": "https://doi.org/10.1109/jiot.2026.3738694",
+      "selected": false,
+      "correction": null
+    },
+    {
+      "id": "pub-33",
+      "scholarIndex": 33,
+      "title": "Molecular Design of Oligomers for Codeposited Perovskite Solar Cells: Enabling Synergistic Control of Crystallization and Carrier Dynamics",
+      "authors": [
         {
           "given": "Zuhong",
           "family": "Zhang",
           "name": "Zuhong Zhang"
         },
         {
-          "given": "Congcong",
-          "family": "Zhang",
-          "name": "Congcong Zhang"
+          "given": "Kexin",
+          "family": "Zhao",
+          "name": "Kexin Zhao"
         },
         {
-          "given": "Jorge",
-          "family": "Pascual",
-          "name": "Jorge Pascual"
+          "given": "Bingchen",
+          "family": "He",
+          "name": "Bingchen He"
+        },
+        {
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
         },
         {
           "given": "Weiwei",
           "family": "Zuo",
           "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Bekele",
+          "family": "Hailegnaw",
+          "name": "Bekele Hailegnaw"
+        },
+        {
+          "given": "Yanru",
+          "family": "Xue",
+          "name": "Yanru Xue"
         },
         {
           "given": "Ying",
@@ -503,61 +1012,96 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Ying Tang"
         },
         {
-          "given": "Hongzhuo",
-          "family": "Wu",
-          "name": "Hongzhuo Wu"
+          "given": "Xingyu",
+          "family": "Gao",
+          "name": "Xingyu Gao"
         },
         {
-          "given": "Zhenhuang",
-          "family": "Su",
-          "name": "Zhenhuang Su"
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
         },
         {
-          "given": "Mahmoud Hussein",
-          "family": "Aldamasy",
-          "name": "Mahmoud Hussein Aldamasy"
-        },
-        {
-          "given": "Rui",
-          "family": "Zhu",
-          "name": "Rui Zhu"
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
         },
         {
           "given": "Meng",
           "family": "Li",
           "name": "Meng Li"
+        },
+        {
+          "given": "Jinsheng",
+          "family": "Song",
+          "name": "Jinsheng Song"
         }
       ],
-      "journal": "Advanced Functional Materials",
+      "journal": "ACS Energy Letters",
       "year": 2026,
-      "volume": "36",
-      "issue": "42",
-      "pages": "e74964",
-      "doi": "10.1002/adfm.74964",
-      "url": "https://doi.org/10.1002/adfm.74964",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:M3NEmzRMIkIC",
+      "volume": "11",
+      "issue": "1",
+      "pages": "590-597",
+      "doi": "10.1021/acsenergylett.5c03201",
+      "url": "https://doi.org/10.1021/acsenergylett.5c03201",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:bEWYMUwI8FkC",
       "selected": false,
-      "correction": null,
+      "correction": {
+        "title": "Correction to “Molecular Design of Oligomers for Codeposited Perovskite Solar Cells: Enabling Synergistic Control of Crystallization and Carrier Dynamics”",
+        "doi": "10.1021/acsenergylett.5c04167",
+        "url": "https://doi.org/10.1021/acsenergylett.5c04167"
+      },
       "publishedOnline": [
-        2026,
-        3,
-        14
+        2025,
+        12,
+        12
       ],
       "publishedPrint": [
         2026,
-        5
+        1,
+        9
       ],
       "authorNameNote": ""
     },
     {
-      "id": "pub-45",
-      "scholarIndex": 45,
-      "title": "Synergistic Interfacial Dangling‐Bond Passivation for Enhanced Moisture Resistance in Perovskite Photovoltaics",
+      "id": "pub-7",
+      "scholarIndex": 7,
+      "title": "Improved solvent systems for commercially viable perovskite photovoltaic modules",
       "authors": [
         {
-          "given": "Yasong",
-          "family": "Tan",
-          "name": "Yasong Tan"
+          "given": "Yinke",
+          "family": "Wang",
+          "name": "Yinke Wang"
+        },
+        {
+          "given": "Ye",
+          "family": "Liu",
+          "name": "Ye Liu"
+        },
+        {
+          "given": "Xin",
+          "family": "Luo",
+          "name": "Xin Luo"
+        },
+        {
+          "given": "Ke",
+          "family": "Xiao",
+          "name": "Ke Xiao"
+        },
+        {
+          "given": "Victor",
+          "family": "Marrugat-Arnal",
+          "name": "Victor Marrugat-Arnal"
+        },
+        {
+          "given": "Dongdong",
+          "family": "Xu",
+          "name": "Dongdong Xu"
+        },
+        {
+          "given": "Jing",
+          "family": "Lou",
+          "name": "Jing Lou"
         },
         {
           "given": "Weiwei",
@@ -565,49 +1109,195 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Weiwei Zuo"
         },
         {
-          "given": "Xinyao",
-          "family": "Chen",
-          "name": "Xinyao Chen"
+          "given": "Navid",
+          "family": "Tavakoli",
+          "name": "Navid Tavakoli"
         },
         {
-          "given": "Hongzhuo",
-          "family": "Wu",
-          "name": "Hongzhuo Wu"
-        },
-        {
-          "given": "Xiang",
-          "family": "Qiao",
-          "name": "Xiang Qiao"
-        },
-        {
-          "given": "Zuhong",
-          "family": "Zhang",
-          "name": "Zuhong Zhang"
-        },
-        {
-          "given": "Jinbo",
-          "family": "Zhao",
-          "name": "Jinbo Zhao"
-        },
-        {
-          "given": "Shuhong",
-          "family": "Ma",
-          "name": "Shuhong Ma"
-        },
-        {
-          "given": "Zhenhuang",
-          "family": "Su",
-          "name": "Zhenhuang Su"
-        },
-        {
-          "given": "Xinyu",
-          "family": "Gao",
-          "name": "Xinyu Gao"
-        },
-        {
-          "given": "Zhe",
+          "given": "Tiantian",
           "family": "Li",
-          "name": "Zhe Li"
+          "name": "Tiantian Li"
+        },
+        {
+          "given": "Yuanbo",
+          "family": "Yang",
+          "name": "Yuanbo Yang"
+        },
+        {
+          "given": "Chenyang",
+          "family": "Duan",
+          "name": "Chenyang Duan"
+        },
+        {
+          "given": "Wennan",
+          "family": "Ou",
+          "name": "Wennan Ou"
+        },
+        {
+          "given": "Yuxuan",
+          "family": "Liu",
+          "name": "Yuxuan Liu"
+        },
+        {
+          "given": "Jiajia",
+          "family": "Hong",
+          "name": "Jiajia Hong"
+        },
+        {
+          "given": "Hongfei",
+          "family": "Sun",
+          "name": "Hongfei Sun"
+        },
+        {
+          "given": "Gongtao",
+          "family": "Duan",
+          "name": "Gongtao Duan"
+        },
+        {
+          "given": "Manya",
+          "family": "Li",
+          "name": "Manya Li"
+        },
+        {
+          "given": "Han",
+          "family": "Gao",
+          "name": "Han Gao"
+        },
+        {
+          "given": "Zijing",
+          "family": "Chu",
+          "name": "Zijing Chu"
+        },
+        {
+          "given": "Long",
+          "family": "Jiang",
+          "name": "Long Jiang"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Makhsud I.",
+          "family": "Saidaminov",
+          "name": "Makhsud I. Saidaminov"
+        },
+        {
+          "given": "Chao",
+          "family": "Chang",
+          "name": "Chao Chang"
+        },
+        {
+          "given": "Hairen",
+          "family": "Tan",
+          "name": "Hairen Tan"
+        }
+      ],
+      "journal": "Science",
+      "year": 2025,
+      "volume": "390",
+      "issue": "6777",
+      "pages": "1021-1028",
+      "doi": "10.1126/science.adz0091",
+      "url": "https://doi.org/10.1126/science.adz0091",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:iH-uZ7U-co4C",
+      "selected": true,
+      "correction": null,
+      "publishedOnline": null,
+      "publishedPrint": [
+        2025,
+        12,
+        4
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-42",
+      "scholarIndex": 42,
+      "title": "Stability breakthrough accelerates commercialization of perovskite indoor photovoltaics",
+      "authors": [
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        }
+      ],
+      "journal": "National Science Review",
+      "year": 2025,
+      "volume": "12",
+      "issue": "11",
+      "pages": "nwaf409",
+      "doi": "10.1093/nsr/nwaf409",
+      "url": "https://doi.org/10.1093/nsr/nwaf409",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:r0BpntZqJG4C",
+      "selected": true,
+      "correction": null,
+      "publishedOnline": [
+        2025,
+        10,
+        13
+      ],
+      "publishedPrint": [
+        2025,
+        10,
+        10
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-37",
+      "scholarIndex": 37,
+      "title": "Sandwiched between flat barriers",
+      "authors": [
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        }
+      ],
+      "journal": "Science",
+      "year": 2025,
+      "volume": "387",
+      "issue": "6738",
+      "pages": "1040-1041",
+      "doi": "10.1126/science.adw1552",
+      "url": "https://doi.org/10.1126/science.adw1552",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:e5wmG9Sq2KIC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": null,
+      "publishedPrint": [
+        2025,
+        3,
+        7
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-13",
+      "scholarIndex": 13,
+      "title": "Resilience pathways for halide perovskite photovoltaics under temperature cycling",
+      "authors": [
+        {
+          "given": "Luyan",
+          "family": "Wu",
+          "name": "Luyan Wu"
+        },
+        {
+          "given": "Shuaifeng",
+          "family": "Hu",
+          "name": "Shuaifeng Hu"
         },
         {
           "given": "Feng",
@@ -615,30 +1305,77 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Feng Yang"
         },
         {
+          "given": "Guixiang",
+          "family": "Li",
+          "name": "Guixiang Li"
+        },
+        {
+          "given": "Junke",
+          "family": "Wang",
+          "name": "Junke Wang"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "José J.",
+          "family": "Jerónimo-Rendon",
+          "name": "José J. Jerónimo-Rendon"
+        },
+        {
+          "given": "Silver-Hamill",
+          "family": "Turren-Cruz",
+          "name": "Silver-Hamill Turren-Cruz"
+        },
+        {
+          "given": "Michele",
+          "family": "Saba",
+          "name": "Michele Saba"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Mohammad Khaja",
+          "family": "Nazeeruddin",
+          "name": "Mohammad Khaja Nazeeruddin"
+        },
+        {
+          "given": "Jorge",
+          "family": "Pascual",
+          "name": "Jorge Pascual"
+        },
+        {
           "given": "Meng",
           "family": "Li",
           "name": "Meng Li"
+        },
+        {
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
         }
       ],
-      "journal": "Advanced Materials",
-      "year": 2026,
-      "volume": "38",
-      "issue": "45",
-      "pages": "e73950",
-      "doi": "10.1002/adma.73950",
-      "url": "https://doi.org/10.1002/adma.73950",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:ns9cj8rnVeAC",
-      "selected": false,
+      "journal": "Nature Reviews Materials",
+      "year": 2025,
+      "volume": "10",
+      "issue": "7",
+      "pages": "536-549",
+      "doi": "10.1038/s41578-025-00781-7",
+      "url": "https://doi.org/10.1038/s41578-025-00781-7",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:R3hNpaxXUhUC",
+      "selected": true,
       "correction": null,
       "publishedOnline": [
-        2026,
-        7,
-        9
+        2025,
+        2,
+        19
       ],
-      "publishedPrint": [
-        2026,
-        8
-      ],
+      "publishedPrint": null,
       "authorNameNote": ""
     },
     {
@@ -851,155 +1588,6 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-7",
-      "scholarIndex": 7,
-      "title": "Improved solvent systems for commercially viable perovskite photovoltaic modules",
-      "authors": [
-        {
-          "given": "Yinke",
-          "family": "Wang",
-          "name": "Yinke Wang"
-        },
-        {
-          "given": "Ye",
-          "family": "Liu",
-          "name": "Ye Liu"
-        },
-        {
-          "given": "Xin",
-          "family": "Luo",
-          "name": "Xin Luo"
-        },
-        {
-          "given": "Ke",
-          "family": "Xiao",
-          "name": "Ke Xiao"
-        },
-        {
-          "given": "Victor",
-          "family": "Marrugat-Arnal",
-          "name": "Victor Marrugat-Arnal"
-        },
-        {
-          "given": "Dongdong",
-          "family": "Xu",
-          "name": "Dongdong Xu"
-        },
-        {
-          "given": "Jing",
-          "family": "Lou",
-          "name": "Jing Lou"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Navid",
-          "family": "Tavakoli",
-          "name": "Navid Tavakoli"
-        },
-        {
-          "given": "Tiantian",
-          "family": "Li",
-          "name": "Tiantian Li"
-        },
-        {
-          "given": "Yuanbo",
-          "family": "Yang",
-          "name": "Yuanbo Yang"
-        },
-        {
-          "given": "Chenyang",
-          "family": "Duan",
-          "name": "Chenyang Duan"
-        },
-        {
-          "given": "Wennan",
-          "family": "Ou",
-          "name": "Wennan Ou"
-        },
-        {
-          "given": "Yuxuan",
-          "family": "Liu",
-          "name": "Yuxuan Liu"
-        },
-        {
-          "given": "Jiajia",
-          "family": "Hong",
-          "name": "Jiajia Hong"
-        },
-        {
-          "given": "Hongfei",
-          "family": "Sun",
-          "name": "Hongfei Sun"
-        },
-        {
-          "given": "Gongtao",
-          "family": "Duan",
-          "name": "Gongtao Duan"
-        },
-        {
-          "given": "Manya",
-          "family": "Li",
-          "name": "Manya Li"
-        },
-        {
-          "given": "Han",
-          "family": "Gao",
-          "name": "Han Gao"
-        },
-        {
-          "given": "Zijing",
-          "family": "Chu",
-          "name": "Zijing Chu"
-        },
-        {
-          "given": "Long",
-          "family": "Jiang",
-          "name": "Long Jiang"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Makhsud I.",
-          "family": "Saidaminov",
-          "name": "Makhsud I. Saidaminov"
-        },
-        {
-          "given": "Chao",
-          "family": "Chang",
-          "name": "Chao Chang"
-        },
-        {
-          "given": "Hairen",
-          "family": "Tan",
-          "name": "Hairen Tan"
-        }
-      ],
-      "journal": "Science",
-      "year": 2025,
-      "volume": "390",
-      "issue": "6777",
-      "pages": "1021-1028",
-      "doi": "10.1126/science.adz0091",
-      "url": "https://doi.org/10.1126/science.adz0091",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:iH-uZ7U-co4C",
-      "selected": true,
-      "correction": null,
-      "publishedOnline": null,
-      "publishedPrint": [
-        2025,
-        12,
-        4
-      ],
-      "authorNameNote": ""
-    },
-    {
       "id": "pub-25",
       "scholarIndex": 25,
       "title": "Mitigating the amorphization of perovskite layers by using atomic layer deposition of alumina",
@@ -1097,24 +1685,59 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-13",
-      "scholarIndex": 13,
-      "title": "Resilience pathways for halide perovskite photovoltaics under temperature cycling",
+      "id": "pub-12",
+      "scholarIndex": 12,
+      "title": "Multi‐Point Collaborative Passivation of Surface Defects for Efficient and Stable Perovskite Solar Cells",
       "authors": [
         {
-          "given": "Luyan",
+          "given": "Xiang",
+          "family": "Qiao",
+          "name": "Xiang Qiao"
+        },
+        {
+          "given": "Rui",
+          "family": "Zhu",
+          "name": "Rui Zhu"
+        },
+        {
+          "given": "Dong",
+          "family": "Yan",
+          "name": "Dong Yan"
+        },
+        {
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
+        },
+        {
+          "given": "Zuhong",
+          "family": "Zhang",
+          "name": "Zuhong Zhang"
+        },
+        {
+          "given": "Hongzhuo",
           "family": "Wu",
-          "name": "Luyan Wu"
+          "name": "Hongzhuo Wu"
         },
         {
-          "given": "Shuaifeng",
-          "family": "Hu",
-          "name": "Shuaifeng Hu"
+          "given": "Yasong",
+          "family": "Tan",
+          "name": "Yasong Tan"
         },
         {
-          "given": "Feng",
-          "family": "Yang",
-          "name": "Feng Yang"
+          "given": "Mengnan",
+          "family": "Liang",
+          "name": "Mengnan Liang"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Junhan",
+          "family": "Zhang",
+          "name": "Junhan Zhang"
         },
         {
           "given": "Guixiang",
@@ -1122,117 +1745,111 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Guixiang Li"
         },
         {
-          "given": "Junke",
-          "family": "Wang",
-          "name": "Junke Wang"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "José J.",
-          "family": "Jerónimo-Rendon",
-          "name": "José J. Jerónimo-Rendon"
-        },
-        {
-          "given": "Silver-Hamill",
-          "family": "Turren-Cruz",
-          "name": "Silver-Hamill Turren-Cruz"
-        },
-        {
-          "given": "Michele",
-          "family": "Saba",
-          "name": "Michele Saba"
+          "given": "Xingyu",
+          "family": "Gao",
+          "name": "Xingyu Gao"
         },
         {
           "given": "Michael",
           "family": "Saliba",
           "name": "Michael Saliba"
-        },
-        {
-          "given": "Mohammad Khaja",
-          "family": "Nazeeruddin",
-          "name": "Mohammad Khaja Nazeeruddin"
-        },
-        {
-          "given": "Jorge",
-          "family": "Pascual",
-          "name": "Jorge Pascual"
         },
         {
           "given": "Meng",
           "family": "Li",
           "name": "Meng Li"
-        },
-        {
-          "given": "Antonio",
-          "family": "Abate",
-          "name": "Antonio Abate"
         }
       ],
-      "journal": "Nature Reviews Materials",
-      "year": 2025,
-      "volume": "10",
-      "issue": "7",
-      "pages": "536-549",
-      "doi": "10.1038/s41578-025-00781-7",
-      "url": "https://doi.org/10.1038/s41578-025-00781-7",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:R3hNpaxXUhUC",
-      "selected": true,
-      "correction": null,
-      "publishedOnline": [
-        2025,
-        2,
-        19
-      ],
-      "publishedPrint": null,
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-37",
-      "scholarIndex": 37,
-      "title": "Sandwiched between flat barriers",
-      "authors": [
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        }
-      ],
-      "journal": "Science",
-      "year": 2025,
-      "volume": "387",
-      "issue": "6738",
-      "pages": "1040-1041",
-      "doi": "10.1126/science.adw1552",
-      "url": "https://doi.org/10.1126/science.adw1552",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:e5wmG9Sq2KIC",
+      "journal": "Advanced Functional Materials",
+      "year": 2024,
+      "volume": "34",
+      "issue": "51",
+      "pages": "2409852",
+      "doi": "10.1002/adfm.202409852",
+      "url": "https://doi.org/10.1002/adfm.202409852",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:mB3voiENLucC",
       "selected": false,
       "correction": null,
-      "publishedOnline": null,
+      "publishedOnline": [
+        2024,
+        7,
+        30
+      ],
       "publishedPrint": [
-        2025,
-        3,
-        7
+        2024,
+        12
       ],
       "authorNameNote": ""
     },
     {
-      "id": "pub-42",
-      "scholarIndex": 42,
-      "title": "Stability breakthrough accelerates commercialization of perovskite indoor photovoltaics",
+      "id": "pub-22",
+      "scholarIndex": 22,
+      "title": "MAPbCl3 Light Absorber for Highest Voltage Perovskite Solar Cells",
       "authors": [
+        {
+          "given": "Waqas",
+          "family": "Zia",
+          "name": "Waqas Zia"
+        },
+        {
+          "given": "Mahdi",
+          "family": "Malekshahi Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Toby",
+          "family": "Rudolph",
+          "name": "Toby Rudolph"
+        },
+        {
+          "given": "Monika",
+          "family": "Rai",
+          "name": "Monika Rai"
+        },
+        {
+          "given": "Małgorzata",
+          "family": "Kot",
+          "name": "Małgorzata Kot"
+        },
+        {
+          "given": "Chittaranjan",
+          "family": "Das",
+          "name": "Chittaranjan Das"
+        },
+        {
+          "given": "Mayank",
+          "family": "Kedia",
+          "name": "Mayank Kedia"
+        },
+        {
+          "given": "Mohammadreza",
+          "family": "Zohdi",
+          "name": "Mohammadreza Zohdi"
+        },
         {
           "given": "Weiwei",
           "family": "Zuo",
           "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Vishal",
+          "family": "Yeddu",
+          "name": "Vishal Yeddu"
+        },
+        {
+          "given": "Makhsud I.",
+          "family": "Saidaminov",
+          "name": "Makhsud I. Saidaminov"
+        },
+        {
+          "given": "Jan Ingo",
+          "family": "Flege",
+          "name": "Jan Ingo Flege"
+        },
+        {
+          "given": "Thomas",
+          "family": "Kirchartz",
+          "name": "Thomas Kirchartz"
         },
         {
           "given": "Michael",
@@ -1240,25 +1857,25 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Michael Saliba"
         }
       ],
-      "journal": "National Science Review",
-      "year": 2025,
-      "volume": "12",
-      "issue": "11",
-      "pages": "nwaf409",
-      "doi": "10.1093/nsr/nwaf409",
-      "url": "https://doi.org/10.1093/nsr/nwaf409",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:r0BpntZqJG4C",
-      "selected": true,
+      "journal": "ACS Energy Letters",
+      "year": 2024,
+      "volume": "9",
+      "issue": "3",
+      "pages": "1017-1024",
+      "doi": "10.1021/acsenergylett.3c02777",
+      "url": "https://doi.org/10.1021/acsenergylett.3c02777",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:hFOr9nPyWt4C",
+      "selected": false,
       "correction": null,
       "publishedOnline": [
-        2025,
-        10,
-        13
+        2024,
+        2,
+        16
       ],
       "publishedPrint": [
-        2025,
-        10,
-        10
+        2024,
+        3,
+        8
       ],
       "authorNameNote": ""
     },
@@ -1432,39 +2049,19 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-22",
-      "scholarIndex": 22,
-      "title": "MAPbCl3 Light Absorber for Highest Voltage Perovskite Solar Cells",
+      "id": "pub-26",
+      "scholarIndex": 26,
+      "title": "Unraveling the Role of Perovskite in Buried Interface Passivation",
       "authors": [
-        {
-          "given": "Waqas",
-          "family": "Zia",
-          "name": "Waqas Zia"
-        },
-        {
-          "given": "Mahdi",
-          "family": "Malekshahi Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Toby",
-          "family": "Rudolph",
-          "name": "Toby Rudolph"
-        },
-        {
-          "given": "Monika",
-          "family": "Rai",
-          "name": "Monika Rai"
-        },
-        {
-          "given": "Małgorzata",
-          "family": "Kot",
-          "name": "Małgorzata Kot"
-        },
         {
           "given": "Chittaranjan",
           "family": "Das",
           "name": "Chittaranjan Das"
+        },
+        {
+          "given": "Rajarshi",
+          "family": "Roy",
+          "name": "Rajarshi Roy"
         },
         {
           "given": "Mayank",
@@ -1472,9 +2069,9 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Mayank Kedia"
         },
         {
-          "given": "Mohammadreza",
-          "family": "Zohdi",
-          "name": "Mohammadreza Zohdi"
+          "given": "Małgorzata",
+          "family": "Kot",
+          "name": "Małgorzata Kot"
         },
         {
           "given": "Weiwei",
@@ -1482,14 +2079,14 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Weiwei Zuo"
         },
         {
-          "given": "Vishal",
-          "family": "Yeddu",
-          "name": "Vishal Yeddu"
+          "given": "Roberto",
+          "family": "Félix",
+          "name": "Roberto Félix"
         },
         {
-          "given": "Makhsud I.",
-          "family": "Saidaminov",
-          "name": "Makhsud I. Saidaminov"
+          "given": "Tomasz",
+          "family": "Sobol",
+          "name": "Tomasz Sobol"
         },
         {
           "given": "Jan Ingo",
@@ -1497,132 +2094,30 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Jan Ingo Flege"
         },
         {
-          "given": "Thomas",
-          "family": "Kirchartz",
-          "name": "Thomas Kirchartz"
-        },
-        {
           "given": "Michael",
           "family": "Saliba",
           "name": "Michael Saliba"
         }
       ],
-      "journal": "ACS Energy Letters",
-      "year": 2024,
-      "volume": "9",
-      "issue": "3",
-      "pages": "1017-1024",
-      "doi": "10.1021/acsenergylett.3c02777",
-      "url": "https://doi.org/10.1021/acsenergylett.3c02777",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:hFOr9nPyWt4C",
+      "journal": "ACS Applied Materials & Interfaces",
+      "year": 2023,
+      "volume": "15",
+      "issue": "48",
+      "pages": "56500-56510",
+      "doi": "10.1021/acsami.3c13085",
+      "url": "https://doi.org/10.1021/acsami.3c13085",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:qUcmZB5y_30C",
       "selected": false,
       "correction": null,
       "publishedOnline": [
-        2024,
-        2,
-        16
+        2023,
+        11,
+        22
       ],
       "publishedPrint": [
-        2024,
-        3,
-        8
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-12",
-      "scholarIndex": 12,
-      "title": "Multi‐Point Collaborative Passivation of Surface Defects for Efficient and Stable Perovskite Solar Cells",
-      "authors": [
-        {
-          "given": "Xiang",
-          "family": "Qiao",
-          "name": "Xiang Qiao"
-        },
-        {
-          "given": "Rui",
-          "family": "Zhu",
-          "name": "Rui Zhu"
-        },
-        {
-          "given": "Dong",
-          "family": "Yan",
-          "name": "Dong Yan"
-        },
-        {
-          "given": "Zhenhuang",
-          "family": "Su",
-          "name": "Zhenhuang Su"
-        },
-        {
-          "given": "Zuhong",
-          "family": "Zhang",
-          "name": "Zuhong Zhang"
-        },
-        {
-          "given": "Hongzhuo",
-          "family": "Wu",
-          "name": "Hongzhuo Wu"
-        },
-        {
-          "given": "Yasong",
-          "family": "Tan",
-          "name": "Yasong Tan"
-        },
-        {
-          "given": "Mengnan",
-          "family": "Liang",
-          "name": "Mengnan Liang"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Junhan",
-          "family": "Zhang",
-          "name": "Junhan Zhang"
-        },
-        {
-          "given": "Guixiang",
-          "family": "Li",
-          "name": "Guixiang Li"
-        },
-        {
-          "given": "Xingyu",
-          "family": "Gao",
-          "name": "Xingyu Gao"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Meng",
-          "family": "Li",
-          "name": "Meng Li"
-        }
-      ],
-      "journal": "Advanced Functional Materials",
-      "year": 2024,
-      "volume": "34",
-      "issue": "51",
-      "pages": "2409852",
-      "doi": "10.1002/adfm.202409852",
-      "url": "https://doi.org/10.1002/adfm.202409852",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:mB3voiENLucC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2024,
-        7,
-        30
-      ],
-      "publishedPrint": [
-        2024,
-        12
+        2023,
+        12,
+        6
       ],
       "authorNameNote": ""
     },
@@ -1945,29 +2440,44 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-26",
-      "scholarIndex": 26,
-      "title": "Unraveling the Role of Perovskite in Buried Interface Passivation",
+      "id": "pub-18",
+      "scholarIndex": 18,
+      "title": "π-Conjugated Carbazole Cations Enable Wet-Stable Quasi-2D Perovskite Photovoltaics",
       "authors": [
         {
-          "given": "Chittaranjan",
-          "family": "Das",
-          "name": "Chittaranjan Das"
+          "given": "Jien",
+          "family": "Yang",
+          "name": "Jien Yang"
         },
         {
-          "given": "Rajarshi",
-          "family": "Roy",
-          "name": "Rajarshi Roy"
+          "given": "Tingwei",
+          "family": "He",
+          "name": "Tingwei He"
         },
         {
-          "given": "Mayank",
-          "family": "Kedia",
-          "name": "Mayank Kedia"
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
         },
         {
-          "given": "Małgorzata",
-          "family": "Kot",
-          "name": "Małgorzata Kot"
+          "given": "Guixiang",
+          "family": "Li",
+          "name": "Guixiang Li"
+        },
+        {
+          "given": "Hairui",
+          "family": "Liu",
+          "name": "Hairui Liu"
+        },
+        {
+          "given": "Jinjin",
+          "family": "Xu",
+          "name": "Jinjin Xu"
+        },
+        {
+          "given": "Meng",
+          "family": "Zhang",
+          "name": "Meng Zhang"
         },
         {
           "given": "Weiwei",
@@ -1975,18 +2485,318 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Weiwei Zuo"
         },
         {
-          "given": "Roberto",
-          "family": "Félix",
-          "name": "Roberto Félix"
+          "given": "Ruiping",
+          "family": "Qin",
+          "name": "Ruiping Qin"
         },
         {
-          "given": "Tomasz",
-          "family": "Sobol",
-          "name": "Tomasz Sobol"
+          "given": "Mahmoud H.",
+          "family": "Aldamasy",
+          "name": "Mahmoud H. Aldamasy"
         },
         {
-          "given": "Jan Ingo",
-          "family": "Flege",
+          "given": "Mingjian",
+          "family": "Yuan",
+          "name": "Mingjian Yuan"
+        },
+        {
+          "given": "Zhe",
+          "family": "Li",
+          "name": "Zhe Li"
+        },
+        {
+          "given": "Mahdi",
+          "family": "Malekshahi Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
+        }
+      ],
+      "journal": "ACS Energy Letters",
+      "year": 2022,
+      "volume": "7",
+      "issue": "12",
+      "pages": "4451-4458",
+      "doi": "10.1021/acsenergylett.2c02219",
+      "url": "https://doi.org/10.1021/acsenergylett.2c02219",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:4DMP91E08xMC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        11,
+        14
+      ],
+      "publishedPrint": [
+        2022,
+        12,
+        9
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-27",
+      "scholarIndex": 27,
+      "title": "Coevaporation Stabilizes Tin-Based Perovskites in a Single Sn-Oxidation State",
+      "authors": [
+        {
+          "given": "Ajay",
+          "family": "Singh",
+          "name": "Ajay Singh"
+        },
+        {
+          "given": "Jeremy",
+          "family": "Hieulle",
+          "name": "Jeremy Hieulle"
+        },
+        {
+          "given": "Joana Ferreira",
+          "family": "Machado",
+          "name": "Joana Ferreira Machado"
+        },
+        {
+          "given": "Sevan",
+          "family": "Gharabeiki",
+          "name": "Sevan Gharabeiki"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Muhammad Uzair",
+          "family": "Farooq",
+          "name": "Muhammad Uzair Farooq"
+        },
+        {
+          "given": "Himanshu",
+          "family": "Phirke",
+          "name": "Himanshu Phirke"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Alex",
+          "family": "Redinger",
+          "name": "Alex Redinger"
+        }
+      ],
+      "journal": "Nano Letters",
+      "year": 2022,
+      "volume": "22",
+      "issue": "17",
+      "pages": "7112-7118",
+      "doi": "10.1021/acs.nanolett.2c02204",
+      "url": "https://doi.org/10.1021/acs.nanolett.2c02204",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:qxL8FJ1GzNcC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        8,
+        23
+      ],
+      "publishedPrint": [
+        2022,
+        9,
+        14
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-3",
+      "scholarIndex": 3,
+      "title": "Recent Progress in Mixed A‐Site Cation Halide Perovskite Thin‐Films and Nanocrystals for Solar Cells and Light‐Emitting Diodes",
+      "authors": [
+        {
+          "given": "Mahdi Malekshahi",
+          "family": "Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Clara",
+          "family": "Otero‐Martínez",
+          "name": "Clara Otero‐Martínez"
+        },
+        {
+          "given": "Junzhi",
+          "family": "Ye",
+          "name": "Junzhi Ye"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Liberato",
+          "family": "Manna",
+          "name": "Liberato Manna"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Robert L. Z.",
+          "family": "Hoye",
+          "name": "Robert L. Z. Hoye"
+        },
+        {
+          "given": "Lakshminarayana",
+          "family": "Polavarapu",
+          "name": "Lakshminarayana Polavarapu"
+        }
+      ],
+      "journal": "Advanced Optical Materials",
+      "year": 2022,
+      "volume": "10",
+      "issue": "14",
+      "pages": "2200423",
+      "doi": "10.1002/adom.202200423",
+      "url": "https://doi.org/10.1002/adom.202200423",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:ULOm3_A8WrAC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        6,
+        22
+      ],
+      "publishedPrint": [
+        2022,
+        7
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-19",
+      "scholarIndex": 19,
+      "title": "One‐Step Thermal Gradient‐ and Antisolvent‐Free Crystallization of All‐Inorganic Perovskites for Highly Efficient and Thermally Stable Solar Cells",
+      "authors": [
+        {
+          "given": "Mahdi Malekshahi",
+          "family": "Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Tim",
+          "family": "Kodalle",
+          "name": "Tim Kodalle"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Theresa",
+          "family": "Magorian Friedlmeier",
+          "name": "Theresa Magorian Friedlmeier"
+        },
+        {
+          "given": "Maged",
+          "family": "Abdelsamie",
+          "name": "Maged Abdelsamie"
+        },
+        {
+          "given": "Kootak",
+          "family": "Hong",
+          "name": "Kootak Hong"
+        },
+        {
+          "given": "Waqas",
+          "family": "Zia",
+          "name": "Waqas Zia"
+        },
+        {
+          "given": "Shama",
+          "family": "Perween",
+          "name": "Shama Perween"
+        },
+        {
+          "given": "Oliver",
+          "family": "Clemens",
+          "name": "Oliver Clemens"
+        },
+        {
+          "given": "Carolin M.",
+          "family": "Sutter‐Fella",
+          "name": "Carolin M. Sutter‐Fella"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        }
+      ],
+      "journal": "Advanced Science",
+      "year": 2022,
+      "volume": "9",
+      "issue": "23",
+      "pages": "2202441",
+      "doi": "10.1002/advs.202202441",
+      "url": "https://doi.org/10.1002/advs.202202441",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:_kc_bZDykSQC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        6,
+        19
+      ],
+      "publishedPrint": [
+        2022,
+        8
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-29",
+      "scholarIndex": 29,
+      "title": "Band Bending at Hole Transporting Layer‐Perovskite Interfaces in n‐i‐p and in p‐i‐n Architecture",
+      "authors": [
+        {
+          "given": "Chittarajan",
+          "family": "Das",
+          "name": "Chittarajan Das"
+        },
+        {
+          "given": "Mayank",
+          "family": "Kedia",
+          "name": "Mayank Kedia"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Claudiu",
+          "family": "Mortan",
+          "name": "Claudiu Mortan"
+        },
+        {
+          "given": "Małgorzata",
+          "family": "Kot",
+          "name": "Małgorzata Kot"
+        },
+        {
+          "given": "Jan",
+          "family": "Ingo Flege",
           "name": "Jan Ingo Flege"
         },
         {
@@ -1995,26 +2805,242 @@ window.RESEARCH_PUBLICATIONS = {
           "name": "Michael Saliba"
         }
       ],
-      "journal": "ACS Applied Materials & Interfaces",
-      "year": 2023,
-      "volume": "15",
-      "issue": "48",
-      "pages": "56500-56510",
-      "doi": "10.1021/acsami.3c13085",
-      "url": "https://doi.org/10.1021/acsami.3c13085",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:qUcmZB5y_30C",
+      "journal": "Solar RRL",
+      "year": 2022,
+      "volume": "6",
+      "issue": "9",
+      "pages": "2200348",
+      "doi": "10.1002/solr.202200348",
+      "url": "https://doi.org/10.1002/solr.202200348",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:Se3iqnhoufwC",
       "selected": false,
       "correction": null,
       "publishedOnline": [
-        2023,
-        11,
-        22
+        2022,
+        6,
+        11
       ],
       "publishedPrint": [
-        2023,
-        12,
-        6
+        2022,
+        9
       ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-14",
+      "scholarIndex": 14,
+      "title": "Semi‐Planar Non‐Fullerene Molecules Enhance the Durability of Flexible Perovskite Solar Cells",
+      "authors": [
+        {
+          "given": "Hairui",
+          "family": "Liu",
+          "name": "Hairui Liu"
+        },
+        {
+          "given": "Zuhong",
+          "family": "Zhang",
+          "name": "Zuhong Zhang"
+        },
+        {
+          "given": "Zhenhuang",
+          "family": "Su",
+          "name": "Zhenhuang Su"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Ying",
+          "family": "Tang",
+          "name": "Ying Tang"
+        },
+        {
+          "given": "Feng",
+          "family": "Yang",
+          "name": "Feng Yang"
+        },
+        {
+          "given": "Xilin",
+          "family": "Zhang",
+          "name": "Xilin Zhang"
+        },
+        {
+          "given": "Chaochao",
+          "family": "Qin",
+          "name": "Chaochao Qin"
+        },
+        {
+          "given": "Jien",
+          "family": "Yang",
+          "name": "Jien Yang"
+        },
+        {
+          "given": "Zhe",
+          "family": "Li",
+          "name": "Zhe Li"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        }
+      ],
+      "journal": "Advanced Science",
+      "year": 2022,
+      "volume": "9",
+      "issue": "11",
+      "pages": "2105739",
+      "doi": "10.1002/advs.202105739",
+      "url": "https://doi.org/10.1002/advs.202105739",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:W7OEmFMy1HYC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        2,
+        25
+      ],
+      "publishedPrint": [
+        2022,
+        4
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-30",
+      "scholarIndex": 30,
+      "title": "In Situ Methylammonium Chloride-Assisted Perovskite Crystallization Strategy for High-Performance Solar Cells",
+      "authors": [
+        {
+          "given": "Wei-Wei",
+          "family": "Zuo",
+          "name": "Wei-Wei Zuo"
+        },
+        {
+          "given": "Ying-Guo",
+          "family": "Yang",
+          "name": "Ying-Guo Yang"
+        },
+        {
+          "given": "Wei-Fei",
+          "family": "Fu",
+          "name": "Wei-Fei Fu"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        },
+        {
+          "given": "Mahdi",
+          "family": "Malekshahi Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Diego",
+          "family": "Di Girolamo",
+          "name": "Diego Di Girolamo"
+        },
+        {
+          "given": "Jorge",
+          "family": "Pascual",
+          "name": "Jorge Pascual"
+        },
+        {
+          "given": "Meng-Qi",
+          "family": "Li",
+          "name": "Meng-Qi Li"
+        },
+        {
+          "given": "Li−Na",
+          "family": "Li",
+          "name": "Li−Na Li"
+        },
+        {
+          "given": "Antonio",
+          "family": "Abate",
+          "name": "Antonio Abate"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        },
+        {
+          "given": "Zhao-Kui",
+          "family": "Wang",
+          "name": "Zhao-Kui Wang"
+        }
+      ],
+      "journal": "ACS Materials Letters",
+      "year": 2022,
+      "volume": "4",
+      "issue": "3",
+      "pages": "448-456",
+      "doi": "10.1021/acsmaterialslett.1c00830",
+      "url": "https://doi.org/10.1021/acsmaterialslett.1c00830",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:MXK_kJrjxJIC",
+      "selected": true,
+      "correction": null,
+      "publishedOnline": [
+        2022,
+        2,
+        1
+      ],
+      "publishedPrint": [
+        2022,
+        3,
+        7
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-5",
+      "scholarIndex": 5,
+      "title": "Tin-based halide perovskite materials: properties and applications",
+      "authors": [
+        {
+          "given": "Mahdi Malekshahi",
+          "family": "Byranvand",
+          "name": "Mahdi Malekshahi Byranvand"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Roghayeh",
+          "family": "Imani",
+          "name": "Roghayeh Imani"
+        },
+        {
+          "given": "Meysam",
+          "family": "Pazoki",
+          "name": "Meysam Pazoki"
+        },
+        {
+          "given": "Michael",
+          "family": "Saliba",
+          "name": "Michael Saliba"
+        }
+      ],
+      "journal": "Chemical Science",
+      "year": 2022,
+      "volume": "13",
+      "issue": "23",
+      "pages": "6766-6781",
+      "doi": "10.1039/d2sc01914k",
+      "url": "https://doi.org/10.1039/d2sc01914k",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:Zph67rFs4hoC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2022
+      ],
+      "publishedPrint": null,
       "authorNameNote": ""
     },
     {
@@ -2512,610 +3538,6 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-29",
-      "scholarIndex": 29,
-      "title": "Band Bending at Hole Transporting Layer‐Perovskite Interfaces in n‐i‐p and in p‐i‐n Architecture",
-      "authors": [
-        {
-          "given": "Chittarajan",
-          "family": "Das",
-          "name": "Chittarajan Das"
-        },
-        {
-          "given": "Mayank",
-          "family": "Kedia",
-          "name": "Mayank Kedia"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Claudiu",
-          "family": "Mortan",
-          "name": "Claudiu Mortan"
-        },
-        {
-          "given": "Małgorzata",
-          "family": "Kot",
-          "name": "Małgorzata Kot"
-        },
-        {
-          "given": "Jan",
-          "family": "Ingo Flege",
-          "name": "Jan Ingo Flege"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        }
-      ],
-      "journal": "Solar RRL",
-      "year": 2022,
-      "volume": "6",
-      "issue": "9",
-      "pages": "2200348",
-      "doi": "10.1002/solr.202200348",
-      "url": "https://doi.org/10.1002/solr.202200348",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:Se3iqnhoufwC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        6,
-        11
-      ],
-      "publishedPrint": [
-        2022,
-        9
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-27",
-      "scholarIndex": 27,
-      "title": "Coevaporation Stabilizes Tin-Based Perovskites in a Single Sn-Oxidation State",
-      "authors": [
-        {
-          "given": "Ajay",
-          "family": "Singh",
-          "name": "Ajay Singh"
-        },
-        {
-          "given": "Jeremy",
-          "family": "Hieulle",
-          "name": "Jeremy Hieulle"
-        },
-        {
-          "given": "Joana Ferreira",
-          "family": "Machado",
-          "name": "Joana Ferreira Machado"
-        },
-        {
-          "given": "Sevan",
-          "family": "Gharabeiki",
-          "name": "Sevan Gharabeiki"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Muhammad Uzair",
-          "family": "Farooq",
-          "name": "Muhammad Uzair Farooq"
-        },
-        {
-          "given": "Himanshu",
-          "family": "Phirke",
-          "name": "Himanshu Phirke"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Alex",
-          "family": "Redinger",
-          "name": "Alex Redinger"
-        }
-      ],
-      "journal": "Nano Letters",
-      "year": 2022,
-      "volume": "22",
-      "issue": "17",
-      "pages": "7112-7118",
-      "doi": "10.1021/acs.nanolett.2c02204",
-      "url": "https://doi.org/10.1021/acs.nanolett.2c02204",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:qxL8FJ1GzNcC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        8,
-        23
-      ],
-      "publishedPrint": [
-        2022,
-        9,
-        14
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-30",
-      "scholarIndex": 30,
-      "title": "In Situ Methylammonium Chloride-Assisted Perovskite Crystallization Strategy for High-Performance Solar Cells",
-      "authors": [
-        {
-          "given": "Wei-Wei",
-          "family": "Zuo",
-          "name": "Wei-Wei Zuo"
-        },
-        {
-          "given": "Ying-Guo",
-          "family": "Yang",
-          "name": "Ying-Guo Yang"
-        },
-        {
-          "given": "Wei-Fei",
-          "family": "Fu",
-          "name": "Wei-Fei Fu"
-        },
-        {
-          "given": "Meng",
-          "family": "Li",
-          "name": "Meng Li"
-        },
-        {
-          "given": "Mahdi",
-          "family": "Malekshahi Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Diego",
-          "family": "Di Girolamo",
-          "name": "Diego Di Girolamo"
-        },
-        {
-          "given": "Jorge",
-          "family": "Pascual",
-          "name": "Jorge Pascual"
-        },
-        {
-          "given": "Meng-Qi",
-          "family": "Li",
-          "name": "Meng-Qi Li"
-        },
-        {
-          "given": "Li−Na",
-          "family": "Li",
-          "name": "Li−Na Li"
-        },
-        {
-          "given": "Antonio",
-          "family": "Abate",
-          "name": "Antonio Abate"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Zhao-Kui",
-          "family": "Wang",
-          "name": "Zhao-Kui Wang"
-        }
-      ],
-      "journal": "ACS Materials Letters",
-      "year": 2022,
-      "volume": "4",
-      "issue": "3",
-      "pages": "448-456",
-      "doi": "10.1021/acsmaterialslett.1c00830",
-      "url": "https://doi.org/10.1021/acsmaterialslett.1c00830",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:MXK_kJrjxJIC",
-      "selected": true,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        2,
-        1
-      ],
-      "publishedPrint": [
-        2022,
-        3,
-        7
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-19",
-      "scholarIndex": 19,
-      "title": "One‐Step Thermal Gradient‐ and Antisolvent‐Free Crystallization of All‐Inorganic Perovskites for Highly Efficient and Thermally Stable Solar Cells",
-      "authors": [
-        {
-          "given": "Mahdi Malekshahi",
-          "family": "Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Tim",
-          "family": "Kodalle",
-          "name": "Tim Kodalle"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Theresa",
-          "family": "Magorian Friedlmeier",
-          "name": "Theresa Magorian Friedlmeier"
-        },
-        {
-          "given": "Maged",
-          "family": "Abdelsamie",
-          "name": "Maged Abdelsamie"
-        },
-        {
-          "given": "Kootak",
-          "family": "Hong",
-          "name": "Kootak Hong"
-        },
-        {
-          "given": "Waqas",
-          "family": "Zia",
-          "name": "Waqas Zia"
-        },
-        {
-          "given": "Shama",
-          "family": "Perween",
-          "name": "Shama Perween"
-        },
-        {
-          "given": "Oliver",
-          "family": "Clemens",
-          "name": "Oliver Clemens"
-        },
-        {
-          "given": "Carolin M.",
-          "family": "Sutter‐Fella",
-          "name": "Carolin M. Sutter‐Fella"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        }
-      ],
-      "journal": "Advanced Science",
-      "year": 2022,
-      "volume": "9",
-      "issue": "23",
-      "pages": "2202441",
-      "doi": "10.1002/advs.202202441",
-      "url": "https://doi.org/10.1002/advs.202202441",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:_kc_bZDykSQC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        6,
-        19
-      ],
-      "publishedPrint": [
-        2022,
-        8
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-3",
-      "scholarIndex": 3,
-      "title": "Recent Progress in Mixed A‐Site Cation Halide Perovskite Thin‐Films and Nanocrystals for Solar Cells and Light‐Emitting Diodes",
-      "authors": [
-        {
-          "given": "Mahdi Malekshahi",
-          "family": "Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Clara",
-          "family": "Otero‐Martínez",
-          "name": "Clara Otero‐Martínez"
-        },
-        {
-          "given": "Junzhi",
-          "family": "Ye",
-          "name": "Junzhi Ye"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Liberato",
-          "family": "Manna",
-          "name": "Liberato Manna"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Robert L. Z.",
-          "family": "Hoye",
-          "name": "Robert L. Z. Hoye"
-        },
-        {
-          "given": "Lakshminarayana",
-          "family": "Polavarapu",
-          "name": "Lakshminarayana Polavarapu"
-        }
-      ],
-      "journal": "Advanced Optical Materials",
-      "year": 2022,
-      "volume": "10",
-      "issue": "14",
-      "pages": "2200423",
-      "doi": "10.1002/adom.202200423",
-      "url": "https://doi.org/10.1002/adom.202200423",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:ULOm3_A8WrAC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        6,
-        22
-      ],
-      "publishedPrint": [
-        2022,
-        7
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-14",
-      "scholarIndex": 14,
-      "title": "Semi‐Planar Non‐Fullerene Molecules Enhance the Durability of Flexible Perovskite Solar Cells",
-      "authors": [
-        {
-          "given": "Hairui",
-          "family": "Liu",
-          "name": "Hairui Liu"
-        },
-        {
-          "given": "Zuhong",
-          "family": "Zhang",
-          "name": "Zuhong Zhang"
-        },
-        {
-          "given": "Zhenhuang",
-          "family": "Su",
-          "name": "Zhenhuang Su"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Ying",
-          "family": "Tang",
-          "name": "Ying Tang"
-        },
-        {
-          "given": "Feng",
-          "family": "Yang",
-          "name": "Feng Yang"
-        },
-        {
-          "given": "Xilin",
-          "family": "Zhang",
-          "name": "Xilin Zhang"
-        },
-        {
-          "given": "Chaochao",
-          "family": "Qin",
-          "name": "Chaochao Qin"
-        },
-        {
-          "given": "Jien",
-          "family": "Yang",
-          "name": "Jien Yang"
-        },
-        {
-          "given": "Zhe",
-          "family": "Li",
-          "name": "Zhe Li"
-        },
-        {
-          "given": "Meng",
-          "family": "Li",
-          "name": "Meng Li"
-        }
-      ],
-      "journal": "Advanced Science",
-      "year": 2022,
-      "volume": "9",
-      "issue": "11",
-      "pages": "2105739",
-      "doi": "10.1002/advs.202105739",
-      "url": "https://doi.org/10.1002/advs.202105739",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:W7OEmFMy1HYC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        2,
-        25
-      ],
-      "publishedPrint": [
-        2022,
-        4
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-5",
-      "scholarIndex": 5,
-      "title": "Tin-based halide perovskite materials: properties and applications",
-      "authors": [
-        {
-          "given": "Mahdi Malekshahi",
-          "family": "Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Roghayeh",
-          "family": "Imani",
-          "name": "Roghayeh Imani"
-        },
-        {
-          "given": "Meysam",
-          "family": "Pazoki",
-          "name": "Meysam Pazoki"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        }
-      ],
-      "journal": "Chemical Science",
-      "year": 2022,
-      "volume": "13",
-      "issue": "23",
-      "pages": "6766-6781",
-      "doi": "10.1039/d2sc01914k",
-      "url": "https://doi.org/10.1039/d2sc01914k",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:Zph67rFs4hoC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022
-      ],
-      "publishedPrint": null,
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-18",
-      "scholarIndex": 18,
-      "title": "π-Conjugated Carbazole Cations Enable Wet-Stable Quasi-2D Perovskite Photovoltaics",
-      "authors": [
-        {
-          "given": "Jien",
-          "family": "Yang",
-          "name": "Jien Yang"
-        },
-        {
-          "given": "Tingwei",
-          "family": "He",
-          "name": "Tingwei He"
-        },
-        {
-          "given": "Meng",
-          "family": "Li",
-          "name": "Meng Li"
-        },
-        {
-          "given": "Guixiang",
-          "family": "Li",
-          "name": "Guixiang Li"
-        },
-        {
-          "given": "Hairui",
-          "family": "Liu",
-          "name": "Hairui Liu"
-        },
-        {
-          "given": "Jinjin",
-          "family": "Xu",
-          "name": "Jinjin Xu"
-        },
-        {
-          "given": "Meng",
-          "family": "Zhang",
-          "name": "Meng Zhang"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Ruiping",
-          "family": "Qin",
-          "name": "Ruiping Qin"
-        },
-        {
-          "given": "Mahmoud H.",
-          "family": "Aldamasy",
-          "name": "Mahmoud H. Aldamasy"
-        },
-        {
-          "given": "Mingjian",
-          "family": "Yuan",
-          "name": "Mingjian Yuan"
-        },
-        {
-          "given": "Zhe",
-          "family": "Li",
-          "name": "Zhe Li"
-        },
-        {
-          "given": "Mahdi",
-          "family": "Malekshahi Byranvand",
-          "name": "Mahdi Malekshahi Byranvand"
-        },
-        {
-          "given": "Michael",
-          "family": "Saliba",
-          "name": "Michael Saliba"
-        },
-        {
-          "given": "Antonio",
-          "family": "Abate",
-          "name": "Antonio Abate"
-        }
-      ],
-      "journal": "ACS Energy Letters",
-      "year": 2022,
-      "volume": "7",
-      "issue": "12",
-      "pages": "4451-4458",
-      "doi": "10.1021/acsenergylett.2c02219",
-      "url": "https://doi.org/10.1021/acsenergylett.2c02219",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&citation_for_view=ynl-iTQAAAAJ:4DMP91E08xMC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2022,
-        11,
-        14
-      ],
-      "publishedPrint": [
-        2022,
-        12,
-        9
-      ],
-      "authorNameNote": ""
-    },
-    {
       "id": "pub-2",
       "scholarIndex": 2,
       "title": "Ionic Liquid Stabilizing High‐Efficiency Tin Halide Perovskite Solar Cells",
@@ -3282,6 +3704,79 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
+      "id": "pub-36",
+      "scholarIndex": 36,
+      "title": "Stabilization of Intrinsic Ions in Perovskite Solar Cells by Employment of a Bipolar Star-Shaped Organic Molecule as a Charge Transport Buffer",
+      "authors": [
+        {
+          "given": "Wei-Wei",
+          "family": "Zuo",
+          "name": "Wei-Wei Zuo"
+        },
+        {
+          "given": "Meng",
+          "family": "Li",
+          "name": "Meng Li"
+        },
+        {
+          "given": "Wan-Sheng",
+          "family": "Zong",
+          "name": "Wan-Sheng Zong"
+        },
+        {
+          "given": "Shen-Gang",
+          "family": "Xu",
+          "name": "Shen-Gang Xu"
+        },
+        {
+          "given": "Ying-Liang",
+          "family": "Liu",
+          "name": "Ying-Liang Liu"
+        },
+        {
+          "given": "Zhen-Huang",
+          "family": "Su",
+          "name": "Zhen-Huang Su"
+        },
+        {
+          "given": "Xing-Yu",
+          "family": "Gao",
+          "name": "Xing-Yu Gao"
+        },
+        {
+          "given": "Shao-Kui",
+          "family": "Cao",
+          "name": "Shao-Kui Cao"
+        },
+        {
+          "given": "Zhao-Kui",
+          "family": "Wang",
+          "name": "Zhao-Kui Wang"
+        }
+      ],
+      "journal": "ACS Applied Energy Materials",
+      "year": 2020,
+      "volume": "3",
+      "issue": "11",
+      "pages": "10632-10641",
+      "doi": "10.1021/acsaem.0c01683",
+      "url": "https://doi.org/10.1021/acsaem.0c01683",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:roLk4NBRz8UC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2020,
+        10,
+        22
+      ],
+      "publishedPrint": [
+        2020,
+        11,
+        23
+      ],
+      "authorNameNote": ""
+    },
+    {
       "id": "pub-6",
       "scholarIndex": 6,
       "title": "Embedded Nickel‐Mesh Transparent Electrodes for Highly Efficient and Mechanically Stable Flexible Perovskite Photovoltaics: Toward a Portable Mobile Energy Source",
@@ -3369,136 +3864,6 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
-      "id": "pub-39",
-      "scholarIndex": 39,
-      "title": "Graphitic nanosheets via two-dimensional polymerization enhancing organic all-optically controlled photorefractive performance",
-      "authors": [
-        {
-          "given": "Yingliang",
-          "family": "Liu",
-          "name": "Yingliang Liu"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Mingming",
-          "family": "Li",
-          "name": "Mingming Li"
-        },
-        {
-          "given": "Juan",
-          "family": "Li",
-          "name": "Juan Li"
-        },
-        {
-          "given": "Shengang",
-          "family": "Xu",
-          "name": "Shengang Xu"
-        },
-        {
-          "given": "Shaokui",
-          "family": "Cao",
-          "name": "Shaokui Cao"
-        }
-      ],
-      "journal": "SN Applied Sciences",
-      "year": 2020,
-      "volume": "2",
-      "issue": "2",
-      "pages": "196",
-      "doi": "10.1007/s42452-020-1998-7",
-      "url": "https://doi.org/10.1007/s42452-020-1998-7",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:kNdYIx-mwKoC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2020,
-        1,
-        11
-      ],
-      "publishedPrint": [
-        2020,
-        2
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-36",
-      "scholarIndex": 36,
-      "title": "Stabilization of Intrinsic Ions in Perovskite Solar Cells by Employment of a Bipolar Star-Shaped Organic Molecule as a Charge Transport Buffer",
-      "authors": [
-        {
-          "given": "Wei-Wei",
-          "family": "Zuo",
-          "name": "Wei-Wei Zuo"
-        },
-        {
-          "given": "Meng",
-          "family": "Li",
-          "name": "Meng Li"
-        },
-        {
-          "given": "Wan-Sheng",
-          "family": "Zong",
-          "name": "Wan-Sheng Zong"
-        },
-        {
-          "given": "Shen-Gang",
-          "family": "Xu",
-          "name": "Shen-Gang Xu"
-        },
-        {
-          "given": "Ying-Liang",
-          "family": "Liu",
-          "name": "Ying-Liang Liu"
-        },
-        {
-          "given": "Zhen-Huang",
-          "family": "Su",
-          "name": "Zhen-Huang Su"
-        },
-        {
-          "given": "Xing-Yu",
-          "family": "Gao",
-          "name": "Xing-Yu Gao"
-        },
-        {
-          "given": "Shao-Kui",
-          "family": "Cao",
-          "name": "Shao-Kui Cao"
-        },
-        {
-          "given": "Zhao-Kui",
-          "family": "Wang",
-          "name": "Zhao-Kui Wang"
-        }
-      ],
-      "journal": "ACS Applied Energy Materials",
-      "year": 2020,
-      "volume": "3",
-      "issue": "11",
-      "pages": "10632-10641",
-      "doi": "10.1021/acsaem.0c01683",
-      "url": "https://doi.org/10.1021/acsaem.0c01683",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:roLk4NBRz8UC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": [
-        2020,
-        10,
-        22
-      ],
-      "publishedPrint": [
-        2020,
-        11,
-        23
-      ],
-      "authorNameNote": ""
-    },
-    {
       "id": "pub-4",
       "scholarIndex": 4,
       "title": "Tin Halide Perovskite Films Made of Highly Oriented 2D Crystals Enable More Efficient and Stable Lead-free Perovskite Solar Cells",
@@ -3573,6 +3938,63 @@ window.RESEARCH_PUBLICATIONS = {
         2020,
         6,
         12
+      ],
+      "authorNameNote": ""
+    },
+    {
+      "id": "pub-39",
+      "scholarIndex": 39,
+      "title": "Graphitic nanosheets via two-dimensional polymerization enhancing organic all-optically controlled photorefractive performance",
+      "authors": [
+        {
+          "given": "Yingliang",
+          "family": "Liu",
+          "name": "Yingliang Liu"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Mingming",
+          "family": "Li",
+          "name": "Mingming Li"
+        },
+        {
+          "given": "Juan",
+          "family": "Li",
+          "name": "Juan Li"
+        },
+        {
+          "given": "Shengang",
+          "family": "Xu",
+          "name": "Shengang Xu"
+        },
+        {
+          "given": "Shaokui",
+          "family": "Cao",
+          "name": "Shaokui Cao"
+        }
+      ],
+      "journal": "SN Applied Sciences",
+      "year": 2020,
+      "volume": "2",
+      "issue": "2",
+      "pages": "196",
+      "doi": "10.1007/s42452-020-1998-7",
+      "url": "https://doi.org/10.1007/s42452-020-1998-7",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:kNdYIx-mwKoC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": [
+        2020,
+        1,
+        11
+      ],
+      "publishedPrint": [
+        2020,
+        2
       ],
       "authorNameNote": ""
     },
@@ -3669,6 +4091,64 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
+      "id": "pub-28",
+      "scholarIndex": 28,
+      "title": "Ion-migration and carrier-recombination inhibition by the cation-π interaction in planar perovskite solar cells",
+      "authors": [
+        {
+          "given": "Feng",
+          "family": "Yang",
+          "name": "Feng Yang"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Hui",
+          "family": "Liu",
+          "name": "Hui Liu"
+        },
+        {
+          "given": "Jian",
+          "family": "Song",
+          "name": "Jian Song"
+        },
+        {
+          "given": "Hairui",
+          "family": "Liu",
+          "name": "Hairui Liu"
+        },
+        {
+          "given": "Junming",
+          "family": "Li",
+          "name": "Junming Li"
+        },
+        {
+          "given": "Sagar M.",
+          "family": "Jain",
+          "name": "Sagar M. Jain"
+        }
+      ],
+      "journal": "Organic Electronics",
+      "year": 2019,
+      "volume": "75",
+      "issue": "",
+      "pages": "105387",
+      "doi": "10.1016/j.orgel.2019.105387",
+      "url": "https://doi.org/10.1016/j.orgel.2019.105387",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:WF5omc3nYNoC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": null,
+      "publishedPrint": [
+        2019,
+        12
+      ],
+      "authorNameNote": ""
+    },
+    {
       "id": "pub-9",
       "scholarIndex": 9,
       "title": "Enhanced Switching Ratio and Long-Term Stability of Flexible RRAM by Anchoring Polyvinylammonium on Perovskite Grains",
@@ -3743,64 +4223,6 @@ window.RESEARCH_PUBLICATIONS = {
         2019,
         10,
         2
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-28",
-      "scholarIndex": 28,
-      "title": "Ion-migration and carrier-recombination inhibition by the cation-π interaction in planar perovskite solar cells",
-      "authors": [
-        {
-          "given": "Feng",
-          "family": "Yang",
-          "name": "Feng Yang"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Hui",
-          "family": "Liu",
-          "name": "Hui Liu"
-        },
-        {
-          "given": "Jian",
-          "family": "Song",
-          "name": "Jian Song"
-        },
-        {
-          "given": "Hairui",
-          "family": "Liu",
-          "name": "Hairui Liu"
-        },
-        {
-          "given": "Junming",
-          "family": "Li",
-          "name": "Junming Li"
-        },
-        {
-          "given": "Sagar M.",
-          "family": "Jain",
-          "name": "Sagar M. Jain"
-        }
-      ],
-      "journal": "Organic Electronics",
-      "year": 2019,
-      "volume": "75",
-      "issue": "",
-      "pages": "105387",
-      "doi": "10.1016/j.orgel.2019.105387",
-      "url": "https://doi.org/10.1016/j.orgel.2019.105387",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:WF5omc3nYNoC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": null,
-      "publishedPrint": [
-        2019,
-        12
       ],
       "authorNameNote": ""
     },
@@ -3960,6 +4382,64 @@ window.RESEARCH_PUBLICATIONS = {
       "authorNameNote": ""
     },
     {
+      "id": "pub-31",
+      "scholarIndex": 31,
+      "title": "Organic solution-processible electroluminescent molecular glasses for non-doped standard red OLEDs with electrically stable chromaticity",
+      "authors": [
+        {
+          "given": "Xiaoman",
+          "family": "Bi",
+          "name": "Xiaoman Bi"
+        },
+        {
+          "given": "Weiwei",
+          "family": "Zuo",
+          "name": "Weiwei Zuo"
+        },
+        {
+          "given": "Yingliang",
+          "family": "Liu",
+          "name": "Yingliang Liu"
+        },
+        {
+          "given": "Zhenru",
+          "family": "Zhang",
+          "name": "Zhenru Zhang"
+        },
+        {
+          "given": "Cen",
+          "family": "Zeng",
+          "name": "Cen Zeng"
+        },
+        {
+          "given": "Shengang",
+          "family": "Xu",
+          "name": "Shengang Xu"
+        },
+        {
+          "given": "Shaokui",
+          "family": "Cao",
+          "name": "Shaokui Cao"
+        }
+      ],
+      "journal": "Materials Research Bulletin",
+      "year": 2015,
+      "volume": "70",
+      "issue": "",
+      "pages": "865-875",
+      "doi": "10.1016/j.materresbull.2015.06.026",
+      "url": "https://doi.org/10.1016/j.materresbull.2015.06.026",
+      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:5nxA0vEk-isC",
+      "selected": false,
+      "correction": null,
+      "publishedOnline": null,
+      "publishedPrint": [
+        2015,
+        10
+      ],
+      "authorNameNote": ""
+    },
+    {
       "id": "pub-40",
       "scholarIndex": 40,
       "title": "A carbazole–triphenylamine copolymer‐bearing pendant europium complexes: Synthesis and luminescence properties",
@@ -4022,64 +4502,6 @@ window.RESEARCH_PUBLICATIONS = {
       "publishedPrint": [
         2015,
         12,
-        10
-      ],
-      "authorNameNote": ""
-    },
-    {
-      "id": "pub-31",
-      "scholarIndex": 31,
-      "title": "Organic solution-processible electroluminescent molecular glasses for non-doped standard red OLEDs with electrically stable chromaticity",
-      "authors": [
-        {
-          "given": "Xiaoman",
-          "family": "Bi",
-          "name": "Xiaoman Bi"
-        },
-        {
-          "given": "Weiwei",
-          "family": "Zuo",
-          "name": "Weiwei Zuo"
-        },
-        {
-          "given": "Yingliang",
-          "family": "Liu",
-          "name": "Yingliang Liu"
-        },
-        {
-          "given": "Zhenru",
-          "family": "Zhang",
-          "name": "Zhenru Zhang"
-        },
-        {
-          "given": "Cen",
-          "family": "Zeng",
-          "name": "Cen Zeng"
-        },
-        {
-          "given": "Shengang",
-          "family": "Xu",
-          "name": "Shengang Xu"
-        },
-        {
-          "given": "Shaokui",
-          "family": "Cao",
-          "name": "Shaokui Cao"
-        }
-      ],
-      "journal": "Materials Research Bulletin",
-      "year": 2015,
-      "volume": "70",
-      "issue": "",
-      "pages": "865-875",
-      "doi": "10.1016/j.materresbull.2015.06.026",
-      "url": "https://doi.org/10.1016/j.materresbull.2015.06.026",
-      "scholarUrl": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ynl-iTQAAAAJ&cstart=20&pagesize=80&citation_for_view=ynl-iTQAAAAJ:5nxA0vEk-isC",
-      "selected": false,
-      "correction": null,
-      "publishedOnline": null,
-      "publishedPrint": [
-        2015,
         10
       ],
       "authorNameNote": ""
