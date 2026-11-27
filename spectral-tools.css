@@ -60,12 +60,14 @@
 .sp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
 .sp-legend span:before{content:"";display:inline-block;vertical-align:middle;width:24px;border-top:2px solid var(--teal);margin-right:7px}
 .sp-legend .sp-table-line:before{border-top:2px dashed var(--muted)}
-#bandgap-calculator{--sp-voc-color:color-mix(in srgb,var(--orange) 52%,var(--ink));--sp-eqe-voc-color:#704b9c}
-:root[data-theme="dark"] #bandgap-calculator{--sp-voc-color:var(--orange);--sp-eqe-voc-color:#d6b2fa}
+#bandgap-calculator{--sp-voc-color:color-mix(in srgb,var(--orange) 52%,var(--ink));--sp-eqe-voc-color:#704b9c;--sp-sq-voc-color:#3c7662}
+:root[data-theme="dark"] #bandgap-calculator{--sp-voc-color:var(--orange);--sp-eqe-voc-color:#d6b2fa;--sp-sq-voc-color:#9bcca9}
 html[lang="zh-CN"][data-theme="dark"] #bandgap-calculator{--sp-voc-color:var(--sky)}
 .rl-chart .sp-voc-axis{fill:var(--sp-voc-color)}
+.rl-chart .sp-sq-voc-curve{stroke-width:3.8;stroke-dasharray:14 5}
 .sp-voc-curve{stroke-dasharray:9 3 2 3}
 .sp-eqe-voc-curve{stroke-dasharray:2 4;stroke-linecap:round}
+.sp-legend .sp-sq-voc-line:before{border-top:3px dashed var(--sp-sq-voc-color)}
 .sp-legend .sp-voc-line:before{border-top:2px dashed var(--sp-voc-color)}
 .sp-legend .sp-eqe-voc-line:before{border-top:2px dotted var(--sp-eqe-voc-color)}
 .sp-note-link{text-decoration:underline;text-underline-offset:3px}
