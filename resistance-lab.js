@@ -445,7 +445,7 @@
     }
     referenceNote.hidden = !bandgapReference;
     if (bandgapReference) {
-      referenceNote.textContent = T("01 · Jsc and SQ Voc", "01 · Jsc und SQ-Voc", "01 · 图中 Jsc 与 SQ Voc") +
+      referenceNote.textContent = T("01 · Jsc and estimated Voc", "01 · Jsc und geschätzter Voc", "01 · 图中 Jsc 与估算 Voc") +
         " · Eg = " + fmt(bandgapReference.eg, 3) + " eV · AM1.5G" +
         (Number.isFinite(bandgapReference.eqePercent)
           ? " · " + T("Uniform EQE", "Konstante EQE", "均匀 EQE") + " " + fmt(bandgapReference.eqePercent, 1) + "%"
@@ -588,7 +588,8 @@
       ...(bandgapReference ? [
         ["module_01_bandgap_eV", bandgapReference.eg],
         ["module_01_spectrum", "AM1.5G"],
-        ["module_01_uniform_EQE_percent", bandgapReference.eqePercent ?? ""]
+        ["module_01_uniform_EQE_percent", bandgapReference.eqePercent ?? ""],
+        ["module_01_Voc_basis", "EQE-scaled photocurrent at fixed radiative dark current"]
       ] : []),
       ["n", p.n], ["ideality_mode", p.idealityMode], ["temperature_K", p.temperature], ["series_ohm_cm2", p.rs], ["shunt_ohm_cm2", p.rsh === Infinity ? "Infinity" : p.rsh],
       ["incident_power_mW_cm2", p.pin], ["J0_A_cm2", results.ideal.j0],

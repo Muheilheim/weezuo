@@ -33,9 +33,17 @@
     }
     return {jsc:sum,limit,points,lo,hi};
   }
-  function bandgap(spectrum,eg,collection=1){
-    if(!Number.isFinite(eg)||eg<.5||eg>3)throw Error("Bandgap must be 0.5–3.0 eV.");
+  function checkCollection(collection){
     if(!Number.isFinite(collection)||collection<0||collection>1)throw Error("Collection must be 0–100%.");
+  }
+
+  function checkBandgap(eg){
+    if(!Number.isFinite(eg)||eg<.5||eg>3)throw Error("Bandgap must be 0.5–3.0 eV.");
+  }
+
+  function bandgap(spectrum,eg,collection=1){
+    checkBandgap(eg);
+    checkCollection(collection);
     const cutoff=HC_EV_NM/eg;
     const result=integrate(spectrum,spectrum[0][0],cutoff);
     return {eg,cutoff,ideal:result.jsc,jsc:result.jsc*collection};
@@ -63,30 +71,33 @@
     return total*halfWidth/9;
   }
 
-  function radiativeResult(jsc,thermalVoltage,integral){
+  function radiativeResult(jsc,thermalVoltage,integral,collection=1){
     // One emitting hemisphere. jsc is mA/cm² and j0rad is A/cm².
     const j0rad=2*Math.PI*Q*(Q*thermalVoltage/H)**3*integral/(C*C*1e4);
     if(!(jsc>0)||!(j0rad>0)||!Number.isFinite(jsc)||!Number.isFinite(j0rad)){
       throw Error("A positive photocurrent and radiative dark current are required.");
     }
-    return {jsc,j0rad,voc:thermalVoltage*Math.log1p(jsc/1000/j0rad)};
+    // For the step model collection scales only the effective photogeneration.
+    const collected=jsc*collection;
+    return {jsc:collected,j0rad,voc:thermalVoltage*Math.log1p(collected/1000/j0rad)};
   }
 
-  function stepVoc(eg,jsc,thermalVoltage){
+  function stepVoc(eg,jsc,thermalVoltage,collection){
     const edge=eg/thermalVoltage;
     // The remaining step-absorber tail contributes less than floating-point precision.
-    return radiativeResult(jsc,thermalVoltage,integrateBlackbody(edge,edge+48,()=>1));
+    return radiativeResult(jsc,thermalVoltage,integrateBlackbody(edge,edge+48,()=>1),collection);
   }
 
-  function bandgapVoc(spectrum,eg,temperature){
+  function bandgapVoc(spectrum,eg,temperature,collection=1){
     const thermalVoltage=checkedTemperature(temperature);
-    const {ideal}=bandgap(spectrum,eg);
-    return stepVoc(eg,ideal,thermalVoltage);
+    const {ideal}=bandgap(spectrum,eg,collection);
+    return stepVoc(eg,ideal,thermalVoltage,collection);
   }
 
-  function bandgapVocCurve(bandgapCurrents,temperature){
+  function bandgapVocCurve(bandgapCurrents,temperature,collection=1){
     const thermalVoltage=checkedTemperature(temperature);
-    return bandgapCurrents.map(([eg,jsc])=>[eg,stepVoc(eg,jsc,thermalVoltage).voc]);
+    checkCollection(collection);
+    return bandgapCurrents.map(([eg,jsc])=>[eg,stepVoc(eg,jsc,thermalVoltage,collection).voc]);
   }
 
   function eqeVoc(spectrum,eqe,temperature){
@@ -103,6 +114,22 @@
         x=>low+(high-low)*(scale/x-short)/(long-short));
     }
     return radiativeResult(jsc,thermalVoltage,integral);
+  }
+
+  function eqeVocCurve(spectrum,eqe,temperature,referenceBandgap,bandgaps){
+    checkBandgap(referenceBandgap);
+    const reference=eqeVoc(spectrum,eqe,temperature);
+    const minimumEnergy=HC_EV_NM/eqe.at(-1)[0];
+    return bandgaps.map(eg=>{
+      checkBandgap(eg);
+      const shift=eg-referenceBandgap;
+      if(shift===0)return [eg,reference.voc];
+      if(minimumEnergy+shift<=0)return [eg,null];
+      // Shift the measured sample energies and retain the EQE of each sample.
+      const shifted=eqe.map(([wavelength,value])=>[HC_EV_NM/(HC_EV_NM/wavelength+shift),value]);
+      try{return [eg,eqeVoc(spectrum,shifted,temperature).voc];}
+      catch{return [eg,null];}
+    });
   }
 
   function parseEQE(text,unit="percent"){
@@ -143,6 +170,6 @@
     for(let i=1;i<points.length;i++)if(points[i][0]===points[i-1][0])throw Error("Duplicate wavelength "+points[i][0]+" nm. Resolve duplicates before integrating.");
     return {points,sorted};
   }
-  const api={interpolate,integrate,bandgap,bandgapVoc,bandgapVocCurve,eqeVoc,parseEQE,checkSpectrum,HC_EV_NM,FACTOR};
+  const api={interpolate,integrate,bandgap,bandgapVoc,bandgapVocCurve,eqeVoc,eqeVocCurve,parseEQE,checkSpectrum,HC_EV_NM,FACTOR};
   if(typeof module==="object"&&module.exports)module.exports=api;else root.PVSpectral=api;
 })(typeof globalThis!=="undefined"?globalThis:this);

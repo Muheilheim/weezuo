@@ -231,7 +231,8 @@
     if (!copiedReference) return;
     const {basis, source, temperature, generation} = copiedReference;
     const current = window.BandgapInputs.opticalBasis?.();
-    const outdated = basis && current && (current.eg !== basis.eg || current.eqeIdentity !== basis.eqeIdentity);
+    const outdated = basis && current && (current.eg !== basis.eg ||
+      current.eqeIdentity !== basis.eqeIdentity || current.eqePercent !== basis.eqePercent);
     const label = number("generation") === generation
       ? T("Copied from 01", "Übernommen aus 01", "复制自 01")
       : T("J0,rad copied from 01", "J0,rad aus 01 übernommen", "J0,rad 复制自 01");

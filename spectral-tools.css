@@ -19,9 +19,15 @@
 .sp-shell .rl-chart{margin-top:12px}
 .sp-shell .rl-metrics dd{font-size:27px}
 
-/* Voc shares the bandgap inputs and follows the current-density results. */
-.sp-voc{margin:18px 0;padding:14px 16px;border:1px solid var(--line);border-radius:8px;min-width:0}
-.sp-voc h4{font:600 14px/1.5 var(--sans);margin:0 0 10px}
+#bg-voc,#bg-combined-plot,#bg-eqe-spectrum{scroll-margin-top:120px}
+.sp-shell .sp-bandgap-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sp-bandgap-metrics>div:has(#bg-voc-selected){background:var(--soft);border-color:var(--sp-voc-color)}
+.sp-voc,.sp-eqe-spectrum{margin:18px 0 0;padding:14px 0 0;border-top:1px solid var(--line);min-width:0}
+.sp-voc h4,.sp-eqe-spectrum h4{font:600 14px/1.5 var(--sans);margin:0 0 10px}
+.sp-eqe-spectrum>p{overflow-wrap:anywhere}
+.sp-shell .sp-eqe-spectrum .rl-metrics{margin-top:10px}
+.sp-eqe-spectrum .rl-field{max-width:300px;margin-top:14px}
+.sp-eqe-spectrum .rl-field p{margin-top:6px}
 .sp-shell .sp-voc .rl-metrics{margin:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
 .sp-voc [hidden],.sp-voc-status:empty{display:none}
 .sp-voc-status{overflow-wrap:anywhere}
@@ -54,12 +60,14 @@
 .sp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
 .sp-legend span:before{content:"";display:inline-block;vertical-align:middle;width:24px;border-top:2px solid var(--teal);margin-right:7px}
 .sp-legend .sp-table-line:before{border-top:2px dashed var(--muted)}
-.sp-combined-plot{--sp-voc-color:color-mix(in srgb,var(--orange) 52%,var(--ink))}
-:root[data-theme="dark"] .sp-combined-plot{--sp-voc-color:var(--orange)}
-html[lang="zh-CN"][data-theme="dark"] .sp-combined-plot{--sp-voc-color:var(--sky)}
+#bandgap-calculator{--sp-voc-color:color-mix(in srgb,var(--orange) 52%,var(--ink));--sp-eqe-voc-color:#704b9c}
+:root[data-theme="dark"] #bandgap-calculator{--sp-voc-color:var(--orange);--sp-eqe-voc-color:#d6b2fa}
+html[lang="zh-CN"][data-theme="dark"] #bandgap-calculator{--sp-voc-color:var(--sky)}
 .rl-chart .sp-voc-axis{fill:var(--sp-voc-color)}
 .sp-voc-curve{stroke-dasharray:9 3 2 3}
+.sp-eqe-voc-curve{stroke-dasharray:2 4;stroke-linecap:round}
 .sp-legend .sp-voc-line:before{border-top:2px dashed var(--sp-voc-color)}
+.sp-legend .sp-eqe-voc-line:before{border-top:2px dotted var(--sp-eqe-voc-color)}
 .sp-note-link{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1000px){.sp-shell .rl-metrics dd{font-size:24px}.sp-legend{gap:8px;font-size:11px}}
 @media(max-width:680px){.sp-shell .rl-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.sp-shell .rl-controls>h3,.sp-shell .rl-controls>.rl-small,.sp-shell .rl-controls>.sp-wide,.sp-shell .rl-controls>.sp-message,.sp-shell .rl-controls>.sp-row{grid-column:1/-1}.sp-shell .rl-controls>.rl-field{min-width:0}}

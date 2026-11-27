@@ -66,10 +66,22 @@ function chart(id,series,axes,marker){
     markup+='<text class="sp-voc-axis" x="'+right+'" y="20" text-anchor="end">'+axes.right.label+'</text>';
   }
   for(const line of series){
-    const style=line.secondary?"sp-voc-curve":line.dashed?"rl-ideal":"";
-    const color=line.secondary?"var(--sp-voc-color)":line.dashed?"var(--muted)":"var(--teal)";
-    const path=line.points.map(([xp,yp],index)=>(index?"L":"M")+fmt(x(xp),3)+" "+fmt(y(yp,line.secondary),3)).join(" ");
+    const style=line.reference?"sp-eqe-voc-curve":line.secondary?"sp-voc-curve":line.dashed?"rl-ideal":"";
+    const color=line.reference?"var(--sp-eqe-voc-color)":line.secondary?"var(--sp-voc-color)":line.dashed?"var(--muted)":"var(--teal)";
+    let path="", newSegment=true;
+    for(const [xp,yp] of line.points){
+      if(!Number.isFinite(yp)){
+        newSegment=true;
+        continue;
+      }
+      path+=(newSegment?"M":"L")+fmt(x(xp),3)+" "+fmt(y(yp,line.secondary),3)+" ";
+      newSegment=false;
+    }
     markup+='<path class="rl-curve '+style+'" stroke="'+color+'" d="'+path+'"/>';
+    if(line.reference){
+      const [eg,voc]=line.reference;
+      markup+='<circle class="sp-eqe-voc-mark" cx="'+x(eg)+'" cy="'+y(voc,true)+'" r="4.5" fill="var(--surface)" stroke="'+color+'" stroke-width="2"/>';
+    }
   }
   if(marker){
     const xp=x(marker.x);
@@ -114,7 +126,7 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
     </div>
     <details class="sp-voc-settings">
       <summary>${T("Refine the voltage estimate","Spannung genauer abschätzen","校正开路电压估算")}</summary>
-      <label class="rl-check"><input id="bg-voc-use-eqe" type="checkbox" disabled aria-describedby="bg-voc-eqe-status"> ${T("Use EQE from module 02","EQE aus Modul 02 verwenden","使用模块 02 的 EQE")}</label>
+      <label class="rl-check"><input id="bg-voc-use-eqe" type="checkbox" disabled aria-describedby="bg-voc-eqe-status"> ${T("Calculate Jsc and radiative Voc from module 02 EQE","Jsc und Strahlungs-Voc aus der EQE von Modul 02 berechnen","用模块 02 的 EQE 计算 Jsc 和辐射 Voc")}</label>
       <p class="rl-small sp-voc-status" id="bg-voc-eqe-status" role="status"></p>
       <button id="bg-voc-from-pl" class="rl-action" type="button" disabled>
         ${T("Copy absolute PLQY and T from 04","Absolute PLQY und T aus 04 übernehmen","导入 04 的绝对 PLQY 与温度")}
@@ -145,44 +157,81 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
     </details>`;
   $("bg-message").before(settings);
 
+  const spectrum=document.createElement("section");
+  spectrum.id="bg-eqe-spectrum";
+  spectrum.className="sp-eqe-spectrum";
+  spectrum.hidden=true;
+  spectrum.dataset.literal="";
+  spectrum.setAttribute("aria-labelledby","bg-eqe-spectrum-title");
+  spectrum.innerHTML=`
+    <h4 id="bg-eqe-spectrum-title">${T("EQE spectrum from module 02","EQE-Spektrum aus Modul 02","模块 02 的 EQE 光谱")}</h4>
+    <p class="rl-small" id="bg-voc-source"></p>
+    <dl class="rl-metrics sp-bandgap-metrics" aria-live="polite" aria-atomic="true">
+      <div><dt>${T("Integrated Jsc","Integrierter Jsc","EQE 积分 Jsc")}</dt><dd id="bg-spectrum-jsc">—</dd><span class="rl-metric-note">AM1.5G</span></div>
+      <div><dt>${T("Radiative-limit Voc","Voc an der Strahlungsgrenze","EQE 辐射极限 Voc")}</dt><dd id="bg-voc-eqe">—</dd><span class="rl-metric-note" id="bg-spectrum-voc-note"></span></div>
+    </dl>
+    <div class="rl-field">
+      <label for="bg-eqe-reference-eg">${T("Reference bandgap of this EQE spectrum","Referenzbandlücke dieses EQE-Spektrums","该 EQE 光谱的参考带隙")}</label>
+      <div class="rl-input-row"><input id="bg-eqe-reference-eg" type="number" min="0.5" max="3" step="any" aria-describedby="bg-eqe-curve-note"><span class="rl-unit">eV</span></div>
+      <p class="rl-small" id="bg-eqe-curve-note"></p>
+    </div>`;
+
   const output=document.createElement("section");
-  output.id="bg-voc";
+  output.id="bg-voc-details";
   output.className="sp-voc";
   output.dataset.literal="";
   output.setAttribute("aria-labelledby","bg-voc-title");
   output.innerHTML=`
-    <h4 id="bg-voc-title">${T("Open-circuit voltage (Voc)","Leerlaufspannung (Voc)","开路电压（Voc）")}</h4>
+    <h4 id="bg-voc-title">${T("Voc references and corrections","Voc-Referenzen und Korrekturen","Voc 参考与校正")}</h4>
     <dl class="rl-metrics" aria-live="polite" aria-atomic="true">
       <div><dt>${T("SQ radiative limit","SQ-Strahlungsgrenze","SQ 辐射极限")}</dt><dd id="bg-voc-sq">—</dd><span class="rl-metric-note">AM1.5G · 100% EQE</span></div>
-      <div hidden><dt>${T("EQE radiative limit","Strahlungsgrenze aus EQE","EQE 辐射极限")}</dt><dd id="bg-voc-eqe">—</dd></div>
       <div hidden><dt>${T("Implied Voc","Implizite Leerlaufspannung","内部等效电压")}</dt><dd id="bg-voc-implied">—</dd><span class="rl-metric-note">QFLS / q</span></div>
       <div hidden><dt id="bg-voc-terminal-title">${T("Estimated terminal Voc","Geschätzte Leerlaufspannung an den Kontakten","器件端开路电压估算")}</dt><dd id="bg-voc-terminal">—</dd></div>
 
-      <div hidden><dt>${T("Measured Voc · 06","Gemessene Leerlaufspannung · 06","06 实测开路电压")}</dt><dd id="bg-voc-measured">—</dd></div>
+      <div hidden><dt>${T("Measured terminal Voc · 06","Gemessener Voc an den Kontakten · 06","06 实测端 Voc")}</dt><dd id="bg-voc-measured">—</dd></div>
       <div hidden><dt>${T("iVoc minus measured Voc","iVoc minus gemessenem Voc","iVoc 与实测 Voc 的差值")}</dt><dd id="bg-voc-difference">—</dd></div>
     </dl>
     <p class="rl-small sp-voc-status" id="bg-voc-jv-source"></p>
-    <p class="rl-small sp-voc-status" id="bg-voc-source"></p>
     <p class="sp-message sp-voc-status" id="bg-voc-message" role="status" data-error="true"></p>
-    <div id="bg-combined-plot" class="sp-combined-plot" hidden>
-      ${svg("bg-chart",T("Bandgap versus short-circuit current density and SQ open-circuit voltage","Bandlücke, Kurzschlussstromdichte und SQ-Leerlaufspannung","带隙与短路电流密度、SQ 开路电压的关系"))}
-      <div class="sp-legend">
-        <span id="bg-curve-legend"></span>
-        <span id="bg-voc-legend" class="sp-voc-line"></span>
-        <span id="bg-table-legend" class="sp-table-line">${T("Reference Jsc table","Jsc-Referenztabelle","Jsc 参考表")}</span>
-      </div>
-    </div>
     <details class="sp-voc-method">
       <summary>${T("Model and assumptions","Modell und Annahmen","模型与条件")}</summary>
-      <p class="rl-small">${T("The SQ value assumes a single junction with step absorption and emission into one hemisphere. The EQE estimate takes integrated Jsc as an approximation to the generation current and assumes zero EQE outside the supplied range. Coverage near and below the absorption edge affects the estimate.","Der SQ-Wert nimmt eine Einzelzelle mit stufenförmiger Absorption und Emission in einen Halbraum an. Die EQE-Schätzung nähert den Generationsstrom durch den integrierten Jsc an und setzt die EQE außerhalb des bereitgestellten Bereichs auf null. Die Abdeckung am und unterhalb des Bandrands beeinflusst das Ergebnis.","SQ 值采用单结阶跃吸收和单侧半球发射。EQE 估算取导入波长范围内的积分 Jsc 近似光生电流，范围外的 EQE 取零。吸收边及以下的光谱响应会影响估算。")}</p>
+      <p class="rl-small">${T(
+        "The SQ value assumes a single junction with step absorption and emission into one hemisphere. For the imported EQE spectrum, the AM1.5G photon flux gives Jsc and the blackbody photon flux gives J₀,rad. The two currents give the radiative voltage limit at the selected temperature. EQE outside the supplied range is set to zero. Coverage at the absorption edge and in its long-wavelength tail affects the limit.",
+        "Der SQ-Wert gilt für eine Einzelzelle mit stufenförmiger Absorption und Emission in einen Halbraum. Beim importierten EQE-Spektrum liefert der AM1.5G-Photonenfluss Jsc und der Schwarzkörper-Photonenfluss J₀,rad. Beide Ströme ergeben die Strahlungsgrenze der Spannung bei der gewählten Temperatur. Außerhalb des gelieferten Bereichs beträgt die EQE null. Messpunkte an der Absorptionskante und in ihrem langwelligen Ausläufer beeinflussen die Grenze.",
+        "SQ 值采用单结阶跃吸收和单侧半球发射。导入的 EQE 光谱分别用 AM1.5G 光子通量和黑体光子通量加权，得到 Jsc 和 J₀,rad。两项电流给出所选温度下的辐射极限 Voc。范围外的 EQE 取零，吸收边及长波尾部的覆盖会影响估算。")}</p>
+      <p class="rl-small">${T(
+        "The uniform EQE slider scales the effective photocurrent used for both plotted quantities. At each bandgap and temperature, Voc = (kBT/q) ln(1 + Jsc/J₀,rad) uses the fixed radiative dark current of a step absorber. The 100% setting gives the SQ value. A spectrum from 02 is used for its separate radiative voltage and for PL-based estimates when selected.",
+        "Die konstante EQE skaliert den effektiven Photostrom für beide Kurven. Bei jeder Bandlücke und Temperatur gilt Voc = (kBT/q) ln(1 + Jsc/J₀,rad) mit dem festen radiativen Dunkelstrom eines Stufenabsorbers. 100 % entsprechen dem SQ-Wert. Ein ausgewähltes Spektrum aus 02 dient der spektralen Strahlungsspannung und den PL-basierten Schätzungen.",
+        "均匀 EQE 滑块按比例调整图中两项计算所用的有效光生电流。在每个带隙和温度下，Voc = (kBT/q) ln(1 + Jsc/J₀,rad)，其中 J₀,rad 固定为阶跃吸收模型的辐射暗电流。100% EQE 对应 SQ 值。选用 02 的光谱后，该光谱用于计算单列的辐射电压和基于 PL 的估算。")}</p>
       <p class="rl-small"><a href="https://doi.org/10.1016/j.solener.2016.02.015">Rühle (2016)</a> · <a href="https://doi.org/10.1103/PhysRevB.76.085303">Rau (2007)</a></p>
     </details>`;
-  root.querySelector("#bg-table-value").before(output);
+
+  const plot=document.createElement("div");
+  plot.id="bg-combined-plot";
+  plot.className="sp-combined-plot";
+  plot.dataset.literal="";
+  plot.hidden=true;
+  plot.innerHTML=`
+    ${svg("bg-chart",T("Bandgap versus short-circuit current density and estimated open-circuit voltage","Bandlücke, Kurzschlussstromdichte und geschätzte Leerlaufspannung","带隙与短路电流密度、估算开路电压的关系"))}
+    <div class="sp-legend">
+      <span id="bg-curve-legend"></span>
+      <span id="bg-voc-legend" class="sp-voc-line"></span>
+      <span id="bg-eqe-voc-legend" class="sp-eqe-voc-line"></span>
+      <span id="bg-table-legend" class="sp-table-line">${T("Reference Jsc table","Jsc-Referenztabelle","Jsc 参考表")}</span>
+    </div>`;
+  const tableSummary=root.querySelector("#bg-table-value");
+  tableSummary.before(plot);
+  tableSummary.after(spectrum,output);
   const temperature=$("bg-voc-temperature"), useEqe=$("bg-voc-use-eqe");
   const plqy=$("bg-voc-plqy");
+  const selectedMetric=$("bg-voc-selected"), selectedNote=$("bg-voc-selected-note");
   const status=$("bg-voc-message"), source=$("bg-voc-source");
-  const eqeStatus=$("bg-voc-eqe-status");
-  const metrics=["bg-voc-sq","bg-voc-eqe","bg-voc-implied","bg-voc-terminal","bg-voc-measured","bg-voc-difference"].map($);
+  const spectrumJsc=$("bg-spectrum-jsc"), spectrumVoc=$("bg-voc-eqe");
+  const spectrumNote=$("bg-spectrum-voc-note"), eqeStatus=$("bg-voc-eqe-status");
+  const referenceGap=$("bg-eqe-reference-eg"), curveNote=$("bg-eqe-curve-note");
+  let shiftedEQE=null;
+  const metrics=["bg-voc-sq","bg-voc-implied","bg-voc-terminal","bg-voc-measured","bg-voc-difference"].map($);
+  const [sqVoltage, impliedVoltage, terminalVoltage, measuredVoltage, voltageDifference]=metrics;
   const plButton=$("bg-voc-from-pl"), plStatus=$("bg-voc-pl-status");
   const useJv=$("bg-voc-use-jv"), jvStatus=$("bg-voc-jv-status"), jvSource=$("bg-voc-jv-source");
   const inputs=window.BandgapInputs=window.BandgapInputs||{};
@@ -251,29 +300,34 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
 
 
   function opticalContext(kelvin=temperature.valueAsNumber){
-    return {eg:$("bg-eg").valueAsNumber,temperature:kelvin,eqe:useEqe.checked?inputs.eqe?.():null};
+    const eqe=useEqe.checked?inputs.eqe?.():null;
+    return {eg:$("bg-eg").valueAsNumber,temperature:kelvin,eqe,
+      eqePercent:eqe?null:$("bg-collection").valueAsNumber};
   }
   function sameOpticalBasis(a,b){
-    return Object.is(a.eg,b.eg)&&a.eqe?.identity===b.eqe?.identity;
+    return Object.is(a.eg,b.eg)&&a.eqe?.identity===b.eqe?.identity&&Object.is(a.eqePercent,b.eqePercent);
   }
   function sameContext(a,b){
     return a.temperature===b.temperature&&sameOpticalBasis(a,b);
   }
-  inputs.opticalBasis=()=>{
-    const {eg,eqe}=opticalContext();
-    return {eg,eqeIdentity:eqe?.identity};
-  };
+  function opticalBasis({eg,eqe,eqePercent}){
+    return {eg,eqeIdentity:eqe?.identity,eqePercent};
+  }
+  inputs.opticalBasis=()=>opticalBasis(opticalContext());
   function eqeName(eqe){
     return eqe.source==="Supplied workbook example"
       ?T("Workbook example","Beispieldaten aus der Arbeitsmappe","工作簿示例"):eqe.source;
   }
   const radiativeAt=kelvin=>{
-    const {eg,eqe}=opticalContext(kelvin);
-    if(!(eg>=.5&&eg<=3))return null;
+    const context=opticalContext(kelvin), {eg,eqe,eqePercent}=context;
+    if(!eqe&&!(eg>=.5&&eg<=3))return null;
     try{
-      const result=eqe?M.eqeVoc(data.spectrum,eqe.points,kelvin):M.bandgapVoc(data.spectrum,eg,kelvin);
-      return {generation:result.jsc,j0rad:result.j0rad,basis:{eg,eqeIdentity:eqe?.identity},
-        source:eqe?"02 EQE · "+eqeName(eqe):"SQ · Eg = "+fmt(eg,3)+" eV"};
+      const result=eqe?M.eqeVoc(data.spectrum,eqe.points,kelvin):M.bandgapVoc(data.spectrum,eg,kelvin,eqePercent/100);
+      if(!(result.jsc>0))return null;
+      let basisLabel;
+      if(eqe)basisLabel="02 EQE · "+eqeName(eqe);
+      else basisLabel=(eqePercent===100?"SQ":"EQE "+fmt(eqePercent,1)+"%")+" · Eg = "+fmt(eg,3)+" eV";
+      return {generation:result.jsc,j0rad:result.j0rad,basis:opticalBasis(context),source:basisLabel};
     }catch{return null;}
   };
   inputs.radiativeAt=radiativeAt;
@@ -286,7 +340,7 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
       "扫描、测量温度或光学输入已变更。请重新确认配对。");
   }
 
-  let curveTemperature, voltageCurve;
+  let curveTemperature, curveCollection, voltageCurve;
 
   function show(metric,value,unit="V",digits=3){
     metric.textContent=fmt(value,digits)+" "+unit;
@@ -306,8 +360,9 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
     const absolute=inputs.absolutePLQY?.(), scan=inputs.illuminatedJv?.();
     const validBandgap=eg>=.5&&eg<=3;
     const validTemperature=kelvin>=200&&kelvin<=400;
-    plButton.disabled=!(validBandgap&&absolute&&absolute.temperature>=200&&absolute.temperature<=400);
-    useJv.disabled=!(scan&&validBandgap&&validTemperature);
+    const hasGeneration=(eqe?.jsc??bandResult?.jsc)>0;
+    plButton.disabled=!(hasGeneration&&absolute&&absolute.temperature>=200&&absolute.temperature<=400);
+    useJv.disabled=!(scan&&validTemperature&&hasGeneration);
     if(importedPL&&(!absolute||absolute.plqy!==importedPL.plqy||
       absolute.temperature!==importedPL.temperature||absolute.sampleId!==importedPL.sampleId||
       !sameContext(importedPL.context,context))){
@@ -325,8 +380,30 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
       metric.textContent="—";
       metric.parentElement.hidden=index!==0;
     }
+    selectedMetric.textContent="—";
+    selectedNote.textContent="";
     status.textContent="";
-    source.textContent="";
+    spectrum.hidden=!eqe;
+    spectrumVoc.textContent="—";
+    const referenceEg=referenceGap.valueAsNumber, validGap=referenceEg>=.5&&referenceEg<=3;
+    if(eqe){
+      spectrumJsc.innerHTML=fmt(eqe.jsc,4)+'<small> mA/cm²</small>';
+      source.textContent=eqeName(eqe)+" · "+fmt(eqe.points[0][0],1)+"–"+fmt(eqe.points.at(-1)[0],1)+" nm";
+      spectrumNote.textContent=!validTemperature
+        ?T("Requires a temperature of 200–400 K","Temperatur von 200–400 K erforderlich","需要 200–400 K 的电池温度")
+        :eqe.jsc>0
+          ?fmt(kelvin,2)+" K · "+T("Radiative recombination","Strahlende Rekombination","仅计辐射复合")
+          :T("Requires a positive EQE signal","Positives EQE-Signal erforderlich","需要非零 EQE 响应");
+      if(validGap)referenceGap.removeAttribute("aria-invalid");
+      else referenceGap.setAttribute("aria-invalid","true");
+      curveNote.textContent=validGap
+        ?T("The reference starts at the selected bandgap when EQE is enabled. The open circle uses the original spectrum. Other points use a shift in photon energy.",
+          "Die Referenz übernimmt beim Aktivieren der EQE die gewählte Bandlücke. Der offene Kreis beruht auf dem Originalspektrum. Die anderen Punkte nutzen eine Verschiebung der Photonenenergie.",
+          "启用时取当时所选的带隙，可改为样品的带隙。图中空心圆用原光谱计算，其余点按光子能量平移光谱。")
+        :T("Enter a reference bandgap of 0.5–3.0 eV to plot the EQE curve.",
+          "Eine Referenzbandlücke von 0,5–3,0 eV für die EQE-Kurve eingeben.",
+          "请输入 0.5–3.0 eV 的参考带隙以绘制 EQE 曲线。");
+    }
     for(const input of [temperature,plqy])input.removeAttribute("aria-invalid");
     jvSource.textContent="";
     if(measurement){
@@ -353,33 +430,54 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
       jvSource.textContent="06 · "+measurement.source+" · "+measurement.scan+
         " · Jsc "+fmt(measurement.jsc)+" mA/cm² · Pᵢₙ "+fmt(measurement.pin)+" mW/cm²"+
         (hasTemperature?" · T = "+recordedT+" K":"");
-      show(metrics[4],measurement.voc);
+      show(measuredVoltage,measurement.voc);
     }
     if(!validTemperature){
       temperature.setAttribute("aria-invalid","true");
       status.textContent=T("Enter a cell temperature of 200–400 K.","Eine Zelltemperatur von 200–400 K eingeben.","请输入 200–400 K 的电池温度。");
     }
-    let radiative, voltage;
+    let radiative, voltage, eqeCurve;
     try{
       if(validTemperature&&validBandgap){
-        radiative=M.bandgapVoc(data.spectrum,eg,kelvin);
-        if(curveTemperature!==kelvin){
-          voltageCurve=M.bandgapVocCurve(bandgapCurrents,kelvin);
-          curveTemperature=kelvin;
+        const sq=M.bandgapVoc(data.spectrum,eg,kelvin);
+        show(sqVoltage,sq.voc,"V",4);
+        if(bandResult){
+          const collection=bandResult.eqePercent/100;
+          radiative=collection===1?sq:M.bandgapVoc(data.spectrum,eg,kelvin,collection);
+          if(curveTemperature!==kelvin||curveCollection!==collection){
+            voltageCurve=M.bandgapVocCurve(bandgapCurrents,kelvin,collection);
+            curveTemperature=kelvin;
+            curveCollection=collection;
+          }
+          show(selectedMetric,radiative.voc,"V",4);
+          selectedNote.textContent="EQE "+fmt(bandResult.eqePercent,1)+"%";
+          if(collection<1){
+            const loss=fmt(1000*(sq.voc-radiative.voc),1)+"\u00a0mV";
+            selectedNote.textContent+=" · "+T("−"+loss+" vs SQ","−"+loss+" ggü. SQ","较 SQ 低 "+loss);
+          }
+          voltage={eg,voc:radiative.voc,temperature:kelvin,points:voltageCurve};
         }
-        show(metrics[0],radiative.voc);
-        voltage={eg,voc:radiative.voc,temperature:kelvin,points:voltageCurve};
       }
-      if(radiative&&eqe){
-        radiative=M.eqeVoc(data.spectrum,eqe.points,kelvin);
-        show(metrics[1],radiative.voc);
-        source.textContent=eqeName(eqe)+" · "+fmt(eqe.points[0][0],1)+"–"+fmt(eqe.points.at(-1)[0],1)+" nm";
+      if(validTemperature&&eqe){
+        radiative=eqe.jsc>0?M.eqeVoc(data.spectrum,eqe.points,kelvin):null;
+        if(radiative){
+          show(spectrumVoc,radiative.voc,"V",4);
+          if(validGap){
+            if(!shiftedEQE||shiftedEQE.identity!==eqe.identity||shiftedEQE.eg!==referenceEg||shiftedEQE.temperature!==kelvin){
+              const grid=bandgapCurrents.filter((_,index)=>index%5===0).map(([gap])=>gap);
+              const bandgaps=[...new Set([...grid,referenceEg])].sort((a,b)=>a-b);
+              const points=M.eqeVocCurve(data.spectrum,eqe.points,kelvin,referenceEg,bandgaps);
+              shiftedEQE={identity:eqe.identity,eg:referenceEg,temperature:kelvin,voc:radiative.voc,points,source:eqeName(eqe)};
+            }
+            eqeCurve=shiftedEQE;
+          }
+        }
       }
     }catch{
       status.textContent=T("Check the calculation inputs and EQE coverage.","Eingaben und EQE-Wellenlängenbereich prüfen.","请检查输入和 EQE 的波长覆盖范围。");
       radiative=null;
     }
-    drawBandgap(voltage);
+    drawBandgap(voltage,eqeCurve);
     if(!radiative)return;
 
     const percent=plqy.valueAsNumber;
@@ -389,15 +487,19 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
       status.textContent=T("Absolute PLQY must be above 0% and at most 100%.","Die absolute PLQY muss über 0 % und höchstens bei 100 % liegen.","绝对 PLQY 应大于 0% 且不超过 100%。");
       return;
     }
+    if(!(radiative.jsc>0)){
+      status.textContent=T("A positive EQE is needed to estimate iVoc.","Für die iVoc-Schätzung ist eine positive EQE nötig.","估算 iVoc 需要大于 0% 的 EQE。");
+      return;
+    }
     const implied=window.PLVoltage.calculate({mode:"absolute",temperature:kelvin,
       generation:radiative.jsc,j0rad:radiative.j0rad,plqy:percent}).voltage;
     if(!(implied>0)){
       status.textContent=T("These inputs give no positive implied Voc.","Diese Eingaben ergeben keine positive implizite Leerlaufspannung.","当前输入未得到正的内部等效电压。");
       return;
     }
-    show(metrics[2],implied);
+    show(impliedVoltage,implied);
     if(measurement){
-      show(metrics[5],1000*(implied-measurement.voc),"mV",1);
+      show(voltageDifference,1000*(implied-measurement.voc),"mV",1);
       if(measurement.temperature==null||measurement.temperature===kelvin){
         const scanSource="06 · "+measurement.source+" · "+measurement.scan+
           " · Pᵢₙ "+fmt(measurement.pin)+" mW/cm²";
@@ -418,7 +520,7 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
     terminalTitle.textContent=implied===reference.implied
       ?T("Recalculated reference Voc","Nachgerechneter Referenz-Voc","参考端电压复算")
       :T("Estimated terminal Voc","Geschätzte Leerlaufspannung an den Kontakten","器件端开路电压估算");
-    show(metrics[3],implied-reference.loss);
+    show(terminalVoltage,implied-reference.loss);
   }
 
   useJVReference.addEventListener("click",()=>{
@@ -467,10 +569,17 @@ function mountBandgapVoc(root,bandgapCurrents,drawBandgap){
   document.addEventListener("input",event=>{
     if(event.target.id==="pl-comparison-sample")update();
   });
-  useEqe.addEventListener("change",()=>{eqeStatus.textContent="";update();});
+  referenceGap.addEventListener("input",update);
+  useEqe.addEventListener("change",()=>{
+    eqeStatus.textContent="";
+    if(useEqe.checked&&referenceGap.value==="")referenceGap.value=$("bg-eg").value;
+    update();
+  });
   window.addEventListener("bandgap:eqe",()=>{
     if(useEqe.checked)eqeStatus.textContent=T("The EQE data changed. Select it again to use the new spectrum.","Die EQE-Daten wurden geändert. Erneut auswählen, um das neue Spektrum zu verwenden.","EQE 数据已变更。请重新选择后用于计算。");
     useEqe.checked=false;
+    referenceGap.value="";
+    shiftedEQE=null;
     update();
   });
   return update;
@@ -486,23 +595,28 @@ bandRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-co
   '<div class="sp-row"><button class="rl-action" type="button" data-eg="1.12">1.12 eV</button><button class="rl-action" type="button" data-eg="1.55">1.55 eV</button><button class="rl-action" type="button" data-eg="1.75">1.75 eV</button></div>'+
   '<label class="rl-check sp-wide"><input id="bg-show-table" type="checkbox" checked>Compare supplied bandgap table</label>'+
   '<p class="sp-message" id="bg-message" role="status"></p>'+
-'</div><div class="rl-output"><div class="rl-chart-heading"><div><h3 data-literal>'+T("Bandgap vs. Jsc and Voc","Bandlücke, Jsc und Voc","带隙与 Jsc、Voc")+'</h3><p class="rl-small">AM1.5G · step-edge absorption model</p></div></div>'+
-  '<dl class="rl-metrics" aria-live="polite" aria-atomic="true"><div><dt>Absorption cutoff</dt><dd id="bg-cutoff"></dd><span class="rl-metric-note">λɡ = hc / Eɡ</span></div><div><dt>Calculated Jsc</dt><dd id="bg-jsc"></dd><span class="rl-metric-note" id="bg-eqe-note"></span></div><div><dt>100% EQE limit</dt><dd id="bg-limit"></dd><span class="rl-metric-note">Same bandgap</span></div></dl>'+
-  '<p class="sp-summary" id="bg-table-value"></p><div class="sp-row"><button class="rl-action" type="button" id="bg-export">Export bandgap curve ↓</button><button class="rl-action" type="button" id="bg-to-lab">Use Jsc in resistance lab ↑</button><button class="rl-action" type="button" id="bg-voc-to-lab" data-literal disabled>'+T("Use plotted Jsc and SQ Voc in 03","Berechneten Jsc und SQ-Voc in 03 verwenden","将图中 Jsc 与 SQ Voc 用于 03")+'</button></div>'+
+'</div><div class="rl-output"><div class="rl-chart-heading"><div><h3 id="bg-voc" data-literal>'+T("Bandgap vs. Jsc and Voc","Bandlücke, Jsc und Voc","带隙与 Jsc、Voc")+'</h3><p class="rl-small">AM1.5G · step-edge absorption model</p></div></div>'+
+  '<dl class="rl-metrics sp-bandgap-metrics" aria-live="polite" aria-atomic="true">'+
+    '<div><dt>Calculated Jsc</dt><dd id="bg-jsc"></dd><span class="rl-metric-note" id="bg-eqe-note"></span></div>'+
+    '<div data-literal><dt>'+T("Estimated Voc","Geschätzter Voc","估算 Voc")+'</dt><dd id="bg-voc-selected">—</dd><span class="rl-metric-note" id="bg-voc-selected-note"></span></div>'+
+    '<div><dt>Absorption cutoff</dt><dd id="bg-cutoff"></dd><span class="rl-metric-note">λɡ = hc / Eɡ</span></div>'+
+    '<div><dt>100% EQE limit</dt><dd id="bg-limit"></dd><span class="rl-metric-note">Same bandgap</span></div></dl>'+
+  '<p class="sp-summary" id="bg-table-value"></p><div class="sp-row"><button class="rl-action" type="button" id="bg-export">Export bandgap curve ↓</button><button class="rl-action" type="button" id="bg-to-lab">Use Jsc in resistance lab ↑</button><button class="rl-action" type="button" id="bg-voc-to-lab" data-literal disabled>'+T("Use uniform-EQE Jsc and Voc in 03","Jsc und Voc bei konstanter EQE in 03 verwenden","将均匀 EQE 的 Jsc 与 Voc 用于 03")+'</button></div>'+
 '</div></div></div><details class="rl-method"><summary>Bandgap model &amp; source table</summary><p class="rl-equation">λɡ = hc / (q Eɡ) · Jsc = q ∫₂₈₀ⁿᵐ^λɡ Φ(λ) EQE dλ</p><p>EQE is constant above the bandgap and zero below it. Every collected photon contributes one electron. This is a photocurrent ceiling for the selected spectrum and EQE, not an efficiency limit or a prediction of Voc.</p><p>The solid curve integrates the supplied AM1.5G spectrum using hc/q = 1239.841984 eV·nm. The dashed curve preserves all 251 values from the supplied bandgap table (0.50–3.00 eV). That workbook contains values without calculation formulas; its full derivation cannot be recovered. It uses a different approximate wavelength conversion and stepwise current values. The two curves differ by up to 1.1194 mA/cm², which cannot be attributed to rounding alone from the available evidence. The table is an independent comparison and is not used to calibrate the integral. Between listed bandgaps, the table comparison is linearly interpolated.</p><p>Source: <span>bandgap for Jsc.xlsx, Sheet1</span>; spectral irradiance: <span>ASTMG173_and_Integrated_Jsc_modified2.xls, SMARTS2, global tilt column</span>. All 251 table rows and 2,002 spectral samples were checked against the original files. <a href="https://www.nlr.gov/grid/solar-resource/spectra-am1.5" target="_blank" rel="noopener noreferrer">ASTM G173-03 reference spectrum ↗</a>.</p></details>';
 const curve=Array.from({length:251},(_,i)=>{const eg=.5+i*.01;return [eg,M.bandgap(data.spectrum,eg).ideal];});
 const table=data.bandgapTable.map(p=>[p[0],p[2]]);
 const axes={xmin:.5,xmax:3,ymax:70,xdigits:1,ylabel:"Jsc (mA/cm²)",
   xlabel:T("Bandgap (eV)","Bandlücke (eV)","带隙（eV）"),
-  right:{ymax:3,ydigits:1,label:"SQ Voc (V)"}};
+  right:{ymax:3,ydigits:1,label:"Voc (V)"}};
 const modelLink=$("bg-voc-to-lab");
-let selectedVoltage=null;
+let selectedVoltage=null, selectedEQECurve=null;
 modelLink.title=T("03 accepts 1–60 mA/cm² and 0.2–2.0 V.",
   "03 akzeptiert 1–60 mA/cm² und 0,2–2,0 V.","03 的输入范围为 1–60 mA/cm² 和 0.2–2.0 V。");
 const updateVoc=mountBandgapVoc(bandRoot,curve,drawBandgap);
 
-function drawBandgap(voltage){
+function drawBandgap(voltage,eqeCurve){
   selectedVoltage=voltage;
+  selectedEQECurve=eqeCurve;
   const limits=window.SolarResistance?.limits;
   modelLink.disabled=!(limits&&bandResult&&voltage&&
     [["voc",voltage.voc],["jph",bandResult.jsc]].every(([key,value])=>value>=limits[key][0]&&value<=limits[key][1]));
@@ -510,24 +624,34 @@ function drawBandgap(voltage){
   $("bg-curve-legend").hidden=!bandResult;
   $("bg-table-legend").hidden=!showTable;
   $("bg-voc-legend").hidden=!voltage;
+  $("bg-eqe-voc-legend").hidden=!eqeCurve;
   if(bandResult){
-    const percent=$("bg-collection").valueAsNumber;
+    const percent=bandResult.eqePercent;
     if(showTable)series.push({points:table,dashed:true});
     series.push({points:curve.map(([eg,jsc])=>[eg,jsc*percent/100])});
-    $("bg-curve-legend").textContent=T("Integrated Jsc","Integrierter Jsc","光谱积分 Jsc")+" · EQE "+fmt(percent,0)+"%";
+    $("bg-curve-legend").textContent=T("Integrated Jsc","Integrierter Jsc","光谱积分 Jsc")+" · EQE "+fmt(percent,1)+"%";
   }
   if(voltage){
     series.push({points:voltage.points,secondary:true});
-    $("bg-voc-legend").textContent="SQ Voc · "+fmt(voltage.temperature,2)+" K";
+    $("bg-voc-legend").textContent=T("Uniform EQE Voc (fixed J₀,rad)","Voc bei konstanter EQE (festes J₀,rad)","均匀 EQE Voc（固定 J₀,rad）")+
+      " · "+fmt(voltage.temperature,2)+" K";
+  }
+  let rightMax=axes.right.ymax;
+  if(eqeCurve){
+    series.push({points:eqeCurve.points,secondary:true,reference:[eqeCurve.eg,eqeCurve.voc]});
+    $("bg-eqe-voc-legend").textContent=T("Imported EQE Voc (energy shift)","Voc aus importierter EQE (Energieverschiebung)","导入 EQE 的 Voc（光谱平移）")+
+      " · "+fmt(eqeCurve.temperature,2)+" K";
+    for(const [,voc] of eqeCurve.points)if(voc>rightMax)rightMax=Math.ceil(voc);
   }
   $("bg-combined-plot").hidden=!series.length;
   if(!series.length){
     $("bg-chart").replaceChildren();
     return;
   }
-  chart("bg-chart",series,axes,{
-    x:bandResult?.eg??voltage.eg,primary:bandResult?.jsc,secondary:voltage?.voc
-  });
+  const plotAxes={...axes,right:{...axes.right,ymax:rightMax}};
+  chart("bg-chart",series,plotAxes,bandResult?{
+    x:bandResult.eg,primary:bandResult.jsc,secondary:voltage?.voc
+  }:null);
 }
 
 function updateBandgap(){
@@ -547,7 +671,9 @@ function updateBandgap(){
     $("bg-export").disabled=false;$("bg-to-lab").disabled=bandResult.jsc<1||bandResult.jsc>60;
   }catch(e){bandResult=null;$("bg-message").textContent=e.message;$("bg-message").dataset.error="true";$("bg-export").disabled=true;$("bg-to-lab").disabled=true;
     $("bg-eg").setAttribute("aria-invalid",String(!Number.isFinite(eg)||eg<.5||eg>3));$("bg-collection").setAttribute("aria-invalid",String(!Number.isFinite(percent)||percent<0||percent>100));
-    ["bg-cutoff","bg-jsc","bg-limit"].forEach(id=>$(id).textContent="—");$("bg-table-value").textContent="Enter valid inputs to calculate.";
+    ["bg-cutoff","bg-jsc","bg-limit"].forEach(id=>$(id).textContent="—");
+    $("bg-eqe-note").textContent="";
+    $("bg-table-value").textContent="Enter valid inputs to calculate.";
   }
   updateVoc();
 }
@@ -563,8 +689,23 @@ modelLink.addEventListener("click",()=>{
 });
 $("bg-export").addEventListener("click",()=>{
   if(!bandResult)return;
-  const fraction=$("bg-collection").valueAsNumber/100;
-  saveCSV("bandgap-jsc.csv",[["spectrum",data.meta.spectrum],["uniform_EQE_percent",fraction*100],["method","Piecewise-linear irradiance, exact per-interval Simpson integration"],[],["bandgap_eV","cutoff_nm","ideal_Jsc_mA_cm2","selected_EQE_Jsc_mA_cm2","supplied_table_Jsc_mA_cm2"],...curve.map(p=>[p[0],M.HC_EV_NM/p[0],p[1],p[1]*fraction,M.interpolate(table,p[0])])]);
+  const fraction=bandResult.eqePercent/100;
+  saveCSV("bandgap-jsc.csv",[
+    ["spectrum",data.meta.spectrum],["uniform_EQE_percent",bandResult.eqePercent],
+    ["method","Piecewise-linear irradiance, exact per-interval Simpson integration"],
+    ["temperature_K",selectedVoltage?.temperature??""],
+    ["Voc_basis","EQE-scaled photocurrent at fixed radiative dark current"],[],
+    ["bandgap_eV","cutoff_nm","ideal_Jsc_mA_cm2","selected_EQE_Jsc_mA_cm2","supplied_table_Jsc_mA_cm2","selected_EQE_Voc_V"],
+    ...curve.map(([eg,jsc],index)=>[eg,M.HC_EV_NM/eg,jsc,jsc*fraction,M.interpolate(table,eg),
+      selectedVoltage?.points[index][1]??""]),
+    ...(selectedEQECurve?[
+      [],["EQE_source",/^\s*[=+@-]/.test(selectedEQECurve.source)?"'"+selectedEQECurve.source:selectedEQECurve.source],
+      ["EQE_reference_bandgap_eV",selectedEQECurve.eg],
+      ["EQE_temperature_K",selectedEQECurve.temperature],
+      ["EQE_curve_method","Photon-energy shift of imported EQE samples by Eg minus the reference Eg"],
+      ["bandgap_eV","EQE_shifted_Voc_V"],...selectedEQECurve.points.map(([eg,voc])=>[eg,voc??""])
+    ]:[])
+  ]);
 });
 updateBandgap();
 }
@@ -574,7 +715,9 @@ let result=null,eqePoints=null,source="example",sourceName="",plot="eqe",fileVer
 const pastedSource=()=>document.documentElement.lang==='de'?"Eingefügte EQE-Daten":document.documentElement.lang.startsWith('zh')?"粘贴的 EQE 数据":"Pasted EQE data";
 const sourceLabel=()=>source==="example"?"Supplied workbook example":sourceName||pastedSource();
 window.BandgapInputs=window.BandgapInputs||{};
-window.BandgapInputs.eqe=()=>eqePoints?{points:eqePoints,identity:eqePoints,source:sourceLabel()}:null;
+window.BandgapInputs.eqe=()=>eqePoints&&result
+  ?{points:eqePoints,identity:eqePoints,source:sourceLabel(),jsc:result.jsc}
+  :null;
 eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-controls">'+
   '<h3>Your EQE spectrum</h3><p class="rl-small">Paste two columns from Excel or import a CSV, TSV or TXT file. Wavelength must be in nm.</p>'+
   '<div class="rl-field sp-wide calc-import"><div class="calc-import-toolbar"><button id="eq-file-choose" type="button" class="rl-action" aria-describedby="eq-file-name">Choose file</button><button type="button" class="rl-action" id="eq-example">Load workbook example</button><button type="button" class="rl-action calc-quiet" id="eq-clear">Clear</button></div><p id="eq-file-name" class="rl-small calc-file-status" role="status">No file selected</p><label for="eq-data">Wavelength (nm) &amp; EQE</label><textarea id="eq-data" spellcheck="false" aria-describedby="eq-format eq-message" placeholder="Wavelength_nm,EQE_percent&#10;400,80&#10;500,90&#10;600,85"></textarea><p class="rl-small" id="eq-format">Two columns separated by tabs, commas, semicolons or spaces. An optional wavelength / EQE header is accepted. Use a decimal point.</p><input id="eq-file" type="file" hidden aria-label="Import EQE text data" accept=".csv,.tsv,.txt,text/csv,text/plain"></div>'+
@@ -586,7 +729,8 @@ eqRoot.innerHTML='<div class="sp-shell"><div class="rl-main"><div class="rl-cont
   svg("eq-chart","EQE spectrum or its cumulative integrated short-circuit current")+
   '<dl class="rl-metrics" aria-live="polite" aria-atomic="true"><div><dt>Integrated Jsc</dt><dd id="eq-jsc"></dd><span class="rl-metric-note">AM1.5G</span></div><div><dt>Integration interval</dt><dd id="eq-span"></dd><span class="rl-metric-note">nm · supplied data overlap</span></div><div><dt>Photon-weighted EQE</dt><dd id="eq-weighted"></dd><span class="rl-metric-note">Within this interval</span></div></dl>'+
   '<p class="sp-summary" id="eq-coverage"></p><p class="sp-caption" id="eq-legacy"></p>'+
-  '<div class="sp-row"><button type="button" class="rl-action" id="eq-export">Export integral data ↓</button><button type="button" class="rl-action" id="eq-to-lab">Use Jsc in resistance lab ↑</button></div>'+
+  '<div class="sp-row"><button type="button" class="rl-action" id="eq-export">Export integral data ↓</button><button type="button" class="rl-action" id="eq-to-lab">Use Jsc in resistance lab ↑</button>'+
+  '<button type="button" class="rl-action" id="eq-to-bandgap" data-literal disabled>'+T("View Jsc and radiative Voc in 01","Jsc und Strahlungs-Voc in 01 anzeigen","在 01 查看 Jsc 与辐射 Voc")+'</button></div>'+
   '<p class="sp-caption">Your imported or pasted EQE stays in this browser.</p>'+
 '</div></div></div><details class="rl-method"><summary>EQE integration, coverage &amp; units</summary>'+
   '<p class="rl-equation">Jsc = q ∫ Φ(λ) EQE(λ) dλ = (q/hc) ∫ Eλ(λ) λ EQE(λ) dλ</p>'+
@@ -601,7 +745,7 @@ function empty(message,error=false){
   $("eq-data").setAttribute("aria-invalid",String(error));
   ["eq-jsc","eq-span","eq-weighted"].forEach(id=>$(id).textContent="—");
   $("eq-chart").innerHTML="";$("eq-coverage").textContent="";$("eq-legacy").textContent="";$("eq-source").textContent="No current result";
-  $("eq-export").disabled=true;$("eq-to-lab").disabled=true;
+  $("eq-export").disabled=true;$("eq-to-lab").disabled=true;$("eq-to-bandgap").disabled=true;
 }
 function drawEQE(){
   if(!result)return;
@@ -630,6 +774,7 @@ function calculate(){
     $("eq-coverage").textContent="Measured-range integral: "+fmt(result.lo,1)+"–"+fmt(result.hi,1)+" nm. EQE is assumed zero outside the supplied span."+(endpoint?" At least one endpoint exceeds 1%; unmeasured response may add current.":"")+(outside?" Data outside 280–4000 nm has no reference irradiance and is excluded.":"");
     $("eq-legacy").textContent=source==="example"?"Workbook cached Jsc: "+fmt(data.meta.legacyJsc_mA_cm2,4)+" mA/cm². Full-spectrum difference: +"+fmt(result.jsc-data.meta.legacyJsc_mA_cm2,4)+" mA/cm² ("+fmt((result.jsc/data.meta.legacyJsc_mA_cm2-1)*100,4)+"%).":"";
     $("eq-export").disabled=false;$("eq-to-lab").disabled=result.jsc<1||result.jsc>60;
+    $("eq-to-bandgap").disabled=!$("bg-voc-use-eqe");
     drawEQE();
     window.dispatchEvent(new Event("bandgap:eqe"));
   }catch(e){empty(e.message,true);}
@@ -654,6 +799,16 @@ $("eq-file").addEventListener("change",async()=>{
 });
 eqRoot.querySelectorAll("[data-eq-plot]").forEach(b=>b.addEventListener("click",()=>{plot=b.dataset.eqPlot;drawEQE();}));
 $("eq-to-lab").addEventListener("click",()=>{if(result)transfer(result.jsc,$("eq-message"));});
+$("eq-to-bandgap").addEventListener("click",()=>{
+  const useSpectrum=$("bg-voc-use-eqe");
+  if(!result||!useSpectrum||useSpectrum.disabled)return;
+  useSpectrum.checked=true;
+  useSpectrum.dispatchEvent(new Event("change",{bubbles:true}));
+  selectTool("bandgap-jsc",true);
+  history.replaceState(null,"","#bg-voc");
+  const target=$("bg-eqe-voc-legend").hidden?$("bg-eqe-spectrum"):$("bg-combined-plot");
+  target.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
 $("eq-export").addEventListener("click",()=>{
   if(!result)return;
   saveCSV("eqe-integrated-jsc.csv",[["spectrum",data.meta.spectrum],["source",/^\s*[=+@-]/.test(sourceLabel())?"'"+sourceLabel():sourceLabel()],["Jsc_mA_cm2",result.jsc],["interval_nm",result.lo,result.hi],["assumption","EQE zero outside supplied span; no spectrum renormalization"],[],["wavelength_nm","EQE_percent","irradiance_W_m2_nm","spectral_current_mA_cm2_nm","cumulative_Jsc_mA_cm2"],...result.points.map(p=>[p.w,p.eqe*100,p.irradiance,p.density,p.cumulative])]);
