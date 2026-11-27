@@ -31,27 +31,27 @@
   <link rel="stylesheet" href="./resistance-lab.css?v=e8a22ecb0425">
   <script defer src="./csv-export.js?v=f957c0c2aa8f"></script>
   <script defer src="./resistance-model.js?v=f75575c6beba"></script>
-  <script defer src="./resistance-lab.js?v=2f05d6a8a258"></script>
-  <link rel="stylesheet" href="./spectral-tools.css?v=d1590d800124">
+  <script defer src="./resistance-lab.js?v=25dd1faf8552"></script>
+  <link rel="stylesheet" href="./spectral-tools.css?v=5063155383a2">
   <script defer src="./solar-spectrum.js?v=75fdae03298f"></script>
-  <script defer src="./spectral-model.js?v=5e9f2d489d0e"></script>
-  <script defer src="./spectral-tools.js?v=06876d4fd153"></script>
-  <link rel="stylesheet" href="./pl-voltage.css?v=1bfdd2266ac3">
+  <script defer src="./spectral-model.js?v=b521c0e92a4e"></script>
   <script defer src="./pl-voltage-model.js?v=77e765598672"></script>
-  <script defer src="./pl-voltage.js?v=edb0b3906187"></script>
+  <script defer src="./spectral-tools.js?v=8937afc306cc"></script>
+  <link rel="stylesheet" href="./pl-voltage.css?v=1bfdd2266ac3">
+  <script defer src="./pl-voltage.js?v=048694743dcf"></script>
   <link rel="stylesheet" href="./trpl.css?v=86bdd44f512e">
   <script defer src="./trpl-model.js?v=489c4a5b5a81"></script>
   <script defer src="./trpl.js?v=9fc6e61fcebc"></script>
   <link rel="stylesheet" href="./bandgap-tools.css?v=fa34a63f3fa5">
   <script defer src="./bandgap-model.js?v=0b69599a1114"></script>
-  <script defer src="./bandgap-tools.js?v=b0b7fdd01a85"></script>
+  <script defer src="./bandgap-tools.js?v=dd54475083bd"></script>
   <link rel="stylesheet" href="./pl-pseudo-jv.css?v=9f684fd9dd46">
   <script defer src="./pl-pseudo-jv-model.js?v=a3b6ccb389dc"></script>
   <script defer src="./pl-pseudo-jv.js?v=584c2c3fe7b2"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Weiwei Zuo","honorificPrefix":"Dr.-Ing.","jobTitle":"Postdoctoral Researcher","affiliation":{"@type":"Organization","name":"Institute for Photovoltaics, University of Stuttgart","url":"https://www.ipv.uni-stuttgart.de/"},"sameAs":["https://www.ipv.uni-stuttgart.de/en/institute/team/Zuo/","https://scholar.google.com/citations?user=ynl-iTQAAAAJ&hl=en","https://orcid.org/0000-0002-9135-1628"],"email":"weiwei.zuo@ipv.uni-stuttgart.de"}</script>
 <link rel="stylesheet" href="./calculator-layout.css?v=8dc3f1fa5ef8">
 <script defer src="./measurement-model.js?v=73c1d2336c94"></script>
-<script defer src="./measurement-tools.js?v=5c8ddfcd952b"></script>
+<script defer src="./measurement-tools.js?v=588a5b37761f"></script>
 <script defer src="./electrical-model.js?v=c300a367e66d"></script>
 <script defer src="./electrical-tools.js?v=50d7bd044545"></script>
 <script defer src="./characterization-link.js?v=6464227fb08e"></script>
@@ -124,7 +124,7 @@
       <div class="section-heading"><div><p class="section-kicker">INTERAKTIVE PHOTOVOLTAIK</p><h2 id="resistance-title">Solarzellen- <em>Rechner.</em></h2></div></div>
       <p class="resistance-intro">Analysieren Sie Solarzellengrenzen, Spektren, J–V-Kurven, Impedanz und raumladungsbegrenzten Strom.</p>
       <div class="pv-tabs" role="tablist" aria-label="Solarzellen-Rechner">
-        <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPEKTRALGRENZE</span>Bandlücke → Jsc</button>
+        <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPEKTRALGRENZE</span>Bandlücke → Jsc und Voc</button>
         <button id="pv-tab-eqe" type="button" role="tab" data-pv-tool="eqe-integration" aria-selected="false" aria-controls="eqe-integration" tabindex="-1"><span>02 / SPEKTRALE ANTWORT</span>EQE-Integration</button>
         <button id="pv-tab-resistance" type="button" role="tab" data-pv-tool="solar-cell-tools" aria-selected="true" aria-controls="resistance-panel"><span>03 / KOMBINIERT</span>Rechner für Serien- und Parallelwiderstand</button>
         <button id="pv-tab-pl" type="button" role="tab" data-pv-tool="pl-voltage" aria-selected="false" aria-controls="pl-voltage" tabindex="-1"><span>04 / LUMINESZENZ</span>PL → Interne Spannung</button>

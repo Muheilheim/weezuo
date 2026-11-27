@@ -14,7 +14,7 @@ const words={
  calc:T('Estimate from spectrum','Aus Spektrum schätzen','从光谱估算'),
  invalid:T('Settings changed. Recalculate.','Einstellungen geändert. Neu berechnen.','数据或设置已变化，请重新计算。'),
  export:T('Export estimate & curve ↓','Schätzung und Kurve exportieren ↓','导出估算结果与曲线 ↓'),
- use:T('Use in bandgap → Jsc','Für Bandlücke → Jsc verwenden','用于带隙 → Jsc'),
+ use:T('Use for Jsc and Voc','Für Jsc und Voc verwenden','用于计算 Jsc 与 Voc'),
  compare:T('Compare methods','Methoden vergleichen','查看各方法对照'),
  empty:T('No current estimate','Keine aktuelle Schätzung','暂无有效估算'),
  sample:T('Sample / condition','Probe / Bedingung','样品／测试条件'),

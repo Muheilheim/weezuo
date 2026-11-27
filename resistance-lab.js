@@ -3,7 +3,7 @@
   const root = document.getElementById("resistance-calculator");
   if (!root || !window.SolarResistance) return;
   const lang = document.documentElement.lang, T = (en, de, zh) => lang === "de" ? de : lang.startsWith("zh") ? zh : en;
-  let measurement = null, fittedIdeality = null, sunsIdeality = null;
+  let measurement = null, fittedIdeality = null, sunsIdeality = null, bandgapReference = null;
   const electricalSnapshots = {eis:null,sclc:null};
   const defaults = {voc: 1.2, jph: 25, n: 1.5, temperature: 300, rs: 2, rsh: 2000, pin: 100};
   const highFF = {voc: 1.2, jph: 25, n: 1, temperature: 300, rs: 0.1, rsh: 100000, pin: 100};
@@ -71,7 +71,7 @@
       '<p class="rl-small rl-target-note">FF₀ is the resistance-free limit of this constant-n model, not a universal perovskite limit or a measured pseudo-FF. Losses and margins are in percentage points (pp).</p></section>' +
       '<section class="rl-device" aria-labelledby="rl-device-title"><h3 id="rl-device-title">Device at 1 cm²</h3><dl class="rl-device-metrics"><div><dt>Short-circuit current Iₛ꜀</dt><dd id="rl-device-isc"></dd></div><div><dt>Maximum power Pₘₐₓ</dt><dd id="rl-device-pmax"></dd></div><div><dt>Device Rₛ</dt><dd id="rl-device-rs"></dd></div><div><dt>Device Rₛₕ</dt><dd id="rl-device-rsh"></dd></div></dl><p class="rl-small" id="rl-device-input"></p><p class="rl-small rl-area-assumption">At fixed current density and resistances in Ω·cm², area scales total current and power; FF and efficiency stay the same. This uniform single-cell model does not predict extra losses caused by scaling up a device.</p></section>' +
       '<div class="rl-quantity-switch" role="group" aria-label="Result units"><button type="button" data-quantity="density" aria-pressed="true">Per cm²</button><button type="button" data-quantity="total" aria-pressed="false">Whole device</button></div>' +
-      '<div class="rl-chart-heading"><div><h3 id="rl-chart-title">Current density–voltage</h3><p class="rl-small" id="rl-context"></p></div><div class="rl-plot-switch" role="group" aria-label="Chart type"><button type="button" data-plot="jv" aria-pressed="true">J–V</button><button type="button" data-plot="pv" aria-pressed="false">P–V</button></div></div>' +
+      '<div class="rl-chart-heading"><div><h3 id="rl-chart-title">Current density–voltage</h3><p class="rl-small" id="rl-context"></p><p class="rl-small" id="rl-bandgap-reference" data-literal hidden></p></div><div class="rl-plot-switch" role="group" aria-label="Chart type"><button type="button" data-plot="jv" aria-pressed="true">J–V</button><button type="button" data-plot="pv" aria-pressed="false">P–V</button></div></div>' +
       '<svg class="rl-chart" id="rl-chart" viewBox="0 0 640 360" role="img" aria-labelledby="rl-svg-title rl-svg-desc"><title id="rl-svg-title">Solar-cell current density versus voltage</title><desc id="rl-svg-desc">Calculated curves in the power-generating quadrant. Exact values are listed in the comparison table below.</desc><g id="rl-chart-content"></g></svg>' +
       '<div class="rl-legend" id="rl-legend" aria-label="Curve legend"></div>' +
       '<div class="rl-probe"><div class="rl-probe-top"><label for="rl-probe">Inspect voltage on the curve</label><output id="rl-probe-value" for="rl-probe"></output></div><input id="rl-probe" type="range" min="0" max="1.15" step="0.001" value="0.9"></div>' +
@@ -200,7 +200,17 @@
     $('#rl-dark-rsh').disabled=!valid||!d.zero.usable||!darkInRange('rsh',d.zero.resistance);
     $('#rl-dark-n').disabled=!valid||!d.diode.usable||!darkInRange('n',d.diode.n)||!darkInRange('temperature',d.parameters.temperature);
   }
-  window.ResistanceLab = {compareMeasurement(scan, source) {
+  window.ResistanceLab = {applyBandgapReference({eg, voc, jph, temperature, eqePercent}) {
+    const next = {...parameters, voc, jph, temperature, pin: 100, idealityMode: idealityMode(),
+      n: $("#rl-n").valueAsNumber, rs: $("#rl-rs").valueAsNumber,
+      rsh: $("#rl-infinite").checked ? Infinity : $("#rl-rsh").valueAsNumber};
+    if (!Number.isFinite(eg) || !inRange($("#rl-area").valueAsNumber, SolarResistance.areaLimits)) return false;
+    try { SolarResistance.validate(next); } catch { return false; }
+    bandgapReference = {eg, voc, jph, temperature, eqePercent, pin: 100};
+    $("#rl-preset").value = "custom";
+    setControls(next);
+    return true;
+  }, compareMeasurement(scan, source) {
     if (!scan || !Array.isArray(scan.points) || scan.points.length > 20000 || !scan.points.every(p => p.length === 2 && p.every(Number.isFinite))) return false;
     measurement = {...scan, source: String(source), points: scan.points.map(p => [...p]), parameters: {...scan.parameters}, rs: {...scan.rs}, rsh: {...scan.rsh}, warnings: [...scan.warnings]};
     fittedIdeality = null;
@@ -427,8 +437,20 @@
     const nInput = $("#rl-n"), n = nInput.valueAsNumber;
     [nInput.min, nInput.max] = boundsFor("n");
     $("#rl-n-warning").hidden = !inRange(n, boundsFor("n")) || inRange(n, SolarResistance.limits.n);
-    if (!readInputs()) {updateTarget(); updateMeasurement(); updateElectrical(); updateDark(); return;}
+    if (!readInputs()) {$("#rl-bandgap-reference").hidden = true; updateTarget(); updateMeasurement(); updateElectrical(); updateDark(); return;}
     const p = {...parameters, rsh: $("#rl-infinite").checked ? Infinity : parameters.rsh};
+    const referenceNote = $("#rl-bandgap-reference");
+    if (bandgapReference && ["voc", "jph", "temperature", "pin"].some(key => bandgapReference[key] !== p[key])) {
+      bandgapReference = null;
+    }
+    referenceNote.hidden = !bandgapReference;
+    if (bandgapReference) {
+      referenceNote.textContent = T("01 · Jsc and SQ Voc", "01 · Jsc und SQ-Voc", "01 · 图中 Jsc 与 SQ Voc") +
+        " · Eg = " + fmt(bandgapReference.eg, 3) + " eV · AM1.5G" +
+        (Number.isFinite(bandgapReference.eqePercent)
+          ? " · " + T("Uniform EQE", "Konstante EQE", "均匀 EQE") + " " + fmt(bandgapReference.eqePercent, 1) + "%"
+          : "");
+    }
     results = SolarResistance.compare(p);
     const active = results[mode], ideal = results.ideal, device = SolarResistance.deviceValues(active, area), scale = displayScale();
     $("#rl-context").textContent = names[mode] + " · " + fmt(p.temperature, 2) + " K · n = " + fmt(p.n, 3) + " · A = " + areaText() + " cm²";
@@ -563,6 +585,11 @@
     const rows = [
       ["Solar cell resistance lab", "Steady-state single-diode model"],
       ["selected_model", mode], ["reference_Voc_V", p.voc], ["photocurrent_mA_cm2", p.jph],
+      ...(bandgapReference ? [
+        ["module_01_bandgap_eV", bandgapReference.eg],
+        ["module_01_spectrum", "AM1.5G"],
+        ["module_01_uniform_EQE_percent", bandgapReference.eqePercent ?? ""]
+      ] : []),
       ["n", p.n], ["ideality_mode", p.idealityMode], ["temperature_K", p.temperature], ["series_ohm_cm2", p.rs], ["shunt_ohm_cm2", p.rsh === Infinity ? "Infinity" : p.rsh],
       ["incident_power_mW_cm2", p.pin], ["J0_A_cm2", results.ideal.j0],
       ["active_area_cm2", area], ["display_quantity", quantity],

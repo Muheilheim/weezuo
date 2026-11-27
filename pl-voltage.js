@@ -22,7 +22,10 @@
     '<fieldset id="pl-absolute-fields" hidden disabled><legend class="sr-only">Absolute PL calibration</legend>' +
     field("plqy", "External PLQY (%)", "1", 'min="0" max="100" required') +
     field("generation", "Photogenerated current JG (mA/cm²)", "25", 'min="0" required') +
-    field("j0rad", "Radiative dark current J0,rad (A/cm²)", "1e-23", 'min="0" required') + '</fieldset>' +
+    field("j0rad", "Radiative dark current J0,rad (A/cm²)", "1e-23", 'min="0" required') +
+     '<button type="button" class="rl-action" id="pl-use-bandgap" data-literal>' +
+       T("Use optical inputs from 01","Optische Eingaben aus 01 übernehmen","使用模块 01 的光学参数") + '</button>' +
+     '<p class="rl-small sp-voc-status" id="pl-bandgap-source" data-literal role="status"></p>' + '</fieldset>' +
     '<fieldset id="pl-terminal-fields"><legend class="sr-only">Terminal comparison</legend>' +
     field("terminal-voltage", "Measured terminal voltage (V, optional)", "") + '</fieldset>' +
     '<p class="rl-small calc-auto-note" data-literal>'+T('Calibration parameters update voltage results automatically.','Kalibrierparameter aktualisieren die Spannungsergebnisse automatisch.','标定参数修改后自动更新电压结果。')+'</p><p class="sp-message" id="pl-message" role="status"></p><div class="sp-row"><button type="button" class="rl-action" id="pl-reset">Reset PL example</button></div>' +
@@ -52,6 +55,7 @@
   const $ = id => root.querySelector("#pl-" + id);
   const number = id => $(id).value.trim() === "" ? NaN : Number($(id).value);
   let result = null, parameters = null, relation = null, axis = "log";
+  let copiedReference = null;
   let spectra = null, integrals = null, batch = null, fileVersion = 0, importError = "";
   window.BandgapInputs=window.BandgapInputs||{};
   window.BandgapInputs.pl=()=>spectra&&!importError?{points:spectra.points.map(row=>[row[0],row[Number($("sample").value)+1]]),identity:spectra,source:spectra.names[Number($("sample").value)],background:number("baseline")}:null;
@@ -223,12 +227,54 @@
     probe(logPL);
   });
   root.querySelectorAll("[data-pl-axis]").forEach(button => button.addEventListener("click", () => { axis = button.dataset.plAxis; drawChart(); }));
+  function renderBandgapSource() {
+    if (!copiedReference) return;
+    const {basis, source, temperature, generation} = copiedReference;
+    const current = window.BandgapInputs.opticalBasis?.();
+    const outdated = basis && current && (current.eg !== basis.eg || current.eqeIdentity !== basis.eqeIdentity);
+    const label = number("generation") === generation
+      ? T("Copied from 01", "Übernommen aus 01", "复制自 01")
+      : T("J0,rad copied from 01", "J0,rad aus 01 übernommen", "J0,rad 复制自 01");
+    $("bandgap-source").textContent = label + " · " + source + " · " + temperature + " K" + (outdated ? T(
+      ". The optical inputs in 01 changed. Copy them again to update these values.",
+      ". Die optischen Eingaben in 01 wurden geändert. Eingaben erneut übernehmen.",
+      "。01 的光学输入已变更，请重新获取以更新数值。") : "");
+  }
+  window.addEventListener("bandgap:optics", renderBandgapSource);
   $("form").addEventListener("submit", event => event.preventDefault());
-  $("form").addEventListener("input", event => { if (!["pl-data", "pl-file"].includes(event.target.id)) calculate(); });
+  $("form").addEventListener("input", event => {
+    if (event.target.id === "pl-temperature" && copiedReference && number("temperature") !== copiedReference.temperature) {
+      copiedReference = null;
+      $("j0rad").value = "";
+      $("bandgap-source").textContent = T("Temperature changed. Copy the optical inputs again or enter J0,rad at this temperature.",
+        "Temperatur geändert. Optische Eingaben erneut übernehmen oder J0,rad bei dieser Temperatur eingeben.",
+        "温度已变更。请重新获取光学参数，或输入该温度下的 J0,rad。");
+    }
+    if (event.target.id === "pl-generation") renderBandgapSource();
+    if (event.target.id === "pl-j0rad") {
+      copiedReference = null;
+      $("bandgap-source").textContent = "";
+    }
+    if (!["pl-data", "pl-file"].includes(event.target.id)) calculate();
+  });
+  $("use-bandgap").addEventListener("click", () => {
+    const reference = window.BandgapInputs.radiativeAt?.(number("temperature"));
+    if (!reference) {
+      $("bandgap-source").textContent = T("Check the bandgap, selected EQE and temperature (200–400 K).",
+        "Bandlücke, ausgewählte EQE und Temperatur (200–400 K) prüfen.",
+        "请检查带隙、选用的 EQE 和测量温度（200–400 K）。");
+      return;
+    }
+    $("generation").value = reference.generation;
+    $("j0rad").value = reference.j0rad;
+    copiedReference = {...reference, temperature: number("temperature")};
+    renderBandgapSource();
+    calculate();
+  });
   $("sample").addEventListener("change", calculate);
   $("reference-sample").addEventListener("change", () => { if (spectra && $("mode").value === "reference") $("reference-voltage").value = ""; calculate(); });
   $("mode").addEventListener("change", () => { modeFields(); calculate(); });
-  $("reset").addEventListener("click", () => { clearImport(); $("form").reset(); modeFields(); calculate(); });
+  $("reset").addEventListener("click", () => { clearImport(); $("form").reset(); copiedReference = null; $("bandgap-source").textContent = ""; modeFields(); calculate(); });
   $("export").addEventListener("click", () => {
     if (!result) return;
     const keys = parameters.mode === "absolute" ? ["plqy", "generation", "j0rad"] : ["intensity", "referenceIntensity", "background", ...(parameters.mode === "reference" ? ["referenceVoltage"] : [])];
@@ -236,6 +282,15 @@
     const importedRows = batch ? [["PL_source", csvLabel($("file-name").textContent)], ["integration_nm", number("wave-min"), number("wave-max")], ["constant_spectral_background_au", number("baseline")], ["reference_sample", csvLabel(spectra.names[Number($("reference-sample").value)])], ["method", "Piecewise-linear spectra; trapezoidal integral; no negative-value clipping or detector-response correction"], [], ["sample", "raw_integrated_PL_au", "background_subtracted_integrated_PL_au", "delta_Vint_mV", "Vint_V", "status"], ...batch.map(item => [csvLabel(item.name), item.integral, item.corrected, item.error ? "" : item.delta * 1000, item.voltage ?? "", item.error || "valid"]), []] : [];
     const rows = [["method", parameters.mode], ["temperature_K", parameters.temperature], ...keys.map(key => [key, parameters[key]]), ["JG_unit", "mA/cm2"], ["J0rad_unit", "A/cm2"], ["PLQY_unit", "percent"], ["referenceVoltage_unit", "V"], ["terminalVoltage_V", parameters.mode === "relative" ? "" : parameters.terminalVoltage ?? ""], ["Vint_V", result.voltage ?? ""], ["QFLS_eV", result.qfls ?? ""], ["delta_Vint_V", result.delta ?? ""], ["nonradiative_deficit_V", result.nonradiativeLoss ?? ""], ["Vint_minus_terminal_V", result.difference ?? ""], ["assumption", "Boltzmann approximation; consistent temperature and optical response; Vref is internal QFLS/q"], [], ...importedRows, ["log10_PL_background_corrected_au_or_PLQY_percent", parameters.mode === "relative" ? "delta_Vint_mV" : "Vint_V"], ...relation.points]; window.CharacterizationLink?.appendRows("pl",rows);window.DarkJVLab?.appendRows("pl",rows); window.CSVExport.save("pl-internal-voltage.csv",rows);
   });
+  window.BandgapInputs.absolutePLQY = () => result && parameters.mode === "absolute"
+    ? {plqy: parameters.plqy, temperature: parameters.temperature,
+       sampleId: document.getElementById("pl-comparison-sample")?.value.trim() || ""}
+    : null;
+  window.BandgapInputs.plVoltagePair = () => result && result.voltage > 0 && parameters.terminalVoltage > 0
+    ? {implied:result.voltage, voc:parameters.terminalVoltage, temperature:parameters.temperature,
+       plqy:parameters.mode === "absolute" ? parameters.plqy : null,
+       sampleId:document.getElementById("pl-comparison-sample")?.value.trim() || ""}
+    : null;
   window.PLVoltageLab={comparisonSummary(){if(!result||$("export").disabled)return null;return {source:$("file-name").textContent,sample:spectra?spectra.names[Number($("sample").value)]:"Manual PL inputs",mode:parameters.mode,temperature:parameters.temperature,delta:result.delta,voltage:result.voltage,qfls:result.qfls};}};
   modeFields(); calculate();
 })();

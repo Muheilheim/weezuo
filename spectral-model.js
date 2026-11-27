@@ -1,6 +1,7 @@
 (function(root){
   "use strict";
   const Q=1.602176634e-19,H=6.62607015e-34,C=299792458;
+  const KB=1.380649e-23;
   const HC_EV_NM=H*C/Q*1e9, FACTOR=Q/(H*C)*1e-10;
   function interpolate(points,x){
     if(x<points[0][0] || x>points.at(-1)[0]) return 0;
@@ -39,6 +40,71 @@
     const result=integrate(spectrum,spectrum[0][0],cutoff);
     return {eg,cutoff,ideal:result.jsc,jsc:result.jsc*collection};
   }
+
+  function checkedTemperature(temperature){
+    if(!Number.isFinite(temperature)||temperature<200||temperature>400){
+      throw Error("Cell temperature must be 200–400 K.");
+    }
+    return KB*temperature/Q;
+  }
+
+  // Integrate in x = photon energy / (kBT). Short-wavelength terms beyond x=700
+  // contribute negligibly. Subdivision resolves the exponential on wide EQE intervals.
+  function integrateBlackbody(lo,hi,response){
+    const intervals=Math.ceil(hi-lo);
+    if(intervals<=0)return 0;
+    const halfWidth=(hi-lo)/(2*intervals), offset=halfWidth*Math.sqrt(3/5);
+    const at=x=>response(x)*x*x/Math.expm1(x);
+    let total=0;
+    for(let index=0;index<intervals;index++){
+      const mid=lo+(2*index+1)*halfWidth;
+      total+=5*at(mid-offset)+8*at(mid)+5*at(mid+offset);
+    }
+    return total*halfWidth/9;
+  }
+
+  function radiativeResult(jsc,thermalVoltage,integral){
+    // One emitting hemisphere. jsc is mA/cm² and j0rad is A/cm².
+    const j0rad=2*Math.PI*Q*(Q*thermalVoltage/H)**3*integral/(C*C*1e4);
+    if(!(jsc>0)||!(j0rad>0)||!Number.isFinite(jsc)||!Number.isFinite(j0rad)){
+      throw Error("A positive photocurrent and radiative dark current are required.");
+    }
+    return {jsc,j0rad,voc:thermalVoltage*Math.log1p(jsc/1000/j0rad)};
+  }
+
+  function stepVoc(eg,jsc,thermalVoltage){
+    const edge=eg/thermalVoltage;
+    // The remaining step-absorber tail contributes less than floating-point precision.
+    return radiativeResult(jsc,thermalVoltage,integrateBlackbody(edge,edge+48,()=>1));
+  }
+
+  function bandgapVoc(spectrum,eg,temperature){
+    const thermalVoltage=checkedTemperature(temperature);
+    const {ideal}=bandgap(spectrum,eg);
+    return stepVoc(eg,ideal,thermalVoltage);
+  }
+
+  function bandgapVocCurve(bandgapCurrents,temperature){
+    const thermalVoltage=checkedTemperature(temperature);
+    return bandgapCurrents.map(([eg,jsc])=>[eg,stepVoc(eg,jsc,thermalVoltage).voc]);
+  }
+
+  function eqeVoc(spectrum,eqe,temperature){
+    const thermalVoltage=checkedTemperature(temperature);
+    checkSpectrum(eqe);
+    if(eqe.some(([,value])=>value>1))throw Error("EQE must be a fraction from 0 to 1.");
+    const {jsc}=integrate(spectrum,eqe[0][0],eqe.at(-1)[0],eqe);
+    const scale=HC_EV_NM/thermalVoltage;
+    let integral=0;
+    for(let index=1;index<eqe.length;index++){
+      const [short,low]=eqe[index-1], [long,high]=eqe[index];
+      if(low===0&&high===0)continue;
+      integral+=integrateBlackbody(scale/long,Math.min(700,scale/short),
+        x=>low+(high-low)*(scale/x-short)/(long-short));
+    }
+    return radiativeResult(jsc,thermalVoltage,integral);
+  }
+
   function parseEQE(text,unit="percent"){
     if(!["percent","fraction"].includes(unit))throw Error("Choose EQE in percent or fraction.");
     if(typeof text!=="string"||text.length>2000000)throw Error("Use a text file smaller than 2 MB.");
@@ -77,6 +143,6 @@
     for(let i=1;i<points.length;i++)if(points[i][0]===points[i-1][0])throw Error("Duplicate wavelength "+points[i][0]+" nm. Resolve duplicates before integrating.");
     return {points,sorted};
   }
-  const api={interpolate,integrate,bandgap,parseEQE,checkSpectrum,HC_EV_NM,FACTOR};
+  const api={interpolate,integrate,bandgap,bandgapVoc,bandgapVocCurve,eqeVoc,parseEQE,checkSpectrum,HC_EV_NM,FACTOR};
   if(typeof module==="object"&&module.exports)module.exports=api;else root.PVSpectral=api;
 })(typeof globalThis!=="undefined"?globalThis:this);

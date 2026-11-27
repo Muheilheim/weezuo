@@ -18,6 +18,20 @@
 .sp-shell .rl-metrics{margin-top:18px}
 .sp-shell .rl-chart{margin-top:12px}
 .sp-shell .rl-metrics dd{font-size:27px}
+
+/* Voc shares the bandgap inputs and follows the current-density results. */
+.sp-voc{margin:18px 0;padding:14px 16px;border:1px solid var(--line);border-radius:8px;min-width:0}
+.sp-voc h4{font:600 14px/1.5 var(--sans);margin:0 0 10px}
+.sp-shell .sp-voc .rl-metrics{margin:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.sp-voc [hidden],.sp-voc-status:empty{display:none}
+.sp-voc-status{overflow-wrap:anywhere}
+.sp-voc-settings{margin:14px 0}
+.sp-voc-settings summary,.sp-voc-method summary{cursor:pointer;color:var(--ink);font-size:12px}
+.sp-voc-settings summary{padding:8px 0}
+.sp-voc-settings .rl-small{margin-top:8px}
+.sp-voc-method{margin-top:10px}
+.sp-voc-method a{text-decoration:underline;text-underline-offset:3px}
+
 .sp-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
 .sp-caption{font-size:11px;color:var(--muted);margin:15px 0 0}
 .sp-unit-help{margin:7px 0 0;font-size:10px;line-height:1.5}
@@ -40,6 +54,12 @@
 .sp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
 .sp-legend span:before{content:"";display:inline-block;vertical-align:middle;width:24px;border-top:2px solid var(--teal);margin-right:7px}
 .sp-legend .sp-table-line:before{border-top:2px dashed var(--muted)}
+.sp-combined-plot{--sp-voc-color:color-mix(in srgb,var(--orange) 52%,var(--ink))}
+:root[data-theme="dark"] .sp-combined-plot{--sp-voc-color:var(--orange)}
+html[lang="zh-CN"][data-theme="dark"] .sp-combined-plot{--sp-voc-color:var(--sky)}
+.rl-chart .sp-voc-axis{fill:var(--sp-voc-color)}
+.sp-voc-curve{stroke-dasharray:9 3 2 3}
+.sp-legend .sp-voc-line:before{border-top:2px dashed var(--sp-voc-color)}
 .sp-note-link{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1000px){.sp-shell .rl-metrics dd{font-size:24px}.sp-legend{gap:8px;font-size:11px}}
 @media(max-width:680px){.sp-shell .rl-controls{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.sp-shell .rl-controls>h3,.sp-shell .rl-controls>.rl-small,.sp-shell .rl-controls>.sp-wide,.sp-shell .rl-controls>.sp-message,.sp-shell .rl-controls>.sp-row{grid-column:1/-1}.sp-shell .rl-controls>.rl-field{min-width:0}}
