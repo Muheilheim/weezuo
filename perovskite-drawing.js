@@ -59,6 +59,10 @@
   let lang = new URLSearchParams(location.search).get("lang");
   if (!Object.hasOwn(copy, lang)) lang = "zh";
   let params = { ...model.defaults }, frame = 0, drag = null, exportBusy = false;
+  const linkedCompound = new URLSearchParams(location.search).get("compound");
+  if (linkedCompound?.includes("|") && Array.from(byId("compound").options).some(option => option.value === linkedCompound)) {
+    [params.a, params.b, params.x] = linkedCompound.split("|");
+  }
   let mixtureMode = false, mixturePending = false, mixtureInitialized = false;
   const canvasHost = byId("drawing-canvas"), viewport = byId("drawing-viewport");
   const text = key => copy[lang][key];

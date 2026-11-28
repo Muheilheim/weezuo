@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="Portrait of Weiwei Zuo">
   <title>Weiwei Zuo | Perovskite Photovoltaic</title>
   <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/weiwei-zuo-icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=b04d7976b060">
+  <link rel="stylesheet" href="./styles.css?v=4963ac18c523">
   <link rel="alternate" hreflang="en" href="https://muheilheim.github.io/weezuo/">
   <link rel="alternate" hreflang="de" href="https://muheilheim.github.io/weezuo/de.html">
   <link rel="alternate" hreflang="zh-CN" href="https://muheilheim.github.io/weezuo/zh.html">
@@ -71,7 +71,8 @@
       <a href="#home" class="brand" aria-label="Weiwei Zuo home"><img class="brand-mark" src="./assets/weiwei-zuo-logo.png" width="1846" height="852" alt="" decoding="async"><span>WEIWEI ZUO<span class="brand-subtitle">RESEARCH &amp; PUBLICATIONS</span></span></a>
       <nav id="navigation" class="nav" aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#solar-cell-tools">Tools</a><a href="#publications">Publications</a><a href="#updates">Updates</a><a href="#contact">Contact</a><span class="language-switch" role="group" aria-label="Language"><a data-language="en" href="./index.html" lang="en" aria-current="page">EN</a><a data-language="de" href="./de.html" lang="de">DE</a><a data-language="zh" href="./zh.html" lang="zh-CN">中文</a></span></nav>
       <div class="header-actions">
-        <nav class="drawing-navigation" aria-label="Scientific drawing studio">
+        <nav class="drawing-navigation" aria-label="Research workspaces">
+          <a class="drawing-nav-link phase-nav-link" href="./phase-analysis.html?lang=en"><span>Phase analysis</span><span aria-hidden="true">→</span></a>
           <a class="drawing-nav-link" href="./drawing.html?lang=en"><span>Drawing</span><span aria-hidden="true">→</span></a>
         </nav>
         <button class="icon-button" id="theme-button" type="button" aria-label="Switch to dark mode" aria-pressed="false"><svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.8 13.2A8.5 8.5 0 0 1 10.8 3.1a8.6 8.6 0 1 0 10 10.1Z"/></svg><svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
@@ -122,6 +123,7 @@
     <section id="solar-cell-tools" class="resistance-section wrap" aria-labelledby="resistance-title">
       <div class="section-heading"><div><p class="section-kicker">INTERACTIVE PHOTOVOLTAICS</p><h2 id="resistance-title">Solar cell <em>calculators.</em></h2></div></div>
       <p class="resistance-intro">Analyze solar-cell limits, spectra, J–V curves, impedance and space-charge-limited current.</p>
+      <a class="phase-tool-entry" href="./phase-analysis.html?lang=en"><strong>Phase &amp; spectroscopy analysis</strong><small>XRD · FTIR · Raman · DSC/TGA · XPS · SAED</small><span aria-hidden="true">→</span></a>
       <div class="pv-tabs" role="tablist" aria-label="Solar cell calculators">
         <button id="pv-tab-bandgap" type="button" role="tab" data-pv-tool="bandgap-jsc" aria-selected="false" aria-controls="bandgap-jsc" tabindex="-1"><span>01 / SPECTRAL LIMIT</span>Bandgap → Jsc &amp; Voc</button>
         <button id="pv-tab-eqe" type="button" role="tab" data-pv-tool="eqe-integration" aria-selected="false" aria-controls="eqe-integration" tabindex="-1"><span>02 / SPECTRAL RESPONSE</span>EQE integration</button>

@@ -1,0 +1,174 @@
+/* Additional phase-characterization workspaces. */
+.phase-tabs { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.phase-tabs button { flex-direction: column; gap: 3px; min-height: 53px; padding-block: 9px; align-items: start; }
+.phase-tabs strong { max-inline-size: 100%; overflow-wrap: anywhere; hyphens: auto; font-size: clamp(13px, 1.23vw, 17px); }
+.phase-tabs span { font-size: 11px; overflow-wrap: anywhere; }
+.phase-page {
+  --phase-fit: #ad572f;
+  --phase-component-a: #558266;
+  --phase-component-b: #765895;
+}
+[data-theme="dark"] .phase-page {
+  --phase-fit: #f9b385;
+  --phase-component-a: #91c79b;
+  --phase-component-b: #d1afe8;
+}
+.phase-extra-format .phase-fields, #phase-extra-settings .phase-fields { flex-wrap: wrap; }
+.phase-extra-format .phase-fields label, #phase-extra-settings .phase-fields label { min-width: min(44%, 106px); }
+.phase-extra-format .phase-fields label:only-child, #phase-extra-settings .phase-fields label:only-child { min-width: 100%; }
+.phase-extra-map { margin-bottom: 13px; }
+.phase-extra-map h3, .phase-extra-secondary h3, .phase-extra-summary h3 { margin: 0; font-size: 14px; }
+.phase-extra-map canvas { display: block; width: 100%; height: 200px; border: 1px solid var(--phase-border); border-radius: 8px; cursor: crosshair; }
+.phase-frame { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.phase-extra-map input[type="range"] { width: 100%; height: 30px; margin: 2px 0 0; accent-color: var(--phase-sample); }
+.phase-extra-legend { min-height: 23px; margin-top: 7px; }
+.phase-extra-secondary .phase-chart { height: 185px; }
+.phase-extra-secondary h3 { margin-bottom: 6px; }
+.phase-extra-summary h2 { margin-bottom: 6px; }
+.phase-extra-summary h3 { margin: 12px 0 4px; }
+.phase-extra-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(124px, 100%), 1fr));
+  gap: 7px;
+  margin: 9px 0 10px;
+}
+.phase-extra-metrics div {
+  min-width: 0;
+  padding: 8px 9px;
+  background: var(--phase-input-bg);
+  border: 1px solid var(--phase-border);
+  border-radius: 7px;
+}
+.phase-extra-metrics dt { font-size: 11px; color: var(--muted); }
+.phase-extra-metrics dd { margin: 3px 0 0; font-size: 16px; font-weight: 650; line-height: 1.42; overflow-wrap: anywhere; }
+.phase-extra-candidate summary { cursor: pointer; font-size: 12px; padding: 7px 0; }
+.phase-extra-candidate + .phase-extra-candidate { border-top: 1px solid var(--phase-border); }
+.phase-extra-source { display: flex; flex-wrap: wrap; gap: 7px 12px; margin: 5px 0; }
+.phase-optical-links { margin-top: 15px; display: flex; align-items: center; gap: 9px 14px; justify-content: space-between; flex-wrap: wrap; }
+.phase-optical-links h2 { font-size: 15px; }
+.phase-optical-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 920px) {
+  .phase-tabs { display: flex; flex-wrap: wrap; }
+  .phase-tabs button { flex: 1 1 24%; border-bottom: 1px solid var(--phase-border); }
+}
+@media (max-width: 690px) {
+  .phase-extra-map canvas { height: 170px; }
+}
+@media print {
+  .phase-optical-links { display: none !important; }
+}
+/* The drawing studio's material presets carry across characterization tabs. */
+.phase-materials {
+  padding: 10px 12px;
+  margin-bottom: 11px;
+  border: 1px solid var(--phase-border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.phase-material-layout { display:flex; align-items:flex-end; gap: 9px 16px; flex-wrap:wrap; }
+.phase-material-choices { flex:1 1 570px; min-width:0; }
+.phase-materials h2 { font:700 13px/1.3 var(--sans); margin:0 0 5px; }
+.phase-material-buttons { display:flex; gap:5px; flex-wrap:wrap; }
+.phase-material-buttons button { min-height:40px; padding:5px 9px; }
+.phase-material-buttons button[aria-pressed="true"] {
+  background:var(--banner);
+  color:var(--banner-ink);
+  border-color:var(--banner);
+}
+.phase-material-phase { min-width: 190px; flex:0 1 252px; margin:0; }
+.phase-material-phase label { font-size:12px; }
+.phase-materials .phase-note { margin:5px 0 0; }
+.phase-provenance:not(:empty) {
+  margin:0 0 7px;
+  padding:5px 8px;
+  border:1px solid var(--phase-border);
+  border-radius:7px;
+  background:var(--phase-input-bg);
+}
+.phase-provenance strong { font-size:12px; color:var(--ink); }
+.phase-provenance a { display:inline-block; margin-inline-start:7px; }
+.phase-provenance .phase-note { margin: 2px 0; }
+.phase-provenance .phase-link-button { min-height:30px; }
+@media (max-width:690px) {
+  .phase-material-phase { flex:1 1 100%; }
+}
+
+/* Keep the selected material and citation in view without burying the chart. */
+.phase-material-choices { display:flex; align-items:center; gap:8px; flex-basis:495px; }
+.phase-material-choices h2 { margin:0; flex:none; }
+.phase-material-buttons { min-width:0; }
+.phase-material-phase label { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:7px; }
+.phase-provenance-details { margin-top:3px; }
+.phase-provenance-details summary { color:var(--phase-sample); font-size:11.5px; cursor:pointer; }
+#phase-workspace .phase-chart, #phase-extra-workspace .phase-plot-card > .phase-chart { height:clamp(258px,24vw,304px); }
+@media(max-width:690px) {
+  .phase-material-choices { align-items:flex-start; flex-direction:column; gap:5px; }
+  .phase-material-phase label { grid-template-columns:auto minmax(0,1fr); }
+}
+
+/* Put methods and input controls before the plot. */
+.phase-intro { padding-block: 17px 13px; }
+.phase-tabs { margin-bottom: 10px; }
+.phase-material-summary { display: none; }
+.phase-drop {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  justify-items: start;
+  gap: 9px;
+  margin-top: 8px;
+  padding: 8px 9px;
+  text-align: start;
+}
+.phase-drop .phase-file { min-height: 44px; width: fit-content; }
+.phase-drop-guide { min-width: 0; overflow-wrap: anywhere; }
+.phase-drop-guide p { line-height: 1.45; font-size: 12px; }
+.phase-drop-guide small { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; line-height: 1.42; }
+.phase-format-options { margin-top: 7px; }
+.phase-format-options summary small { color: var(--muted); font-size: inherit; font-weight: 450; }
+.phase-import-ordinate label { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px; }
+.phase-sidebar .phase-link-button:disabled { color: var(--muted); opacity: .65; cursor: default; text-decoration: none; }
+.phase-result-actions { display: flex; justify-content: end; align-items: center; gap: 5px 11px; flex-wrap: wrap; }
+.phase-result-actions .phase-link-button { min-height: 36px; }
+.phase-result-actions .phase-button { white-space: nowrap; }
+.phase-provenance-details { display: inline; margin-inline-start: 7px; }
+.phase-provenance-details[open] { display: block; margin: 3px 0 0; }
+.phase-provenance-details > summary { display: inline list-item; }
+#phase-workspace .phase-plot-card[data-empty] > .phase-chart,
+#phase-extra-workspace .phase-plot-card[data-empty] > .phase-chart { height: 130px; }
+#phase-peak-title, #phase-extra-result-title { scroll-margin-top: 16px; }
+#phase-extra-analysis-status:not(:empty) { margin-block: 0 8px; padding: 6px 8px; background: var(--phase-input-bg); border-radius: 6px; }
+#phase-result-context, #phase-extra-context { overflow-wrap: anywhere; }
+@media (max-width: 690px) {
+  .phase-intro { padding-block: 12px 9px; }
+  .phase-intro h1 { font-size: clamp(24px, 6.3vw, 34px); }
+  .phase-intro p { margin-top: 4px; font-size: 12.5px; line-height: 1.55; }
+  .phase-tabs button { min-height: 50px; padding: 7px 8px; }
+  .phase-tabs span { font-size: 10.5px; }
+  .phase-materials { padding: 0 10px; margin-bottom: 9px; }
+  .phase-workspace { gap: 12px; }
+  .phase-material-summary {
+    display: list-item;
+    min-height: 44px;
+    padding-block: 11px;
+    font: 600 12px/1.5 var(--sans);
+    text-align: start;
+    cursor: pointer;
+  }
+  .phase-material-summary strong { margin-inline-start: 6px; color: var(--ink); font-weight: 750; }
+  .phase-materials[open] .phase-material-layout { border-top: 1px solid var(--phase-border); padding-block: 7px; }
+  .phase-materials .phase-material-choices h2 { display: none; }
+  .phase-sidebar, .phase-card { padding: 10px 11px; }
+  .phase-sidebar h2 { font-size: 16px; }
+  .phase-sidebar .phase-disclosure { margin-top: 5px; }
+  .phase-sidebar .phase-disclosure summary { min-height: 34px; }
+  .phase-sidebar .phase-file { font-size: 11.5px; padding-inline: 9px; }
+  .phase-sidebar .phase-settings { margin-top: 5px; padding-top: 3px; }
+  .phase-sidebar .phase-settings > summary { font-size: 14px; min-height: 33px; padding-block: 4px; margin: 0; }
+  .phase-dataset[data-simulated] { margin-top: 4px; padding-block: 1px; }
+  .phase-dataset[data-simulated] small { display: none; }
+  .phase-provenance-details { display: block; margin-inline-start: 0; }
+  .phase-result-actions { gap: 4px 7px; max-width: 53%; }
+  .phase-result-actions .phase-button { padding-inline: 8px; }
+  .phase-results-heading { margin-bottom: 7px; }
+  #phase-workspace .phase-chart, #phase-extra-workspace .phase-plot-card > .phase-chart { height: 250px; }
+}

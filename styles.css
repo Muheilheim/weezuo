@@ -641,3 +641,42 @@ html[lang="zh-CN"] {
 @media print {
   .drawing-feature { display: none; }
 }
+
+/* Phase and spectroscopy entry points share the homepage research-tool styling. */
+.drawing-navigation:has(.phase-nav-link) { gap: 5px; }
+.drawing-nav-link.phase-nav-link {
+  background: #9ee2d6;
+  color: #113a40;
+  box-shadow: inset 0 0 0 1px #aee9df;
+  font-weight: 750;
+}
+.drawing-nav-link.phase-nav-link:is(:hover, :focus-visible) { background: #c5f4eb; }
+.drawing-nav-link.phase-nav-link:focus-visible { outline: 2px solid #d8fff7; outline-offset: 3px; }
+.phase-tool-entry {
+  display: flex;
+  width: fit-content;
+  min-height: 44px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: -2px 0 16px;
+  padding: 9px 13px;
+  background: #d6f4ed;
+  border: 1px solid #78b8ac;
+  border-radius: 8px;
+  color: #123b40;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.phase-tool-entry small { color: #385f60; font-size: 11px; }
+.phase-tool-entry:is(:hover, :focus-visible) { background: #c2eee4; }
+.phase-tool-entry:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 1070px) {
+  .header-inner:has(.phase-nav-link) .brand-subtitle { display: none; }
+  .header-inner:has(.phase-nav-link) .drawing-nav-link { padding-inline: 9px; }
+}
+@media (max-width: 480px) {
+  .header-inner:has(.phase-nav-link) .brand-mark { width: 42px; }
+  .header-inner:has(.phase-nav-link) .drawing-nav-link { padding-inline: 7px; font-size: 11px; }
+  .drawing-navigation:has(.phase-nav-link) .drawing-nav-link > span[aria-hidden] { display: none; }
+}

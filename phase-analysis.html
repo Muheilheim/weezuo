@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="在浏览器中分析衍射、光谱和热分析数据，查看曲线与候选参考。">
+  <meta name="color-scheme" content="light dark">
+  <title>物相与光谱分析 · Weiwei Zuo</title>
+  <link rel="icon" href="./assets/weiwei-zuo-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css?v=4963ac18c523">
+  <link rel="stylesheet" href="./phase-analysis.css?v=b430bef17b47">
+  <script defer src="./phase-reference.js?v=85a02435ee51"></script>
+  <script defer src="./phase-model.js?v=d6d51dae2cbb"></script>
+  <script defer src="./phase-samples.js?v=a7b0f772c63e"></script>
+  <script defer src="./phase-strings.js?v=768bdf6c3d5d"></script>
+  <script defer src="./phase-sample-strings.js?v=f1e2a6c91ccb"></script>
+  <script defer src="./phase-plot.js?v=22aefdc91e13"></script>
+  <link rel="stylesheet" href="./phase-extra.css?v=3150809a0867">
+  <script defer src="./phase-extra-model.js?v=25e473c4e7fa"></script>
+  <script defer src="./phase-extra-strings.js?v=61efc54c9eb3"></script>
+  <script defer src="./phase-extra.js?v=625abbfdadec"></script>
+  <script defer src="./phase-analysis.js?v=8039dddd08b6"></script>
+</head>
+<body class="phase-page">
+  <a class="skip-link" href="#phase-main" data-t="skip">跳转到分析区</a>
+  <header class="phase-header">
+    <div class="phase-wrap phase-header-inner">
+      <a id="phase-brand" class="phase-brand" href="./zh.html">
+        <img src="./assets/weiwei-zuo-logo.png" width="1846" height="852" alt="">
+        <span>WEIWEI ZUO</span>
+      </a>
+      <nav class="phase-header-links" data-aria="navigation" aria-label="科研工具导航">
+        <a id="phase-home" href="./zh.html" data-t="home">主页</a>
+        <a id="phase-tools" href="./zh.html#solar-cell-tools" data-t="tools">光伏计算器</a>
+        <a id="phase-drawing" href="./drawing.html?lang=zh" data-t="drawing">绘图</a>
+      </nav>
+      <div class="phase-top-controls">
+        <div class="phase-languages" role="group" data-aria="language" aria-label="语言">
+          <a href="?lang=en" data-language="en" lang="en">EN</a>
+          <a href="?lang=de" data-language="de" lang="de">DE</a>
+          <a href="?lang=zh" data-language="zh" lang="zh-CN" aria-current="page">中文</a>
+        </div>
+        <button id="phase-theme" class="phase-theme" type="button" aria-label="深色模式" aria-pressed="false">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="phase-main" class="phase-wrap" tabindex="-1">
+    <div class="phase-intro">
+      <h1 data-t="title">物相与光谱分析</h1>
+      <p data-t="intro">选择表征方法，导入数据或查看示例。数据在浏览器内处理。</p>
+    </div>
+
+    <div class="phase-tabs" role="tablist" data-aria="technique" aria-label="分析方法">
+      <button id="phase-tab-xrd" type="button" role="tab" aria-selected="true" aria-controls="phase-workspace" data-mode="xrd"><strong>XRD</strong><span data-t="xrdTab">晶相与衬底</span></button>
+      <button id="phase-tab-ftir" type="button" role="tab" aria-selected="false" aria-controls="phase-workspace" tabindex="-1" data-mode="ftir"><strong>FTIR</strong><span data-t="ftirTab">官能团与振动</span></button>
+      <button id="phase-tab-raman" type="button" role="tab" aria-selected="false" aria-controls="phase-workspace" tabindex="-1" data-mode="raman"><strong data-t="ramanName">拉曼</strong><span data-t="ramanTab">拉曼指纹</span></button>
+      <button id="phase-tab-thermal" type="button" role="tab" aria-selected="false" aria-controls="phase-extra-workspace" tabindex="-1" data-mode="thermal"><strong data-t="thermalName">热分析</strong><span data-t="thermalTab">DSC / TGA</span></button>
+      <button id="phase-tab-diffraction" type="button" role="tab" aria-selected="false" aria-controls="phase-extra-workspace" tabindex="-1" data-mode="diffraction"><strong data-t="diffractionName">薄膜 / 原位</strong><span data-t="diffractionTab">GIXRD / GIWAXS</span></button>
+      <button id="phase-tab-xps" type="button" role="tab" aria-selected="false" aria-controls="phase-extra-workspace" tabindex="-1" data-mode="xps"><strong>XPS</strong><span data-t="xpsTab">Pb 4f 化学态</span></button>
+      <button id="phase-tab-saed" type="button" role="tab" aria-selected="false" aria-controls="phase-extra-workspace" tabindex="-1" data-mode="saed"><strong>SAED</strong><span data-t="saedTab">局部衍射</span></button>
+    </div>
+
+    <details id="phase-materials-panel" class="phase-materials" aria-describedby="phase-selection-hint" open>
+      <summary class="phase-material-summary">
+        <span data-t="sampleLab">示例材料</span><strong id="phase-material-summary">FAPbI₃</strong>
+      </summary>
+      <div class="phase-material-layout">
+        <div class="phase-material-choices">
+          <h2 id="phase-material-title" data-t="sampleLab">示例材料</h2>
+          <div id="phase-material-buttons" class="phase-material-buttons"></div>
+        </div>
+        <div id="phase-material-phase" class="phase-fields phase-material-phase">
+          <label><span data-t="phaseModel">晶相 / 结构</span><select id="phase-crystal"></select></label>
+        </div>
+      </div>
+      <p class="sr-only" id="phase-selection-hint" data-t="keepsSelection">组成和晶相随表征切换保留。</p>
+    </details>
+
+    <div id="phase-workspace" class="phase-workspace" role="tabpanel" aria-labelledby="phase-tab-xrd">
+      <aside class="phase-sidebar" aria-labelledby="phase-input-title">
+        <section>
+          <div class="phase-heading-row">
+            <h2 id="phase-input-title" data-t="input">导入样品</h2>
+            <button id="phase-demo" class="phase-link-button" type="button">载入示例</button>
+          </div>
+          <div data-for="ftir" class="phase-fields phase-import-ordinate" hidden>
+            <label><span data-t="ordinate">纵轴类型</span><select id="phase-ordinate">
+              <option value="absorbance" data-t="absorbance">吸光度</option>
+              <option value="transmittance" data-t="transmittance">透过率 (%T)</option>
+            </select></label>
+          </div>
+          <div id="phase-drop" class="phase-drop">
+            <label class="phase-file">
+              <span data-t="choose">选择数据文件</span>
+              <input id="phase-file" type="file" accept=".csv,.txt,.xy,.dat,.tsv" data-aria="choose" aria-label="选择数据文件" aria-describedby="phase-formats">
+            </label>
+            <div class="phase-drop-guide">
+              <p id="phase-formats"></p>
+              <small data-t="fileTypes">CSV · TXT · XY · DAT · TSV</small>
+            </div>
+          </div>
+          <details class="phase-disclosure">
+            <summary data-t="paste">粘贴两列数据</summary>
+            <label class="sr-only" for="phase-text" data-t="paste">粘贴两列数据</label>
+            <textarea id="phase-text" rows="4" spellcheck="false" data-placeholder="pasteHint" placeholder="每行一个坐标，例如 14.02, 1350"></textarea>
+            <button id="phase-use-text" class="phase-button" type="button" data-t="useText">导入文本</button>
+          </details>
+          <div id="phase-dataset" class="phase-dataset" hidden>
+            <div><strong id="phase-file-name"></strong><small id="phase-file-info"></small></div>
+            <button id="phase-clear" class="phase-clear" type="button" data-aria="clear" aria-label="清除样品" title="清除样品">×</button>
+          </div>
+          <p id="phase-import-status" class="phase-message" role="status" aria-live="polite"></p>
+        </section>
+
+        <details class="phase-settings" id="phase-settings-panel" open>
+          <summary id="phase-settings-title" data-t="settings">分析参数</summary>
+          <p id="phase-axis-note" class="phase-note"></p>
+          <div data-for="xrd" class="phase-fields">
+            <label><span data-t="wavelength">X 射线波长 (Å)</span><input id="phase-wavelength" type="number" min="0.05" max="5" step="any" inputmode="decimal" value="1.5406"></label>
+            <label><span data-t="substrate">衬底参考</span><select id="phase-substrate">
+              <option value="auto" data-t="allSubstrates">全部衬底</option>
+              <option value="FTO">FTO</option>
+              <option value="ITO">ITO</option>
+              <option value="none" data-t="noSubstrate">隐藏衬底参考</option>
+            </select></label>
+          </div>
+          <div data-for="raman" class="phase-fields" hidden>
+            <label><span data-t="laser">激发波长 (nm)</span><input id="phase-laser" type="number" min="150" max="3000" step="any" inputmode="decimal" data-placeholder="optional" placeholder="可选"></label>
+          </div>
+          <div class="phase-fields">
+            <label><span id="phase-tolerance-label">匹配容差 (°)</span><input id="phase-tolerance" type="number" min="0.01" max="3" value="0.18" step="any" inputmode="decimal"></label>
+            <label><span data-t="threshold">峰高阈值 (%)</span><input id="phase-threshold" type="number" min="0.2" max="99" value="4" step="any" inputmode="decimal"></label>
+          </div>
+          <details class="phase-disclosure" id="phase-blank-panel" data-for="xrd">
+            <summary data-t="blank">空白衬底对照</summary>
+            <p class="phase-note" data-t="blankHelp">可导入同波长的裸衬底。叠图按各自峰高缩放，保留样品原始峰。</p>
+            <label class="phase-file phase-file-small">
+              <span data-t="chooseBlank">选择衬底文件</span>
+              <input id="phase-blank" type="file" accept=".csv,.txt,.xy,.dat,.tsv" data-aria="chooseBlank" aria-label="选择衬底文件">
+            </label>
+            <div id="phase-blank-item" class="phase-blank-item" hidden>
+              <span id="phase-blank-name"></span><button id="phase-blank-clear" class="phase-clear" type="button" data-aria="clearBlank" aria-label="清除衬底">×</button>
+            </div>
+          </details>
+          <button id="phase-diffraction-link" class="phase-link-button" type="button" data-for="xrd" data-t="diffractionLink">薄膜与原位衍射 →</button>
+          <p id="phase-settings-status" class="phase-message" role="status" aria-live="polite"></p>
+        </details>
+      </aside>
+
+      <div class="phase-results">
+        <section class="phase-card phase-plot-card" aria-labelledby="phase-plot-title">
+          <div class="phase-heading-row phase-results-heading">
+            <div>
+              <h2 id="phase-plot-title">XRD 图谱</h2>
+              <p id="phase-result-context" class="phase-note"></p>
+            </div>
+            <div class="phase-result-actions">
+              <button id="phase-peaks-jump" class="phase-link-button" type="button" data-phase-jump="phase-peak-title" data-t="viewPeaks">查看峰表 ↓</button>
+              <button id="phase-export" class="phase-button" type="button" disabled data-t="export">导出峰表 ↓</button>
+            </div>
+          </div>
+          <div id="phase-chart-source" class="phase-provenance"></div>
+          <div class="phase-chart">
+            <canvas id="phase-chart" role="img" aria-label="谱图"></canvas>
+            <p id="phase-chart-empty" class="phase-chart-empty" hidden data-t="empty">选择数据文件，或载入模拟示例。</p>
+          </div>
+          <div class="phase-chart-footer">
+            <div class="phase-legend">
+              <span><i></i><span id="phase-curve-label" data-t="sampleCurve">样品曲线</span></span>
+              <span id="phase-blank-legend" hidden><i></i><span data-t="blankCurve">空白衬底（相对缩放）</span></span>
+              <span id="phase-ref-legend" hidden><i></i><span id="phase-ref-label"></span></span>
+            </div>
+            <label class="phase-marker-toggle"><input id="phase-markers" type="checkbox" checked><span data-t="markers">标记峰位</span></label>
+          </div>
+          <p id="phase-probe" class="phase-probe" aria-hidden="true"></p>
+        </section>
+
+        <section class="phase-card phase-candidates" aria-labelledby="phase-candidates-title">
+          <div class="phase-heading-row phase-results-heading">
+            <div>
+              <h2 id="phase-candidates-title">参考物相</h2>
+              <p id="phase-library-info" class="phase-note"></p>
+            </div>
+            <label class="phase-search"><span class="sr-only" data-t="search">筛选参考材料</span>
+              <input id="phase-search" type="search" data-placeholder="search" placeholder="筛选参考材料" data-aria="search" aria-label="筛选参考材料" autocomplete="off">
+            </label>
+          </div>
+          <div id="phase-candidate-list"></div>
+          <button id="phase-more" type="button" class="phase-link-button" hidden data-t="more">显示更多参考</button>
+          <div id="phase-reference-detail" class="phase-reference-detail" hidden></div>
+        </section>
+
+        <section class="phase-card phase-peak-card" aria-labelledby="phase-peak-title">
+          <div class="phase-heading-row phase-results-heading">
+            <div><h2 id="phase-peak-title" tabindex="-1" data-t="peakTable">样品峰表</h2><p id="phase-peaks-info" class="phase-note"></p></div>
+          </div>
+          <p id="phase-no-peaks" class="phase-note"></p>
+          <div id="phase-peak-scroll" class="phase-table-scroll" tabindex="0" aria-labelledby="phase-peak-title" hidden>
+            <table class="phase-table">
+              <thead><tr><th scope="col" id="phase-peak-x">2θ (°)</th><th id="phase-peak-d" scope="col">d (Å)</th><th scope="col" data-t="rawY">原始纵轴</th><th scope="col" data-t="assignment">参考匹配</th></tr></thead>
+              <tbody id="phase-peak-rows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <details class="phase-card phase-method">
+          <summary data-t="method">分析方法与适用范围</summary>
+          <p id="phase-method-text"></p>
+          <p data-t="dataSources">参考峰来自已整理的文献、晶体结构及实测峰位表。选中候选可查看采集条件和原文位置。</p>
+        </details>
+      </div>
+    </div>
+    <div id="phase-extra-workspace" class="phase-workspace" role="tabpanel" aria-labelledby="phase-tab-thermal" hidden>
+      <aside class="phase-sidebar" aria-labelledby="phase-extra-input-heading">
+        <div class="phase-heading-row">
+          <h2 id="phase-extra-input-heading" data-t="input">导入样品</h2>
+          <button id="phase-extra-demo" class="phase-link-button" type="button">载入示例</button>
+        </div>
+        <div id="phase-extra-drop" class="phase-drop">
+          <label class="phase-file">
+            <span data-t="choose">选择数据文件</span>
+            <input id="phase-extra-file" type="file" accept=".csv,.txt,.xy,.dat,.tsv" data-aria="choose" aria-label="选择数据文件" aria-describedby="phase-extra-formats">
+          </label>
+          <div class="phase-drop-guide">
+            <p id="phase-extra-formats"></p>
+            <small data-t="fileTypes">CSV · TXT · XY · DAT · TSV</small>
+          </div>
+        </div>
+        <details id="phase-extra-format-panel" class="phase-disclosure phase-format-options" open>
+          <summary><span data-t="importOptions">数据格式</span><small id="phase-extra-format-selection"></small></summary>
+          <div id="phase-extra-format" class="phase-extra-format"></div>
+        </details>
+        <details class="phase-disclosure">
+          <summary data-t="pasteData">粘贴数据</summary>
+          <label class="sr-only" for="phase-extra-text" data-t="pasteData">粘贴数据</label>
+          <textarea id="phase-extra-text" rows="4" spellcheck="false"></textarea>
+          <button id="phase-extra-import" class="phase-button" type="button" data-t="useText">导入文本</button>
+        </details>
+        <div id="phase-extra-dataset" class="phase-dataset" hidden>
+          <div><strong id="phase-extra-name"></strong><small id="phase-extra-info"></small></div>
+          <button id="phase-extra-clear" class="phase-clear" type="button" data-aria="clear" aria-label="清除样品">×</button>
+        </div>
+        <p id="phase-extra-status" class="phase-message" role="status" aria-live="polite"></p>
+        <details class="phase-settings" id="phase-extra-settings-panel" open>
+          <summary data-t="settings">分析参数</summary>
+          <p class="phase-note" id="phase-extra-help"></p>
+          <div id="phase-extra-settings"></div>
+        </details>
+      </aside>
+
+      <div class="phase-results">
+        <section class="phase-card phase-plot-card" aria-labelledby="phase-extra-plot-title">
+          <div class="phase-heading-row phase-results-heading">
+            <div><h2 id="phase-extra-plot-title"></h2><p id="phase-extra-context" class="phase-note"></p></div>
+            <div class="phase-result-actions">
+              <button id="phase-extra-result-jump" class="phase-link-button" type="button" data-phase-jump="phase-extra-result-title" data-t="viewResults">查看结果 ↓</button>
+              <button id="phase-extra-export" class="phase-button" type="button" disabled data-t="exportAnalysis">导出结果 ↓</button>
+            </div>
+          </div>
+          <p id="phase-extra-analysis-status" class="phase-message" role="status" data-error="true"></p>
+          <div id="phase-extra-chart-source" class="phase-provenance"></div>
+          <section id="phase-extra-map" class="phase-extra-map" hidden aria-labelledby="phase-extra-map-title">
+            <div class="phase-heading-row">
+              <h3 id="phase-extra-map-title" data-t="seriesMap">衍射强度热图</h3>
+              <span class="phase-note" id="phase-extra-color-range"></span>
+            </div>
+            <canvas id="phase-extra-map-canvas" role="img"></canvas>
+            <label class="phase-frame" for="phase-extra-frame">
+              <span data-t="frame">当前扫描</span><output id="phase-extra-frame-value" for="phase-extra-frame"></output>
+            </label>
+            <input id="phase-extra-frame" type="range" min="0" max="1" step="1" value="0">
+          </section>
+          <div class="phase-chart">
+            <canvas id="phase-extra-chart" role="img"></canvas>
+            <p id="phase-extra-empty" class="phase-chart-empty" data-t="empty" hidden>选择数据文件，或载入模拟示例。</p>
+          </div>
+          <div class="phase-legend phase-extra-legend" id="phase-extra-legend"></div>
+          <p id="phase-extra-probe" class="phase-probe" aria-hidden="true"></p>
+          <section id="phase-extra-secondary" class="phase-extra-secondary" hidden aria-labelledby="phase-extra-secondary-title">
+            <h3 id="phase-extra-secondary-title"></h3>
+            <div class="phase-chart"><canvas id="phase-extra-secondary-chart" role="img"></canvas></div>
+            <p id="phase-extra-secondary-probe" class="phase-probe" aria-hidden="true"></p>
+          </section>
+        </section>
+        <section class="phase-card phase-extra-summary" aria-labelledby="phase-extra-result-title">
+          <h2 id="phase-extra-result-title" tabindex="-1" data-t="results">分析结果</h2>
+          <div id="phase-extra-result"></div>
+        </section>
+        <details class="phase-card phase-method">
+          <summary data-t="method">分析方法与适用范围</summary>
+          <p id="phase-extra-method"></p>
+          <div id="phase-extra-sources"></div>
+        </details>
+      </div>
+    </div>
+
+    <section class="phase-card phase-optical-links" aria-labelledby="phase-optical-title">
+      <div>
+        <h2 id="phase-optical-title" data-t="opticalTitle">光谱对照</h2>
+        <p class="phase-note" data-t="opticalNote">在新标签打开已有的光伏工具，对照同一样品的吸收边和发射峰。</p>
+      </div>
+      <div class="phase-optical-actions">
+        <a id="phase-optical-uv" class="phase-button" href="./zh.html#bandgap-analysis" target="_blank" rel="noopener" data-t="opticalUv">UV–Vis 吸收边 ↗</a>
+        <a id="phase-optical-pl" class="phase-button" href="./zh.html#pl-bandgap" target="_blank" rel="noopener" data-t="opticalPl">PL 发射峰 ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="phase-wrap phase-footer">
+    <span>WEIWEI ZUO</span><a id="phase-footer-home" href="./zh.html" data-t="backHome">返回主页 →</a>
+  </footer>
+
+  <dialog id="phase-csv" class="phase-csv" aria-labelledby="phase-csv-title">
+    <div class="phase-heading-row"><h2 id="phase-csv-title" data-t="csvTitle">导出样品峰表</h2>
+      <form method="dialog"><button class="phase-clear" data-aria="close" aria-label="关闭">×</button></form>
+    </div>
+    <p id="phase-csv-name" class="phase-note"></p>
+    <div class="phase-csv-actions">
+      <a id="phase-download" class="phase-button" data-t="download">下载 CSV ↓</a>
+      <button id="phase-copy" type="button" class="phase-button" data-t="copy">复制 CSV</button>
+    </div>
+    <label class="sr-only" for="phase-csv-text" data-t="csvText">CSV 文本</label>
+    <textarea id="phase-csv-text" readonly rows="6"></textarea>
+    <p id="phase-csv-status" class="phase-message" role="status"></p>
+  </dialog>
+</body>
+</html>
